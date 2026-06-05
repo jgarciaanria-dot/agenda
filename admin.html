@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Vicelly Hair & Beauty</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--forest:#0D1F1A;--gold:#C9A96E;--gold-dark:#8B6F3E;--bg:#F5F7F5;--radius:10px;--radius-lg:14px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-height:100vh;}
+.adm-hdr{background:var(--forest);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.adm-hdr-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#fff;}
+.adm-hdr-sub{font-size:11px;color:rgba(201,169,110,.7);margin-top:2px;}
+.adm-hdr-back{color:rgba(201,169,110,.8);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:5px;}
+.adm-hdr-back:hover{color:var(--gold);}
+.adm-body{padding:1rem;}
+.adm-sec{background:#fff;border:0.5px solid #E4EBE4;border-radius:var(--radius-lg);margin-bottom:1rem;overflow:hidden;}
+.adm-sec-hdr{padding:.875rem 1rem;border-bottom:0.5px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
+.adm-sec-title{font-size:13px;font-weight:500;color:var(--forest);display:flex;align-items:center;gap:7px;}
+.adm-sec-title::before{content:'';width:3px;height:14px;background:var(--gold);border-radius:2px;}
+.btn-add{display:flex;align-items:center;gap:5px;padding:6px 12px;background:var(--forest);color:var(--gold);border:none;border-radius:8px;font-size:12px;cursor:pointer;transition:opacity .15s;}
+.btn-add:hover{opacity:.85;}
+.svc-row{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;border-bottom:0.5px solid #f5f5f5;transition:background .15s;}
+.svc-row:last-child{border-bottom:none;}
+.svc-row:hover{background:#fafafa;}
+.svc-toggle{position:relative;width:36px;height:20px;flex-shrink:0;}
+.svc-toggle input{opacity:0;width:0;height:0;position:absolute;}
+.svc-toggle-track{position:absolute;inset:0;border-radius:999px;background:#ddd;cursor:pointer;transition:background .2s;}
+.svc-toggle input:checked+.svc-toggle-track{background:var(--gold);}
+.svc-toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;}
+.svc-toggle input:checked~.svc-toggle-thumb{transform:translateX(16px);}
+.svc-info{flex:1;min-width:0;}
+.svc-nm{font-size:13px;font-weight:500;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.svc-meta{font-size:11px;color:#aaa;margin-top:1px;}
+.svc-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-ico{width:30px;height:30px;border-radius:8px;border:0.5px solid #eee;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.btn-ico:hover{border-color:var(--gold);background:#faf8f3;}
+.btn-ico i{font-size:14px;color:#888;}
+.btn-ico.del:hover{border-color:#ffcdd2;background:#fff5f5;}
+.btn-ico.del i{color:#e57373;}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;}
+.ov.open{display:flex;}
+@media(min-width:500px){.ov{align-items:center;padding:1rem;}}
+.modal{background:#fff;border-radius:var(--radius-lg) var(--radius-lg) 0 0;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:slideUp .3s cubic-bezier(.34,1.2,.64,1);}
+@media(min-width:500px){.modal{border-radius:var(--radius-lg);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.modal-hdr{padding:.875rem 1rem;border-bottom:0.5px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#1a1a1a;}
+.modal-close{background:#f5f5f5;border:none;width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;color:#888;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:1rem;}
+.fg{margin-bottom:.75rem;}
+.flbl{font-size:10px;font-weight:500;color:#aaa;margin-bottom:4px;display:block;letter-spacing:.06em;text-transform:uppercase;}
+.fi{width:100%;padding:9px 12px;font-size:13px;border:0.5px solid #eee;border-radius:var(--radius);color:#1a1a1a;font-family:inherit;transition:border-color .15s;}
+.fi:focus{outline:none;border-color:var(--gold);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.incl-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.incl-inp{display:flex;gap:6px;align-items:center;}
+.incl-inp .fi{flex:1;}
+.btn-rem-incl{width:28px;height:28px;flex-shrink:0;border-radius:50%;border:0.5px solid #eee;background:transparent;cursor:pointer;font-size:14px;color:#aaa;display:flex;align-items:center;justify-content:center;}
+.btn-rem-incl:hover{border-color:#fca5a5;color:#e57373;}
+.btn-add-incl{display:flex;align-items:center;gap:5px;padding:6px 10px;background:transparent;border:0.5px dashed #E5D8B8;border-radius:8px;font-size:12px;color:var(--gold-dark);cursor:pointer;width:100%;justify-content:center;}
+.btn-add-incl:hover{background:#faf8f3;}
+.btn-save{width:100%;padding:12px;background:var(--gold);color:var(--forest);border:none;border-radius:var(--radius);font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:.5rem;transition:opacity .15s;}
+.btn-save:hover{opacity:.9;}
+.cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem;}
+.cat-pill{padding:5px 12px;border-radius:999px;font-size:12px;cursor:pointer;border:0.5px solid #eee;background:#fff;color:#666;transition:all .15s;}
+.cat-pill.sel{background:var(--forest);color:var(--gold);border-color:var(--forest);}
+.eval-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:10px;background:#F8F3FB;color:#7C4DA0;border:0.5px solid #D9C5E8;margin-left:6px;}
+</style>
+</head>
+<body>
+
+<div class="adm-hdr">
+  <div>
+    <div class="adm-hdr-title">Panel de Administración</div>
+    <div class="adm-hdr-sub">Vicelly Hair & Beauty · Servicios</div>
+  </div>
+  <a href="index.html" class="adm-hdr-back"><i class="ti ti-arrow-left"></i> Ver sitio</a>
+</div>
+
+<div class="adm-body">
+  <div id="seccionesServicios"></div>
+  <div style="text-align:center;padding:1rem 0;">
+    <button class="btn-add" onclick="openModal(null)" style="margin:auto;padding:10px 20px;font-size:13px;">
+      <i class="ti ti-plus"></i> Agregar nuevo servicio
+    </button>
+  </div>
+</div>
+
+<!-- MODAL EDITAR/CREAR -->
+<div class="ov" id="ov-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title" id="modal-title">Nuevo servicio</span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const CATS=['Básicos','Tratamientos','Alisados','Color','Extensiones'];
+let SERVICES=[];
+let editId=null;
+
+function loadServices(){
+  const saved=localStorage.getItem('vss_hair_services');
+  if(saved) SERVICES=JSON.parse(saved);
+  else { localStorage.removeItem('vss_hair_services'); location.reload(); }
+}
+
+function saveServices(){
+  localStorage.setItem('vss_hair_services',JSON.stringify(SERVICES));
+}
+
+function renderAdmin(){
+  let html='';
+  CATS.forEach(cat=>{
+    const svcs=SERVICES.filter(s=>s.cat===cat);
+    if(!svcs.length) return;
+    html+=`<div class="adm-sec">
+      <div class="adm-sec-hdr">
+        <span class="adm-sec-title">${cat}</span>
+        <button class="btn-add" onclick="openModal(null,'${cat}')"><i class="ti ti-plus"></i> Agregar</button>
+      </div>`;
+    svcs.forEach(s=>{
+      const precio=s.precioTexto||(s.price>0?'$'+s.price.toFixed(2):'A consultar');
+      html+=`<div class="svc-row">
+        <label class="svc-toggle">
+          <input type="checkbox" ${s.active?'checked':''} onchange="toggleActive('${s.id}',this.checked)"/>
+          <div class="svc-toggle-track"></div>
+          <div class="svc-toggle-thumb"></div>
+        </label>
+        <div class="svc-info">
+          <div class="svc-nm">${s.name}${s.esEval?'<span class="eval-badge"><i class="ti ti-test-pipe" style="font-size:10px;"></i> Evaluación</span>':''}</div>
+          <div class="svc-meta">${precio} · ${s.dur} · ${cat}</div>
+        </div>
+        <div class="svc-actions">
+          <button class="btn-ico" onclick="openModal('${s.id}')" title="Editar"><i class="ti ti-edit"></i></button>
+          <button class="btn-ico del" onclick="eliminar('${s.id}')" title="Eliminar"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('seccionesServicios').innerHTML=html;
+}
+
+function toggleActive(id,val){
+  const s=SERVICES.find(s=>s.id===id);
+  if(s){s.active=val;saveServices();}
+}
+
+function eliminar(id){
+  if(!confirm('¿Eliminar este servicio?')) return;
+  SERVICES=SERVICES.filter(s=>s.id!==id);
+  saveServices(); renderAdmin();
+}
+
+function openModal(id,catDefault='Básicos'){
+  editId=id;
+  const s=id?SERVICES.find(s=>s.id===id):null;
+  const cats=CATS.map(c=>`<div class="cat-pill${(s?s.cat:catDefault)===c?' sel':''}" onclick="selCat(this,'${c}')">${c}</div>`).join('');
+  const incls=s?s.includes:[''];
+  const inclHtml=incls.map((inc,i)=>`<div class="incl-inp" id="incl-${i}">
+    <input class="fi incl-val" value="${inc}" placeholder="Ej: Champú profesional"/>
+    <button class="btn-rem-incl" onclick="remIncl(${i})"><i class="ti ti-x" style="font-size:12px;"></i></button>
+  </div>`).join('');
+
+  document.getElementById('modal-title').textContent=s?'Editar servicio':'Nuevo servicio';
+  document.getElementById('modal-body').innerHTML=`
+    <div class="fg"><label class="flbl">Nombre del servicio</label><input class="fi" id="m-name" value="${s?s.name:''}"/></div>
+    <div class="fg"><label class="flbl">Categoría</label><div class="cats" id="cats-wrap">${cats}</div></div>
+    <div class="frow">
+      <div class="fg"><label class="flbl">Precio ($)</label><input class="fi" id="m-price" type="number" min="0" step="0.01" value="${s?s.price:0}" placeholder="0 = consultar"/></div>
+      <div class="fg"><label class="flbl">Texto de precio</label><input class="fi" id="m-precio-texto" value="${s&&s.precioTexto?s.precioTexto:''}" placeholder="ej: desde $25"/></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label class="flbl">Duración (texto)</label><input class="fi" id="m-dur" value="${s?s.dur:''}"/></div>
+      <div class="fg"><label class="flbl">Duración (minutos)</label><input class="fi" id="m-durmin" type="number" min="15" step="15" value="${s?s.durMin:60}"/></div>
+    </div>
+    <div class="fg"><label class="flbl">Descripción</label><textarea class="fi" id="m-desc" rows="3" style="resize:vertical;">${s?s.desc:''}</textarea></div>
+    <div class="fg">
+      <label class="flbl">Qué incluye</label>
+      <div class="incl-list" id="incl-list">${inclHtml}</div>
+      <button class="btn-add-incl" onclick="addIncl()"><i class="ti ti-plus" style="font-size:12px;"></i> Agregar ítem</button>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#444;margin-bottom:.75rem;cursor:pointer;">
+      <input type="checkbox" id="m-eval" ${s&&s.esEval?'checked':''} style="width:16px;height:16px;accent-color:var(--gold);">
+      Es la Cita de Evaluación (flujo con abono)
+    </label>
+    <button class="btn-save" onclick="guardar()">Guardar cambios</button>`;
+  document.getElementById('ov-modal').classList.add('open');
+}
+
+function selCat(el,cat){
+  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function addIncl(){
+  const list=document.getElementById('incl-list');
+  const i=list.children.length;
+  const div=document.createElement('div');
+  div.className='incl-inp'; div.id='incl-'+i;
+  div.innerHTML=`<input class="fi incl-val" placeholder="Ej: Tratamiento incluido"/><button class="btn-rem-incl" onclick="remIncl(${i})"><i class="ti ti-x" style="font-size:12px;"></i></button>`;
+  list.appendChild(div);
+}
+
+function remIncl(i){
+  const el=document.getElementById('incl-'+i);
+  if(el) el.remove();
+}
+
+function getCatSel(){
+  const sel=document.querySelector('.cat-pill.sel');
+  return sel?sel.textContent:'Básicos';
+}
+
+function guardar(){
+  const nombre=document.getElementById('m-name').value.trim();
+  if(!nombre){alert('El nombre es obligatorio.');return;}
+  const price=parseFloat(document.getElementById('m-price').value)||0;
+  const precioTexto=document.getElementById('m-precio-texto').value.trim();
+  const dur=document.getElementById('m-dur').value.trim();
+  const durMin=parseInt(document.getElementById('m-durmin').value)||60;
+  const desc=document.getElementById('m-desc').value.trim();
+  const esEval=document.getElementById('m-eval').checked;
+  const cat=getCatSel();
+  const includes=Array.from(document.querySelectorAll('.incl-val')).map(el=>el.value.trim()).filter(Boolean);
+
+  if(editId){
+    const idx=SERVICES.findIndex(s=>s.id===editId);
+    if(idx>-1) SERVICES[idx]={...SERVICES[idx],name:nombre,cat,price,precioTexto:precioTexto||null,dur,durMin,desc,includes,esEval};
+  } else {
+    const newId=nombre.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,'').substring(0,16)+'_'+Date.now();
+    SERVICES.push({id:newId,name:nombre,cat,price,precioTexto:precioTexto||null,dur,durMin,active:true,esEval,desc,includes});
+  }
+  saveServices(); closeModal(); renderAdmin();
+}
+
+function closeModal(){document.getElementById('ov-modal').classList.remove('open');}
+
+loadServices();
+renderAdmin();
+</script>
+</body>
+</html>
