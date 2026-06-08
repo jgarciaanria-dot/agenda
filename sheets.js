@@ -3,10 +3,22 @@ const Sheets = {
 
   async guardarCita(cita) {
     try {
-      // Enviamos como GET con datos en base64 — más confiable con Apps Script
-      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(cita))));
-      const url = CONFIG.sheets.scriptUrl + '?action=guardar&data=' + encodeURIComponent(payload);
-      await fetch(url, { method: 'GET', mode: 'no-cors' });
+      const params = new URLSearchParams({
+        action: 'guardar',
+        nombre: cita.nombre || '',
+        telefono: cita.telefono || '',
+        correo: cita.correo || '',
+        servicio: cita.servicio || '',
+        categoria: cita.categoria || '',
+        precioTotal: cita.precioTotal || 0,
+        fecha: cita.fecha || '',
+        hora: cita.hora || '',
+        duracionMin: cita.duracionMin || 60,
+        comprobante: cita.comprobante || 'Sin abono',
+        nota: cita.nota || ''
+      });
+      const url = CONFIG.sheets.scriptUrl + '?' + params.toString();
+      await fetch(url, { mode: 'no-cors' });
     } catch (e) {
       console.error('Error guardando cita:', e);
     }
