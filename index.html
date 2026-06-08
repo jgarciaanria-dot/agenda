@@ -29,17 +29,26 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   padding:2.75rem 1.5rem 2.25rem;text-align:center;position:relative;overflow:hidden;
 }
 .hdr::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,0.18) 0%,transparent 70%);pointer-events:none;z-index:1;}
-.hdr-logo{width:120px;height:120px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;background:transparent;position:relative;z-index:2;animation:pulseGold 3.5s ease-in-out infinite;}
-.hdr-logo img{width:120px;height:120px;object-fit:contain;border-radius:50%;}
-@keyframes pulseGold{0%,100%{filter:drop-shadow(0 0 8px rgba(139,111,62,0.4));}50%{filter:drop-shadow(0 0 22px rgba(139,111,62,0.75));}}
+.hdr-logo{width:130px;height:130px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;background:transparent;position:relative;z-index:2;animation:dropIn 1.1s cubic-bezier(.34,1.56,.64,1) both, pulseGold 3.5s ease-in-out 1.2s infinite;}
+.hdr-logo img{width:130px;height:130px;object-fit:contain;border-radius:50%;}
+@keyframes dropIn{
+  0%{opacity:0;transform:translateY(-70px) scale(0.82);filter:drop-shadow(0 0 0px rgba(201,169,110,0));}
+  65%{opacity:1;transform:translateY(10px) scale(1.05);filter:drop-shadow(0 0 36px rgba(201,169,110,1));}
+  80%{transform:translateY(-5px) scale(0.98);}
+  90%{transform:translateY(3px) scale(1.01);}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:drop-shadow(0 0 18px rgba(201,169,110,0.65));}
+}
+@keyframes pulseGold{0%,100%{filter:drop-shadow(0 0 10px rgba(201,169,110,0.5));}50%{filter:drop-shadow(0 0 28px rgba(201,169,110,0.9));}}
+.hdr-content{animation:fadeInUp .8s ease both;animation-delay:.65s;opacity:0;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 .hdr h1{color:#1a1816;font-size:20px;font-weight:500;letter-spacing:.18em;margin-bottom:10px;position:relative;z-index:2;font-family:'Cormorant Garamond',serif;}
 .hdr-divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 10px;max-width:200px;position:relative;z-index:2;}
-.hdr-divider-line{flex:1;height:0.5px;background:linear-gradient(to right,transparent,var(--gold-dark));}
-.hdr-divider-line.r{background:linear-gradient(to left,transparent,var(--gold-dark));}
-.hdr-divider-diamond{color:var(--gold-dark);font-size:8px;opacity:.9;}
+.hdr-divider-line{flex:1;height:0.5px;background:linear-gradient(to right,transparent,var(--gold));}
+.hdr-divider-line.r{background:linear-gradient(to left,transparent,var(--gold));}
+.hdr-divider-diamond{color:var(--gold);font-size:8px;opacity:1;}
 .hdr p{color:rgba(30,26,22,.55);font-size:11px;letter-spacing:.2em;position:relative;z-index:2;text-transform:uppercase;}
-.hdr-tagline{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:rgba(139,111,62,0.75);margin-top:12px;position:relative;z-index:2;letter-spacing:.02em;}
-.hdr-strip{height:1.5px;background:linear-gradient(to right,transparent 0%,var(--gold) 30%,var(--gold-light) 50%,var(--gold) 70%,transparent 100%);opacity:.7;margin-top:20px;position:relative;z-index:2;}
+.hdr-tagline{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--gold);margin-top:12px;position:relative;z-index:2;letter-spacing:.02em;}
+.hdr-strip{height:2px;background:linear-gradient(to right,transparent 0%,var(--gold) 25%,var(--gold-light) 50%,var(--gold) 75%,transparent 100%);opacity:.9;margin-top:20px;position:relative;z-index:2;}
 
 /* SECCIONES */
 .sec-label{padding:1.5rem 1rem 0.5rem;font-size:11px;font-weight:500;color:var(--charcoal);letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
@@ -220,15 +229,17 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   <div class="hdr-logo">
     <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="Vicelly Sánchez Studio" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#C9A96E;font-size:22px;font-family:Georgia,serif;font-weight:600;\'>VS</span>'"/>
   </div>
-  <h1>VICELLY SÁNCHEZ STUDIO</h1>
-  <div class="hdr-divider">
-    <div class="hdr-divider-line"></div>
-    <span class="hdr-divider-diamond">✦</span>
-    <div class="hdr-divider-line r"></div>
+  <div class="hdr-content">
+    <h1>VICELLY SÁNCHEZ STUDIO</h1>
+    <div class="hdr-divider">
+      <div class="hdr-divider-line"></div>
+      <span class="hdr-divider-diamond">✦</span>
+      <div class="hdr-divider-line r"></div>
+    </div>
+    <p>Hair &amp; Beauty · Panamá</p>
+    <div class="hdr-tagline">Nutrición, brillo y vida para tu cabello.</div>
+    <div class="hdr-strip"></div>
   </div>
-  <p>Hair &amp; Beauty · Panamá</p>
-  <div class="hdr-tagline">Nutrición, brillo y vida para tu cabello.</div>
-  <div class="hdr-strip"></div>
 </div>
 
 <!-- LISTA DE SERVICIOS -->
@@ -285,16 +296,15 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
     <p style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;font-style:italic;color:rgba(255,255,255,.5);">Nutrición, brillo y vida para tu cabello.</p>
   </div>
   <div style="padding:.875rem 1.25rem 0;text-align:center;">
-    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:.875rem;">
-      <div style="text-align:center;">
-        <p style="font-size:10px;color:rgba(201,169,110,.8);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;">Horario</p>
-        <p style="font-size:12px;color:rgba(255,255,255,.75);">Lun – Vie · 8AM – 4PM</p>
-        <p style="font-size:12px;color:rgba(255,255,255,.75);">Sáb · 8AM – 4PM</p>
+    <div style="display:flex;justify-content:center;align-items:flex-start;gap:16px;margin-bottom:.875rem;">
+      <div style="text-align:center;flex:1;">
+        <p style="font-size:10px;color:rgba(201,169,110,.8);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Horario</p>
+        <p style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;">Lun – Vie · 8AM – 4PM<br>Sáb · 8AM – 4PM</p>
       </div>
-      <div style="width:0.5px;background:rgba(201,169,110,.15);"></div>
-      <div style="text-align:center;">
-        <p style="font-size:10px;color:rgba(201,169,110,.8);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;">Ubicación</p>
-        <p style="font-size:12px;color:rgba(255,255,255,.75);">Obarrio · Salón Plaza · Suite 113</p>
+      <div style="width:0.5px;background:rgba(201,169,110,.15);align-self:stretch;"></div>
+      <div style="text-align:center;flex:1;">
+        <p style="font-size:10px;color:rgba(201,169,110,.8);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Ubicación</p>
+        <p style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;">Obarrio<br>Salón Plaza · Suite 113</p>
       </div>
     </div>
     <div style="height:0.5px;background:rgba(201,169,110,.1);margin-bottom:.75rem;"></div>
