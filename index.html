@@ -551,6 +551,13 @@ function genSlots(){
     slots.push({key,lbl});
     m+=30; if(m>=60){m=0;h++;}
   }
+  // Si es hoy, filtrar horas que ya pasaron
+  const now=new Date();
+  const esHoy=selectedDay===now.getDate()&&calM===now.getMonth()&&calY===now.getFullYear();
+  if(esHoy){
+    const nowMin=now.getHours()*60+now.getMinutes();
+    return slots.filter(s=>timeToMin(s.key)>nowMin);
+  }
   return slots;
 }
 
@@ -741,7 +748,7 @@ async function confirmar(dayStr){
   const precio=curSvc.price>0?curSvc.price:0;
   const cita={nombre,telefono:tel,correo,nota,servicio:curSvc.name,categoria:curSvc.cat,
     precioTotal:precio,fecha:dayStr,hora:selTime,duracionMin:curSvc.durMin,
-    comprobante:ref};
+    comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?(curSvc.esEval?'descontable':(curSvc.abonoTipo||'noreembolsable')):''};
   try{await Sheets.guardarCita(cita);}catch(e){console.error(e);}
   await new Promise(r=>setTimeout(r,900));
   const precioStr=precio>0?'$'+precio.toFixed(2):'A consultar';
