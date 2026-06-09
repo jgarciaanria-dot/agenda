@@ -231,11 +231,6 @@ function openModal(id,catDefault='Básicos'){
         </div>
       </div>
     </div>
-
-    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#444;margin-bottom:.75rem;cursor:pointer;">
-      <input type="checkbox" id="m-eval" ${s&&s.esEval?'checked':''} style="width:16px;height:16px;accent-color:var(--gold);">
-      Es la Cita de Evaluación (prueba de mechón incluida)
-    </label>
     <button class="btn-save" onclick="guardar()">Guardar cambios</button>`;
   document.getElementById('ov-modal').classList.add('open');
 }
@@ -276,7 +271,7 @@ function guardar(){
   const dur=document.getElementById('m-dur').value.trim();
   const durMin=parseInt(document.getElementById('m-durmin').value)||60;
   const desc=document.getElementById('m-desc').value.trim();
-  const esEval=document.getElementById('m-eval').checked;
+  const esEval = s ? (s.esEval || false) : false; // preservar esEval existente, no editable
   const requiereAbono=document.getElementById('m-abono').checked;
   const abonoMonto=requiereAbono?parseFloat(document.getElementById('m-abono-monto').value)||10:null;
   const abonoTipo=requiereAbono?document.getElementById('m-abono-tipo').value:'noreembolsable';
