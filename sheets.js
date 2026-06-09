@@ -15,7 +15,9 @@ const Sheets = {
         hora: cita.hora || '',
         duracionMin: cita.duracionMin || 60,
         comprobante: cita.comprobante || 'Sin abono',
-        nota: cita.nota || ''
+        nota: cita.nota || '',
+        abonoMonto: cita.abonoMonto || 0,
+        abonoTipo: cita.abonoTipo || ''
       });
       const url = CONFIG.sheets.scriptUrl + '?' + params.toString();
       await fetch(url, { mode: 'no-cors' });
