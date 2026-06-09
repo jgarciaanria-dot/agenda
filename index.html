@@ -327,9 +327,9 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   </div>
 </footer>
 
-<script src="config.js?v=3"></script>
-<script src="yappy.js?v=3"></script>
-<script src="sheets.js?v=3"></script>
+<script src="config.js?v=4"></script>
+<script src="yappy.js?v=4"></script>
+<script src="sheets.js?v=4"></script>
 <script>
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
@@ -349,9 +349,25 @@ let SERVICES=[];
 
 function loadServices(){
   const saved=localStorage.getItem('vss_hair_services');
-  if(saved){SERVICES=JSON.parse(saved);}
-  else{
-    SERVICES=[
+  if(saved){
+    const parsed=JSON.parse(saved);
+    // Si los servicios no tienen el campo requiereAbono, forzar recarga con defaults
+    const necesitaActualizar = parsed.some(s => s.requiereAbono === undefined);
+    if(necesitaActualizar){
+      localStorage.removeItem('vss_hair_services');
+      SERVICES=getDefaultServices();
+      localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
+    } else {
+      SERVICES=parsed;
+    }
+  } else {
+    SERVICES=getDefaultServices();
+    localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
+  }
+}
+
+function getDefaultServices(){
+  return [
       {id:'eval',name:'Cita de Evaluación',cat:'Básicos',price:10,dur:'30 min',durMin:30,active:true,esEval:true,
         desc:'El punto de partida para cualquier servicio de color, alisado o tratamiento intensivo. Analizamos tu historial capilar, tratamientos químicos previos, tipo y textura para diseñar el plan perfecto para ti.',
         includes:['Análisis de historial capilar','Diagnóstico de tipo y textura','Revisión de tratamientos previos','Plan de servicio personalizado','Recomendación de productos','Prueba de mechón']},
@@ -403,8 +419,7 @@ function loadServices(){
       {id:'retiromantenimiento',name:'Retiro y Mantenimiento',cat:'Extensiones',price:0,precioTexto:'consultar',dur:'2–3 hrs',durMin:150,active:true,esEval:false,
         desc:'Servicio de retiro cuidadoso de extensiones + lavado especial + blower con protectores de calor. El tiempo varía según la cantidad de paquetes. No aplica abono para este servicio.',
         includes:['Retiro cuidadoso de extensiones','Lavado especial post-retiro','Mascarilla nutritiva','Blower con protectores de calor','Asesoría capilar post-extensiones']},
-    ];
-  }
+    ].map(s => ({requiereAbono: false, abonoMonto: null, abonoTipo: null, ...s}));
 }
 
 let curSvc=null,calY,calM,selectedDay=null,selTime=null,timerInt=null,timerSecs=300;
