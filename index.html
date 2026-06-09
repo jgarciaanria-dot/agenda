@@ -613,10 +613,16 @@ function goForm(){
   timerSecs=300;
   const precio=curSvc.precioTexto||(curSvc.price>0?'$'+curSvc.price.toFixed(2):'A consultar');
 
+  // Determinar si requiere abono: esEval O requiereAbono configurado en admin
+  const tieneAbono = curSvc.esEval || curSvc.requiereAbono;
+  const montoAbono = curSvc.esEval ? 10 : (curSvc.abonoMonto || 10);
+  const tipoAbono = curSvc.esEval ? 'descontable' : (curSvc.abonoTipo || 'noreembolsable');
+  const textoTipo = tipoAbono === 'descontable' ? 'descontable del servicio' : 'no reembolsable';
+
   let pagoSection='';
-  if(curSvc.esEval){
+  if(tieneAbono){
     pagoSection=`
-      <div class="step-row" style="margin-top:1rem;"><span class="stepn">2</span><span class="step-lbl">Abono $10.00 — descontable del servicio</span></div>
+      <div class="step-row" style="margin-top:1rem;"><span class="stepn">2</span><span class="step-lbl">Abono $${montoAbono.toFixed(2)} — ${textoTipo}</span></div>
       <div class="timer-box" id="timerBox">
         <div class="timer-val" id="timerVal">5:00</div>
         <div class="timer-lbl">Tienes <strong>5 minutos</strong> para completar el pago.<br>Si no se confirma, el cupo se libera.</div>
@@ -624,17 +630,17 @@ function goForm(){
       <div class="pay-opt sel" id="opt-yappy" onclick="selPago('yappy')">
         <div><span class="pay-badge badge-yappy">Yappy</span><span class="pay-opt-title">Pagar con Yappy</span></div>
         <div class="pay-opt-sub">Pago rápido y seguro desde tu app Yappy.</div>
-        <div class="pay-detail">Haz clic en el botón azul, ingresa tu número Yappy y confirma el pago de <strong>$10.00</strong>. Copia el número de comprobante aquí.</div>
+        <div class="pay-detail">Haz clic en el botón azul, ingresa tu número Yappy y confirma el pago de <strong>$${montoAbono.toFixed(2)}</strong>. Copia el número de comprobante aquí.</div>
       </div>
       <div class="pay-opt" id="opt-bank" onclick="selPago('bank')">
         <div><span class="pay-badge badge-bank">Transferencia</span><span class="pay-opt-title">Banco General</span></div>
         <div class="pay-opt-sub">Transferencia bancaria a cuenta de ahorros.</div>
-        <div class="pay-detail"><strong>Banco:</strong> Banco General<br><strong>Tipo:</strong> Ahorros<br><strong>Cuenta:</strong> 04-19-99-989328-0<br><strong>Titular:</strong> Vicelly Sanchez Studio<br><strong>Monto:</strong> $10.00<br><span style="color:#e74c3c;font-size:11px;">Incluye tu nombre en la referencia</span></div>
+        <div class="pay-detail"><strong>Banco:</strong> Banco General<br><strong>Tipo:</strong> Ahorros<br><strong>Cuenta:</strong> 04-19-99-989328-0<br><strong>Titular:</strong> Vicelly Sanchez Studio<br><strong>Monto:</strong> $${montoAbono.toFixed(2)}<br><span style="color:#e74c3c;font-size:11px;">Incluye tu nombre en la referencia</span></div>
       </div>
       <div class="fg" style="margin-top:.875rem;"><label class="flbl">N° de comprobante / referencia</label><input class="fi" id="fref" placeholder="Ej: YAPPY-001 o número de transacción"/></div>
       <a id="btnYappy" href="${YAPPY.link}" target="_blank" class="btn-yappy" onclick="mostrarMensajeRegreso()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5" fill="rgba(255,255,255,0.5)"/></svg>
-        Pagar $10.00 con Yappy
+        Pagar $${montoAbono.toFixed(2)} con Yappy
       </a>
       <div id="msgRegreso" style="display:none;background:#e8f7fd;border:0.5px solid #1AACE3;border-radius:var(--radius);padding:.875rem;margin-bottom:8px;font-size:12px;color:#0f6e8a;line-height:1.6;">
         ¿Ya pagaste? Yappy no regresa automáticamente. Vuelve aquí, copia el número de comprobante e ingrésalo arriba.
@@ -667,7 +673,7 @@ function goForm(){
     ${pagoSection}
     <button class="btn-main" id="btnConfirmar" onclick="confirmar('${dayStr}')">Confirmar mi cita</button>`;
 
-  if(curSvc.esEval) startTimer();
+  if(tieneAbono) startTimer();
   openOv('ov-form');
 }
 
