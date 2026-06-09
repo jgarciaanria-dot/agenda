@@ -740,6 +740,8 @@ async function confirmar(dayStr){
   const ref=refEl?refEl.value.trim():'Sin abono';
   const tieneAbono = curSvc.esEval || curSvc.requiereAbono;
   const montoAbono = curSvc.esEval ? 10 : (curSvc.abonoMonto || 10);
+  const tipoAbono = curSvc.esEval ? 'descontable' : (curSvc.abonoTipo || 'noreembolsable');
+  const textoTipo = tipoAbono === 'descontable' ? 'descontable del servicio' : 'no reembolsable';
   if(!nombre||!tel){alert('Por favor completa tu nombre y WhatsApp.');return;}
   if(tieneAbono&&!ref){alert('Por favor ingresa el número de comprobante del pago.');return;}
   if(timerInt)clearInterval(timerInt);
@@ -748,13 +750,14 @@ async function confirmar(dayStr){
   const precio=curSvc.price>0?curSvc.price:0;
   const cita={nombre,telefono:tel,correo,nota,servicio:curSvc.name,categoria:curSvc.cat,
     precioTotal:precio,fecha:dayStr,hora:selTime,duracionMin:curSvc.durMin,
-    comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?(curSvc.esEval?'descontable':(curSvc.abonoTipo||'noreembolsable')):''};
+    comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?tipoAbono:''};
   try{await Sheets.guardarCita(cita);}catch(e){console.error(e);}
   await new Promise(r=>setTimeout(r,900));
   const precioStr=precio>0?'$'+precio.toFixed(2):'A consultar';
-  const msg=`Nueva cita — Vicelly Hair & Beauty\n\nCliente: ${nombre}\nTel: ${tel}\nServicio: ${curSvc.name}\nFecha: ${dayStr} · ${selTime}\nDuración: ~${curSvc.durMin} min\nPrecio: ${precioStr}${tieneAbono?'\nAbono: $'+montoAbono.toFixed(2)+'\nComprobante: '+ref:''}${nota?'\nNota: '+nota:''}`;
+  const restante = tieneAbono && tipoAbono==='descontable' ? Math.max(0, precio - montoAbono).toFixed(2) : precio.toFixed(2);
+  const msg=`Nueva cita — Vicelly Hair & Beauty\n\nCliente: ${nombre}\nTel: ${tel}\nServicio: ${curSvc.name}\nFecha: ${dayStr} · ${selTime}\nDuración: ~${curSvc.durMin} min\nPrecio total: ${precioStr}${tieneAbono?'\nAbono pagado: $'+montoAbono.toFixed(2)+' ('+textoTipo+')'+'\nComprobante: '+ref+'\nResta pagar el día de la cita: $'+restante:''}${nota?'\nNota: '+nota:''}`;
   window.open(`https://wa.me/50765224575?text=${encodeURIComponent(msg)}`,'_blank');
-  const abonoLine=tieneAbono?`<strong>Abono pagado:</strong> $${montoAbono.toFixed(2)}${curSvc.abonoTipo==='descontable'?' (descontable)':' (no reembolsable)'}<br><strong>Comprobante:</strong> ${ref}<br>`:'';
+  const abonoLine=tieneAbono?`<strong>Abono pagado:</strong> $${montoAbono.toFixed(2)} (${textoTipo})<br><strong>Comprobante:</strong> ${ref}<br><strong>Resta pagar el día de la cita:</strong> $${restante}<br>`:'';
   document.getElementById('form-body').innerHTML=`
     <div class="success-wrap">
       <div class="s-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
