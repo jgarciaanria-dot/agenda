@@ -271,7 +271,7 @@ function guardar(){
   const dur=document.getElementById('m-dur').value.trim();
   const durMin=parseInt(document.getElementById('m-durmin').value)||60;
   const desc=document.getElementById('m-desc').value.trim();
-  const esEval = s ? (s.esEval || false) : false; // preservar esEval existente, no editable
+  const esEval = editId ? (SERVICES.find(s=>s.id===editId)?.esEval || false) : false;
   const requiereAbono=document.getElementById('m-abono').checked;
   const abonoMonto=requiereAbono?parseFloat(document.getElementById('m-abono-monto').value)||10:null;
   const abonoTipo=requiereAbono?document.getElementById('m-abono-tipo').value:'noreembolsable';
