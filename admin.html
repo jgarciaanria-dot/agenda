@@ -212,12 +212,36 @@ function openModal(id,catDefault='Básicos'){
       <div class="incl-list" id="incl-list">${inclHtml}</div>
       <button class="btn-add-incl" onclick="addIncl()"><i class="ti ti-plus" style="font-size:12px;"></i> Agregar ítem</button>
     </div>
+
+    <div style="background:#F9F7F3;border:0.5px solid #E8DFC8;border-radius:10px;padding:14px;margin-bottom:.75rem;">
+      <p style="font-size:10px;font-weight:500;color:var(--gold-dark);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">Configuración de abono</p>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#444;margin-bottom:10px;cursor:pointer;">
+        <input type="checkbox" id="m-abono" ${s&&s.requiereAbono?'checked':''} style="width:16px;height:16px;accent-color:var(--gold);" onchange="toggleAbono(this.checked)">
+        Requiere abono para confirmar cita
+      </label>
+      <div id="abono-fields" style="display:${s&&s.requiereAbono?'block':'none'}">
+        <div class="frow">
+          <div class="fg"><label class="flbl">Monto del abono ($)</label><input class="fi" id="m-abono-monto" type="number" min="1" step="0.01" value="${s&&s.abonoMonto?s.abonoMonto:10}" placeholder="10.00"/></div>
+          <div class="fg"><label class="flbl">Tipo de abono</label>
+            <select class="fi" id="m-abono-tipo">
+              <option value="descontable" ${s&&s.abonoTipo==='descontable'?'selected':''}>Descontable del servicio</option>
+              <option value="noreembolsable" ${s&&s.abonoTipo==='noreembolsable'?'selected':''}>No reembolsable</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#444;margin-bottom:.75rem;cursor:pointer;">
       <input type="checkbox" id="m-eval" ${s&&s.esEval?'checked':''} style="width:16px;height:16px;accent-color:var(--gold);">
-      Es la Cita de Evaluación (flujo con abono)
+      Es la Cita de Evaluación (prueba de mechón incluida)
     </label>
     <button class="btn-save" onclick="guardar()">Guardar cambios</button>`;
   document.getElementById('ov-modal').classList.add('open');
+}
+
+function toggleAbono(val){
+  document.getElementById('abono-fields').style.display=val?'block':'none';
 }
 
 function selCat(el,cat){
@@ -253,15 +277,18 @@ function guardar(){
   const durMin=parseInt(document.getElementById('m-durmin').value)||60;
   const desc=document.getElementById('m-desc').value.trim();
   const esEval=document.getElementById('m-eval').checked;
+  const requiereAbono=document.getElementById('m-abono').checked;
+  const abonoMonto=requiereAbono?parseFloat(document.getElementById('m-abono-monto').value)||10:null;
+  const abonoTipo=requiereAbono?document.getElementById('m-abono-tipo').value:'noreembolsable';
   const cat=getCatSel();
   const includes=Array.from(document.querySelectorAll('.incl-val')).map(el=>el.value.trim()).filter(Boolean);
 
   if(editId){
     const idx=SERVICES.findIndex(s=>s.id===editId);
-    if(idx>-1) SERVICES[idx]={...SERVICES[idx],name:nombre,cat,price,precioTexto:precioTexto||null,dur,durMin,desc,includes,esEval};
+    if(idx>-1) SERVICES[idx]={...SERVICES[idx],name:nombre,cat,price,precioTexto:precioTexto||null,dur,durMin,desc,includes,esEval,requiereAbono,abonoMonto,abonoTipo};
   } else {
     const newId=nombre.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,'').substring(0,16)+'_'+Date.now();
-    SERVICES.push({id:newId,name:nombre,cat,price,precioTexto:precioTexto||null,dur,durMin,active:true,esEval,desc,includes});
+    SERVICES.push({id:newId,name:nombre,cat,price,precioTexto:precioTexto||null,dur,durMin,active:true,esEval,requiereAbono,abonoMonto,abonoTipo,desc,includes});
   }
   saveServices(); closeModal(); renderAdmin();
 }
