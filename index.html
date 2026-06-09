@@ -472,6 +472,11 @@ function openDetail(id){
       <p class="mechon-text">Realizamos una prueba de mechón para verificar la compatibilidad del color o químico con tu cabello antes de proceder. Esencial para garantizar resultados seguros y predecibles.</p>
     </div>
     <div class="note-box"><i class="ti ti-info-circle" aria-hidden="true"></i><span>El abono de <strong>$10.00</strong> se descuenta del servicio que elijas realizar. Si decides no continuar, no hay cobro adicional.</span></div>`;
+  } else if(curSvc.requiereAbono){
+    const montoAb=(curSvc.abonoMonto||10).toFixed(2);
+    const tipoAb=curSvc.abonoTipo==='descontable'?'descontable del servicio':'no reembolsable';
+    extraBox=`<div class="note-box-warn"><i class="ti ti-info-circle" aria-hidden="true"></i><span>Este servicio requiere un abono de <strong>$${montoAb}</strong> (${tipoAb}) para confirmar la cita.</span></div>
+    <div class="note-box-warn"><i class="ti ti-clock" aria-hidden="true"></i><span>Política de cancelación: avisa con al menos <strong>24 horas</strong> de anticipación por WhatsApp.</span></div>`;
   } else {
     extraBox=`<div class="note-box"><i class="ti ti-info-circle" aria-hidden="true"></i><span>Este servicio no requiere abono. El pago se realiza el día de tu cita.</span></div>
     <div class="note-box-warn"><i class="ti ti-clock" aria-hidden="true"></i><span>Política de cancelación: avisa con al menos <strong>24 horas</strong> de anticipación por WhatsApp.</span></div>`;
@@ -726,8 +731,10 @@ async function confirmar(dayStr){
   const nota=document.getElementById('fnote')?document.getElementById('fnote').value.trim():'';
   const refEl=document.getElementById('fref');
   const ref=refEl?refEl.value.trim():'Sin abono';
+  const tieneAbono = curSvc.esEval || curSvc.requiereAbono;
+  const montoAbono = curSvc.esEval ? 10 : (curSvc.abonoMonto || 10);
   if(!nombre||!tel){alert('Por favor completa tu nombre y WhatsApp.');return;}
-  if(curSvc.esEval&&!ref){alert('Por favor ingresa el número de comprobante del pago.');return;}
+  if(tieneAbono&&!ref){alert('Por favor ingresa el número de comprobante del pago.');return;}
   if(timerInt)clearInterval(timerInt);
   const btnC=document.getElementById('btnConfirmar');
   if(btnC){btnC.disabled=true;btnC.textContent='Confirmando...';}
@@ -738,9 +745,9 @@ async function confirmar(dayStr){
   try{await Sheets.guardarCita(cita);}catch(e){console.error(e);}
   await new Promise(r=>setTimeout(r,900));
   const precioStr=precio>0?'$'+precio.toFixed(2):'A consultar';
-  const msg=`Nueva cita — Vicelly Hair & Beauty\n\nCliente: ${nombre}\nTel: ${tel}\nServicio: ${curSvc.name}\nFecha: ${dayStr} · ${selTime}\nDuración: ~${curSvc.durMin} min\nPrecio: ${precioStr}${curSvc.esEval?'\nAbono: $10.00\nComprobante: '+ref:''}${nota?'\nNota: '+nota:''}`;
+  const msg=`Nueva cita — Vicelly Hair & Beauty\n\nCliente: ${nombre}\nTel: ${tel}\nServicio: ${curSvc.name}\nFecha: ${dayStr} · ${selTime}\nDuración: ~${curSvc.durMin} min\nPrecio: ${precioStr}${tieneAbono?'\nAbono: $'+montoAbono.toFixed(2)+'\nComprobante: '+ref:''}${nota?'\nNota: '+nota:''}`;
   window.open(`https://wa.me/50765224575?text=${encodeURIComponent(msg)}`,'_blank');
-  const abonoLine=curSvc.esEval?`<strong>Abono pagado:</strong> $10.00 (descontable)<br><strong>Comprobante:</strong> ${ref}<br>`:'';
+  const abonoLine=tieneAbono?`<strong>Abono pagado:</strong> $${montoAbono.toFixed(2)}${curSvc.abonoTipo==='descontable'?' (descontable)':' (no reembolsable)'}<br><strong>Comprobante:</strong> ${ref}<br>`:'';
   document.getElementById('form-body').innerHTML=`
     <div class="success-wrap">
       <div class="s-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
