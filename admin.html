@@ -110,8 +110,30 @@ let editId=null;
 
 function loadServices(){
   const saved=localStorage.getItem('vss_hair_services');
-  if(saved) SERVICES=JSON.parse(saved);
-  else { localStorage.removeItem('vss_hair_services'); location.reload(); }
+  if(saved){ SERVICES=JSON.parse(saved); }
+  else { SERVICES=getDefaultServices(); saveServices(); }
+}
+
+function getDefaultServices(){
+  return [
+    {id:'eval',name:'Cita de Evaluación',cat:'Básicos',price:10,dur:'30 min',durMin:30,active:true,esEval:true,desc:'El punto de partida para cualquier servicio de color, alisado o tratamiento intensivo. Analizamos tu historial capilar, tratamientos químicos previos, tipo y textura para diseñar el plan perfecto para ti.',includes:['Análisis de historial capilar','Diagnóstico de tipo y textura','Revisión de tratamientos previos','Plan de servicio personalizado','Recomendación de productos','Prueba de mechón']},
+    {id:'lavblower',name:'Lavado y Blower',cat:'Básicos',price:25,precioTexto:'desde $25',dur:'40–60 min',durMin:60,active:true,esEval:false,desc:'Limpieza profunda con productos de marcas profesionales Truss, Wella y L\'Oréal, adaptados al tipo y necesidad de tu cabello.',includes:['Lavado con champú profesional','Acondicionador o mascarilla','Protector térmico','Blower con cepillo profesional','Acabado con brillo']},
+    {id:'lavcrteblower',name:'Lavado, Corte y Blower',cat:'Básicos',price:65,precioTexto:'desde $65',dur:'~90 min',durMin:90,active:true,esEval:false,desc:'Lavado técnico con productos de alta gama, corte personalizado y blower profesional.',includes:['Lavado técnico con marca profesional','Asesoría de corte personalizado','Corte a tu preferencia','Protector térmico','Blower con cepillo redondo']},
+    {id:'peinpro',name:'Peinado Profesional',cat:'Básicos',price:0,precioTexto:'consultar',dur:'según estilo',durMin:60,active:true,esEval:false,desc:'Peinado social elegante ideal para salidas y ocasiones especiales.',includes:['Secado y preparación de cabello','Peinado a elección','Fijador profesional','Acabado duradero']},
+    {id:'peinglam',name:'Peinado Glam & Evento',cat:'Básicos',price:0,precioTexto:'consultar',dur:'~60 min',durMin:60,active:true,esEval:false,desc:'Look sofisticado para eventos, celebraciones y sesiones de fotos.',includes:['Secado profesional','Peinado de evento o glam','Fijador de larga duración','Retoque y detalle final']},
+    {id:'fastrepair',name:'Fast Repair Truss',cat:'Tratamientos',price:65,dur:'60–90 min',durMin:90,active:true,esEval:false,desc:'Tratamiento de hidratación y nutrición intensiva en 4 pasos.',includes:['Champú Fast Repair','Mascarilla Net Mask','Cera vegana Infusión','Sellado con calor','Blower con protectores']},
+    {id:'trussinfusion',name:'Recuperación Truss Infusión',cat:'Tratamientos',price:0,precioTexto:'consultar',dur:'~2 hrs',durMin:120,active:true,esEval:false,desc:'Cera vegana + Fast Repair + Net Mask para cabello muy dañado.',includes:['Cera vegana Infusión','Fast Repair 3 productos','Mascarilla reparadora Net Mask','Blower con protectores de calor']},
+    {id:'ultimatewella',name:'Ultimate Repair Wella',cat:'Tratamientos',price:0,precioTexto:'consultar',dur:'consultar',durMin:90,active:true,esEval:false,desc:'Fórmula vegana que repara y reconstruye la fibra capilar.',includes:['Diagnóstico capilar previo','Aplicación Ultimate Repair','Sellado de cutícula','Acabado suave y brillante']},
+    {id:'celulasmadre',name:'Células Madre',cat:'Tratamientos',price:0,precioTexto:'consultar',dur:'consultar',durMin:90,active:true,esEval:false,desc:'Regenera, nutre y fortalece el cabello dañado desde la raíz.',includes:['Champú de preparación','Aplicación de células madre','Masaje capilar activador','Blower y acabado final']},
+    {id:'combocm',name:'Combo Células Madre + Rubber Gel',cat:'Tratamientos',price:75,dur:'consultar',durMin:120,active:true,esEval:false,desc:'Brillo, suavidad y nutrición — cabello y manos en una sola sesión.',includes:['Tratamiento Células Madre completo','Rubber Gel en manos','Nutrición con fórmula vegana']},
+    {id:'highliss',name:'High Liss Orgánico Truss',cat:'Alisados',price:0,precioTexto:'consultar',dur:'3–3.5 hrs',durMin:210,active:true,esEval:false,desc:'Control de frizz y volumen sin alisar al 100%.',includes:['Lavado preparatorio','Aplicación High Liss Truss','Plancha y sellado','Blower con protectores']},
+    {id:'ybera',name:'Ybera Alisado Orgánico',cat:'Alisados',price:120,precioTexto:'desde $120',dur:'consultar',durMin:180,active:true,esEval:false,desc:'Alisado orgánico por onza. Requiere evaluación previa.',includes:['Evaluación previa requerida','Lavado de preparación','Aplicación Ybera por zonas','Plancha y sellado']},
+    {id:'retoque',name:'Retoque de Raíz',cat:'Color',price:0,precioTexto:'consultar',dur:'consultar',durMin:90,active:true,esEval:false,desc:'Aplicación precisa de tinte en raíces.',includes:['Lavado de equilibrio de pH','Aplicación de tinte en raíces','Enjuague y tratamiento post-color','Blower y acabado final']},
+    {id:'colorglobal',name:'Color Global',cat:'Color',price:0,precioTexto:'consultar',dur:'4–5 hrs',durMin:270,active:true,esEval:false,desc:'Cambio o refuerzo de tono completo con tratamientos incluidos.',includes:['Consulta de color previa','Aplicación de color completo','Tratamiento post-color','Blower profesional final']},
+    {id:'balayage',name:'Balayage',cat:'Color',price:0,precioTexto:'consultar',dur:'consultar',durMin:180,active:true,esEval:false,desc:'Iluminación a mano libre. Requiere cita de evaluación previa.',includes:['Cita de evaluación previa obligatoria','Preparación capilar','Técnica balayage a mano libre','Blower y acabado final']},
+    {id:'instexten',name:'Instalación de Extensiones',cat:'Extensiones',price:0,precioTexto:'consultar',dur:'variable',durMin:120,active:true,esEval:false,desc:'Instalación profesional. Tiempo según cantidad de paquetes.',includes:['Consulta de cantidad y método','Lavado especial pre-instalación','Instalación profesional','Blower con protectores de calor']},
+    {id:'retiromantenimiento',name:'Retiro y Mantenimiento',cat:'Extensiones',price:0,precioTexto:'consultar',dur:'2–3 hrs',durMin:150,active:true,esEval:false,desc:'Retiro cuidadoso + lavado especial + blower con protectores.',includes:['Retiro cuidadoso de extensiones','Lavado especial post-retiro','Mascarilla nutritiva','Blower con protectores de calor']},
+  ];
 }
 
 function saveServices(){
