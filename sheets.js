@@ -36,5 +36,26 @@ const Sheets = {
       console.error('Error consultando horas:', e);
       return [];
     }
+  },
+
+  async getServicios() {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=getServicios';
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.servicios || [];
+    } catch (e) {
+      console.error('Error cargando servicios:', e);
+      return [];
+    }
+  },
+
+  async guardarServicios(servicios) {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=guardarServicios&servicios=' + encodeURIComponent(JSON.stringify(servicios));
+      await fetch(url, { mode: 'no-cors' });
+    } catch (e) {
+      console.error('Error guardando servicios:', e);
+    }
   }
 };
