@@ -40,7 +40,7 @@ const Sheets = {
 
   async getServicios() {
     try {
-      const url = CONFIG.sheets.scriptUrl + '?action=getServicios';
+      const url = CONFIG.sheets.scriptUrl + '?action=getServicios&_=' + Date.now();
       const res = await fetch(url);
       const data = await res.json();
       return data.servicios || [];
