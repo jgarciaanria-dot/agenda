@@ -352,19 +352,17 @@ async function loadServices(){
     const servicios = await Sheets.getServicios();
     if(servicios && servicios.length > 0){
       SERVICES = servicios;
-      localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
       return;
     }
   } catch(e) {
     console.log('Fallback a localStorage:', e);
   }
-  // Fallback: localStorage o defaults
+  // Fallback solo si Sheets falla
   const saved = localStorage.getItem('vss_hair_services');
   if(saved){
     SERVICES = JSON.parse(saved);
   } else {
     SERVICES = getDefaultServices();
-    localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
   }
 }
 
