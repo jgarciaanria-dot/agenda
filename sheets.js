@@ -17,7 +17,8 @@ const Sheets = {
         comprobante: cita.comprobante || 'Sin abono',
         nota: cita.nota || '',
         abonoMonto: cita.abonoMonto || 0,
-        abonoTipo: cita.abonoTipo || ''
+        abonoTipo: cita.abonoTipo || '',
+        metodoPago: cita.metodoPago || ''
       });
       const url = CONFIG.sheets.scriptUrl + '?' + params.toString();
       await fetch(url, { mode: 'no-cors' });
