@@ -347,21 +347,23 @@ const SVC_ICONS={
 
 let SERVICES=[];
 
-function loadServices(){
-  const saved=localStorage.getItem('vss_hair_services');
-  if(saved){
-    const parsed=JSON.parse(saved);
-    // Si los servicios no tienen el campo requiereAbono, forzar recarga con defaults
-    const necesitaActualizar = parsed.some(s => s.requiereAbono === undefined);
-    if(necesitaActualizar){
-      localStorage.removeItem('vss_hair_services');
-      SERVICES=getDefaultServices();
+async function loadServices(){
+  try {
+    const servicios = await Sheets.getServicios();
+    if(servicios && servicios.length > 0){
+      SERVICES = servicios;
       localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
-    } else {
-      SERVICES=parsed;
+      return;
     }
+  } catch(e) {
+    console.log('Fallback a localStorage:', e);
+  }
+  // Fallback: localStorage o defaults
+  const saved = localStorage.getItem('vss_hair_services');
+  if(saved){
+    SERVICES = JSON.parse(saved);
   } else {
-    SERVICES=getDefaultServices();
+    SERVICES = getDefaultServices();
     localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
   }
 }
@@ -800,8 +802,9 @@ function closeOv(id){
   if(id==='ov-form'&&timerInt)clearInterval(timerInt);
 }
 
-loadServices();
-renderServices();
+loadServices().then(() => {
+  renderServices();
+});
 try{Sheets.initSheet();}catch(e){}
 
 // Ocultar botón WA cuando el footer es visible
