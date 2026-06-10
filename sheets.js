@@ -52,8 +52,12 @@ const Sheets = {
 
   async guardarServicios(servicios) {
     try {
-      const url = CONFIG.sheets.scriptUrl + '?action=guardarServicios&servicios=' + encodeURIComponent(JSON.stringify(servicios));
-      await fetch(url, { mode: 'no-cors' });
+      await fetch(CONFIG.sheets.scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'guardarServicios', servicios: JSON.stringify(servicios)})
+      });
     } catch (e) {
       console.error('Error guardando servicios:', e);
     }
