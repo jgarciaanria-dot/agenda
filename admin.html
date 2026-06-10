@@ -137,10 +137,13 @@ function getDefaultServices(){
 }
 
 function saveServices(){
-  localStorage.setItem('vss_hair_services',JSON.stringify(SERVICES));
-  // Guardar en Sheets para que todas las clientas vean los cambios
-  const url = CONFIG.sheets.scriptUrl + '?action=guardarServicios&servicios=' + encodeURIComponent(JSON.stringify(SERVICES));
-  fetch(url, {mode:'no-cors'}).catch(e => console.error('Error guardando en Sheets:', e));
+  localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
+  fetch(CONFIG.sheets.scriptUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({action: 'guardarServicios', servicios: JSON.stringify(SERVICES)})
+  }).catch(e => console.error('Error guardando en Sheets:', e));
 }
 
 function renderAdmin(){
