@@ -180,9 +180,10 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .cd.emp,.cd.pst{color:#ddd;cursor:default;}
 .cd.dom{color:#e0c0c0;cursor:default;}
 .time-g{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:.875rem;}
-.ts{border:0.5px solid #E5D8B8;border-radius:8px;padding:9px 3px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;}
+.ts{border:0.5px solid #E5D8B8;border-radius:8px;padding:9px 3px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;position:relative;}
 .ts:hover:not(.tkn){border-color:var(--gold);color:var(--gold-dark);}
-.ts.sel{background:var(--gold);color:white;border-color:var(--gold);font-weight:600;}
+.ts.sel{border:1.5px solid #C9A96E;color:#7A5C28;font-weight:600;background:#FBF7EF;}
+.ts.sel::after{content:'';position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:#C9A96E;}
 .ts.tkn{opacity:.25;cursor:default;}
 
 /* FORM */
@@ -768,29 +769,30 @@ async function confirmar(dayStr){
   const precio=curSvc.price>0?curSvc.price:0;
   const cita={nombre,telefono:tel,correo,nota,servicio:curSvc.name,categoria:curSvc.cat,
     precioTotal:precio,fecha:dayStr,hora:selTime,duracionMin:curSvc.durMin,
-    comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?tipoAbono:''};
+    comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?tipoAbono:'',
+    metodoPago:tieneAbono?pagoTipo:''};
   try{await Sheets.guardarCita(cita);}catch(e){console.error(e);}
   await new Promise(r=>setTimeout(r,900));
   const precioStr=precio>0?'$'+precio.toFixed(2):'A consultar';
   const restante = tieneAbono && tipoAbono==='descontable' ? Math.max(0, precio - montoAbono).toFixed(2) : precio.toFixed(2);
   const msg=`Nueva cita — Vicelly Hair & Beauty\n\nCliente: ${nombre}\nTel: ${tel}\nServicio: ${curSvc.name}\nFecha: ${dayStr} · ${selTime}\nDuración: ~${curSvc.durMin} min\nPrecio total: ${precioStr}${tieneAbono?'\nAbono pagado: $'+montoAbono.toFixed(2)+' ('+textoTipo+')'+'\nComprobante: '+ref+'\nMonto a cancelar el día de la cita: $'+restante:''}${nota?'\nNota: '+nota:''}`;
   window.open(`https://wa.me/50765224575?text=${encodeURIComponent(msg)}`,'_blank');
-  const abonoLine=tieneAbono?`<strong>Abono pagado:</strong> <span style="color:#E8A830;font-weight:700;">$${montoAbono.toFixed(2)}</span> (${textoTipo})<br><strong>Comprobante:</strong> ${ref}<br><strong>Monto a cancelar el día de la cita:</strong> <span style="color:#E8A830;font-weight:700;">$${restante}</span><br>`:'';
+  const abonoLine=tieneAbono?`<strong>Abono pagado:</strong> <span style="color:#4CAF50;font-weight:600;">$${montoAbono.toFixed(2)}</span> (${textoTipo})<br><strong>Comprobante:</strong> ${ref}<br><strong>Monto a cancelar el día de la cita:</strong> <span style="color:#D95F2B;font-weight:600;">$${restante}</span><br>`:'';
   document.getElementById('form-body').innerHTML=`
     <div class="success-wrap">
       <div class="s-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
-      <div class="s-title">¡Cita confirmada!</div>
-      <div class="s-sub">Gracias <strong>${nombre}</strong>, tu cupo está separado.<br>Vicelly te confirmará por WhatsApp.</div>
+      <div class="s-title">¡Cita reservada!</div>
+      <div class="s-sub">Pronto nos pondremos en contacto contigo para confirmar los detalles.</div>
       <div class="s-detail">
         <strong>Servicio:</strong> ${curSvc.name}<br>
         <strong>Fecha:</strong> ${dayStr}<br>
         <strong>Hora:</strong> ${selTime}<br>
         <strong>Duración aprox.:</strong> ${curSvc.dur}<br>
-        <strong>Precio total:</strong> <span style="color:#E8A830;font-weight:700;">${precioStr}</span><br>
+        <strong>Precio total:</strong> <span style="color:#D95F2B;font-weight:600;">${precioStr}</span><br>
         ${abonoLine}
       </div>
       <p style="font-size:11px;color:#aaa;margin-bottom:1rem;">Recuerda: cancelaciones con menos de 24 horas de anticipación no tienen reembolso del abono.</p>
-      <button class="btn-main" onclick="closeOv('ov-form')">Listo</button>
+      <button class="btn-main" style="background:#2E2B2B;color:#C9A96E;font-family:'Cormorant Garamond',serif;" onclick="closeOv('ov-form')">Listo</button>
     </div>`;
 }
 
