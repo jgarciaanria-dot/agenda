@@ -230,7 +230,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .s-title{font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:6px;font-family:'Cormorant Garamond',serif;}
 .s-sub{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:1rem;}
 .s-detail{background:#FAF9F7;border:0.5px solid #E8DFC8;border-radius:var(--radius);padding:1rem;text-align:left;font-size:13px;color:#555;line-height:1.9;margin-bottom:1rem;}
-.s-detail strong{color:var(--gold-dark);}
+.s-detail strong{color:#888;font-weight:500;}
 </style>
 </head>
 <body>
@@ -285,7 +285,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
         <p style="font-size:10px;font-weight:500;color:var(--gold);margin-top:.875rem;margin-bottom:6px;letter-spacing:.1em;text-transform:uppercase;">Horas disponibles</p>
         <div class="time-g" id="timeGrid"></div>
       </div>
-      <button class="btn-main" style="margin-top:1rem;" id="btnContinue" disabled onclick="goForm()">Continuar</button>
+      <button class="btn-main" style="margin-top:1rem;background:#2E2B2B;color:#C9A96E;font-family:'Cormorant Garamond',serif;" id="btnContinue" disabled onclick="goForm()">Continuar</button>
     </div>
   </div>
 </div>
@@ -529,7 +529,7 @@ function openCal(){
   const precio=curSvc.precioTexto||(curSvc.price>0?'$'+curSvc.price.toFixed(2):'A consultar');
   document.getElementById('cal-svc-info').innerHTML=`
     <span class="svc-pill-name">${curSvc.name}</span>
-    <div class="svc-pill-meta"><span class="svc-pill-price">${precio}</span><span class="svc-pill-dur">${curSvc.dur}</span></div>`;
+    <div class="svc-pill-meta"><span class="svc-pill-price">${curSvc.price>0?'$'+curSvc.price.toFixed(2):curSvc.precioTexto||'A consultar'}</span><span class="svc-pill-dur">${curSvc.dur}</span></div>`;
   document.getElementById('timeSec').style.display='none';
   document.getElementById('btnContinue').disabled=true;
   renderCal();
@@ -786,9 +786,9 @@ async function confirmar(dayStr){
       <div class="s-detail">
         <strong>Servicio:</strong> ${curSvc.name}<br>
         <strong>Fecha:</strong> ${dayStr}<br>
-        <strong>Hora:</strong> ${selTime}<br>
+        <strong>Hora:</strong> ${selTime ? (()=>{const[h,m]=selTime.split(':');const hh=parseInt(h);return (hh>12?hh-12:hh)+':'+m+(hh>=12?' PM':' AM');})() : selTime}<br>
         <strong>Duración aprox.:</strong> ${curSvc.dur}<br>
-        <strong>Precio total:</strong> <span style="color:#D95F2B;font-weight:600;">${precioStr}</span><br>
+        <strong>Precio total:</strong> ${precio>0?`<span style="color:#D95F2B;font-weight:600;">$${precio.toFixed(2)}</span>`:'A consultar'}<br>
         ${abonoLine}
       </div>
       <p style="font-size:11px;color:#aaa;margin-bottom:1rem;">Recuerda: cancelaciones con menos de 24 horas de anticipación no tienen reembolso del abono.</p>
