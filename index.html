@@ -520,9 +520,13 @@ function buildCard(s,icon,full=false){
   </div>`;
 }
 
-function openDetail(id){
+function openDetail(id, esPromo){
   curSvc=SERVICES.find(s=>s.id===id);
   if(!curSvc)return;
+  // Si entra por promo, clonar el servicio con el precio promocional
+  if(esPromo && PROMO_DATA && PROMO_DATA.precioPromo){
+    curSvc={...curSvc, price:parseFloat(PROMO_DATA.precioPromo), precioTexto:null, _promo:true, _precioOriginal:curSvc.price};
+  }
   const icon=SVC_ICONS[curSvc.id]||'ti-star';
   const precio=curSvc.precioTexto||(curSvc.price>0?'$'+curSvc.price.toFixed(2):'A consultar');
   const incl=curSvc.includes.map(i=>`<div class="incl-item"><span class="incl-dot"></span>${i}</div>`).join('');
@@ -551,7 +555,7 @@ function openDetail(id){
       <div>
         <div class="svc-banner-name">${curSvc.name}</div>
         <div class="svc-banner-meta">
-          <span class="svc-banner-price">${precio}${curSvc.esEval?' · descontable':''}</span>
+          <span class="svc-banner-price">${curSvc._promo?`<span style="color:#aaa;text-decoration:line-through;font-weight:400;">$${curSvc._precioOriginal.toFixed(2)}</span> <span style="color:#D95F2B;">${precio}</span> <span style="background:#D95F2B;color:#fff;font-size:9px;padding:2px 7px;border-radius:999px;margin-left:4px;vertical-align:middle;">PROMO</span>`:`${precio}${curSvc.esEval?' · descontable':''}`}</span>
           <span class="svc-banner-dur">${curSvc.dur}</span>
         </div>
       </div>
@@ -818,7 +822,8 @@ async function confirmar(dayStr){
   const btnC=document.getElementById('btnConfirmar');
   if(btnC){btnC.disabled=true;btnC.textContent='Confirmando...';}
   const precio=curSvc.price>0?curSvc.price:0;
-  const cita={nombre,telefono:tel,correo,nota,servicio:curSvc.name,categoria:curSvc.cat,
+  const notaFinal = curSvc._promo ? (nota ? nota+' [PROMO aplicada]' : 'PROMO aplicada') : nota;
+  const cita={nombre,telefono:tel,correo,nota:notaFinal,servicio:curSvc.name,categoria:curSvc.cat,
     precioTotal:precio,fecha:dayStr,hora:selTime,duracionMin:curSvc.durMin,
     comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?tipoAbono:'',
     metodoPago:tieneAbono?pagoTipo:''};
@@ -868,14 +873,14 @@ const TEMAS_PROMO={
   fiesta:{emoji:'🎉',bg:'#5A4A8A',porteria:false,cardBg:'#F2F0FA',cardBorder:'#DAD3EC',vigColor:'#52468a'}
 };
 
-let PROMO_SERVICIO=null;
+let PROMO_DATA=null;
 
 async function loadPromo(){
   let promo;
   try { promo = await Sheets.getPromo(); }
   catch(e){ return; }
   if(!promo || !promo.activa) return;
-  PROMO_SERVICIO=promo.servicio||null;
+  PROMO_DATA=promo;
 
   const tema=TEMAS_PROMO[promo.tema]||TEMAS_PROMO.mundial;
   document.getElementById('promo-top').style.background=tema.bg;
@@ -934,16 +939,14 @@ function cerrarPromo(){
 
 function agendarPromo(){
   cerrarPromo();
-  if(!PROMO_SERVICIO){ return; }
-  // Buscar servicio por nombre (coincidencia flexible)
+  if(!PROMO_DATA || !PROMO_DATA.servicio){ return; }
   const norm=s=>s.toLowerCase().trim().replace(/\s+/g,' ');
-  const objetivo=norm(PROMO_SERVICIO);
+  const objetivo=norm(PROMO_DATA.servicio);
   let svc=SERVICES.find(s=>norm(s.name)===objetivo);
   if(!svc) svc=SERVICES.find(s=>norm(s.name).includes(objetivo)||objetivo.includes(norm(s.name)));
   if(svc){
-    openDetail(svc.id);
+    openDetail(svc.id, true);
   } else {
-    // Si no encuentra match, hacer scroll a la lista de servicios
     document.querySelector('.servicios-wrap, #servicios, .svc-grid')?.scrollIntoView({behavior:'smooth'});
   }
 }
