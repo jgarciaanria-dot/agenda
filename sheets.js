@@ -76,6 +76,18 @@ const Sheets = {
     }
   },
 
+  async getCitas() {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=getCitas&_=' + Date.now();
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.citas || [];
+    } catch (e) {
+      console.error('Error cargando citas:', e);
+      return [];
+    }
+  },
+
   async guardarBloqueos(bloqueos) {
     try {
       await fetch(CONFIG.sheets.scriptUrl, {
