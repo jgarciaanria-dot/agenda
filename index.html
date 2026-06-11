@@ -236,6 +236,35 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 </head>
 <body>
 
+<!-- POPUP PROMO -->
+<div id="promo-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="position:relative;max-width:340px;width:100%;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.2);">
+    <div onclick="cerrarPromo()" style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;">
+      <i class="ti ti-x" style="font-size:16px;color:#666;"></i>
+    </div>
+    <div id="promo-top" style="padding:26px 24px 56px;text-align:center;position:relative;overflow:hidden;">
+      <p id="promo-lbl" style="font-size:10px;color:#fff;letter-spacing:.2em;margin:0 0 14px;position:relative;font-weight:600;"></p>
+      <div style="position:relative;height:78px;">
+        <div id="promo-emoji" style="font-size:48px;position:absolute;left:50%;top:8px;transform:translateX(-50%);filter:drop-shadow(0 4px 6px rgba(0,0,0,.25));"></div>
+      </div>
+      <div id="promo-porteria" style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:100px;height:34px;border:2.5px solid rgba(255,255,255,.5);border-bottom:none;border-radius:8px 8px 0 0;"></div>
+    </div>
+    <div style="padding:24px 24px 26px;text-align:center;">
+      <p id="promo-fest" style="font-family:'Cormorant Garamond',serif;font-size:27px;color:#D95F2B;margin:0 0 4px;font-weight:700;letter-spacing:.03em;"></p>
+      <p style="font-size:13px;color:#888;margin:0 0 16px;">Aprovecha esta promo</p>
+      <div id="promo-card" style="border-radius:12px;padding:18px;margin-bottom:18px;">
+        <p id="promo-svc" style="font-family:'Cormorant Garamond',serif;font-size:19px;color:#1a1a1a;margin:0 0 6px;"></p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+          <span id="promo-pn" style="font-size:15px;color:#aaa;text-decoration:line-through;"></span>
+          <span id="promo-pp" style="font-size:30px;font-weight:700;color:#D95F2B;font-family:'Cormorant Garamond',serif;"></span>
+        </div>
+        <p id="promo-vig" style="font-size:11px;margin:8px 0 0;font-weight:500;"></p>
+      </div>
+      <button onclick="cerrarPromo()" style="width:100%;background:#F7F4ED;color:#3A372F;border:1px solid #E5DCC9;border-radius:10px;padding:13px;font-size:14px;font-weight:500;font-family:'Cormorant Garamond',serif;cursor:pointer;">Agendar ahora</button>
+    </div>
+  </div>
+</div>
+
 <!-- WA FLOTANTE -->
 <a class="wa-float" href="https://wa.me/50765224575" target="_blank" aria-label="WhatsApp">
   <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -828,7 +857,77 @@ loadServices().then(() => {
   renderServices();
 });
 loadBloqueos();
+loadPromo();
 try{Sheets.initSheet();}catch(e){}
+
+// ===== POPUP PROMO =====
+const TEMAS_PROMO={
+  mundial:{emoji:'⚽',bg:'#3A8A3F',porteria:true,cardBg:'#F0F7F0',cardBorder:'#C8DFC8',vigColor:'#3a7a3f'},
+  regalo:{emoji:'🎁',bg:'#B23A48',porteria:false,cardBg:'#FBF0F1',cardBorder:'#EAD0D3',vigColor:'#9c3540'},
+  corazon:{emoji:'💝',bg:'#C24E6B',porteria:false,cardBg:'#FBF0F3',cardBorder:'#EDD2DA',vigColor:'#a8455f'},
+  fiesta:{emoji:'🎉',bg:'#5A4A8A',porteria:false,cardBg:'#F2F0FA',cardBorder:'#DAD3EC',vigColor:'#52468a'}
+};
+
+async function loadPromo(){
+  let promo;
+  try { promo = await Sheets.getPromo(); }
+  catch(e){ return; }
+  if(!promo || !promo.activa) return;
+
+  const tema=TEMAS_PROMO[promo.tema]||TEMAS_PROMO.mundial;
+  document.getElementById('promo-top').style.background=tema.bg;
+  document.getElementById('promo-emoji').textContent=tema.emoji;
+  document.getElementById('promo-porteria').style.display=tema.porteria?'block':'none';
+  document.getElementById('promo-lbl').textContent=promo.etiqueta||'PROMOCIÓN';
+  document.getElementById('promo-fest').textContent=promo.festejo||'¡Oferta especial!';
+  document.getElementById('promo-svc').textContent=promo.servicio||'';
+  const card=document.getElementById('promo-card');
+  card.style.background=tema.cardBg;
+  card.style.border='0.5px solid '+tema.cardBorder;
+  if(promo.precioNormal){
+    document.getElementById('promo-pn').textContent='$'+parseFloat(promo.precioNormal).toFixed(2);
+    document.getElementById('promo-pn').style.display='inline';
+  } else { document.getElementById('promo-pn').style.display='none'; }
+  document.getElementById('promo-pp').textContent=promo.precioPromo?'$'+parseFloat(promo.precioPromo).toFixed(2):'';
+  const vig=document.getElementById('promo-vig');
+  vig.textContent=promo.vigencia||'';
+  vig.style.color=tema.vigColor;
+
+  // Mostrar tras breve delay
+  setTimeout(()=>{
+    document.getElementById('promo-ov').style.display='flex';
+    animarPromo(promo.tema);
+  }, 600);
+}
+
+function animarPromo(tema){
+  const emoji=document.getElementById('promo-emoji');
+  const fest=document.getElementById('promo-fest');
+  if(!emoji) return;
+  fest.style.opacity='0';
+  if(tema==='mundial'){
+    emoji.animate([
+      {transform:'translateX(-50%) translateY(0) scale(1)',offset:0},
+      {transform:'translateX(-50%) translateY(-28px) scale(.7) rotate(360deg)',offset:.6},
+      {transform:'translateX(-50%) translateY(18px) scale(.92) rotate(540deg)',offset:1}
+    ],{duration:1100,easing:'cubic-bezier(.4,1.3,.6,1)',fill:'forwards'});
+  } else {
+    emoji.animate([
+      {transform:'translateX(-50%) scale(0) rotate(-20deg)',offset:0},
+      {transform:'translateX(-50%) scale(1.2) rotate(10deg)',offset:.7},
+      {transform:'translateX(-50%) scale(1) rotate(0)',offset:1}
+    ],{duration:900,easing:'cubic-bezier(.4,1.3,.6,1)',fill:'forwards'});
+  }
+  setTimeout(()=>{
+    fest.style.transition='opacity .4s';
+    fest.style.opacity='1';
+    fest.animate([{transform:'scale(.5)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:450,easing:'ease-out'});
+  }, tema==='mundial'?900:700);
+}
+
+function cerrarPromo(){
+  document.getElementById('promo-ov').style.display='none';
+}
 
 // Ocultar botón WA cuando el footer es visible
 const waBtn=document.querySelector('.wa-float');
