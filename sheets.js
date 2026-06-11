@@ -88,6 +88,31 @@ const Sheets = {
     }
   },
 
+  async getPromo() {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=getPromo&_=' + Date.now();
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.promo || {activa:false};
+    } catch (e) {
+      console.error('Error cargando promo:', e);
+      return {activa:false};
+    }
+  },
+
+  async guardarPromo(promo) {
+    try {
+      await fetch(CONFIG.sheets.scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'guardarPromo', promo: JSON.stringify(promo)})
+      });
+    } catch (e) {
+      console.error('Error guardando promo:', e);
+    }
+  },
+
   async guardarBloqueos(bloqueos) {
     try {
       await fetch(CONFIG.sheets.scriptUrl, {
