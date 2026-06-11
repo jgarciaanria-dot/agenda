@@ -173,7 +173,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
         </div>
         <div class="fg"><label class="flbl">Etiqueta superior</label><input class="fi" id="promo-etiqueta" placeholder="PROMO MUNDIAL"/></div>
         <div class="fg"><label class="flbl">Texto de festejo</label><input class="fi" id="promo-festejo" placeholder="¡GOOOL!"/></div>
-        <div class="fg"><label class="flbl">Servicio en promo</label><input class="fi" id="promo-servicio" placeholder="Lavado y Blower"/></div>
+        <div class="fg"><label class="flbl">Servicio en promo</label>
+          <select class="fi" id="promo-servicio" onchange="autoPrecioPromo()"><option value="">Selecciona un servicio...</option></select>
+        </div>
         <div class="frow">
           <div class="fg"><label class="flbl">Precio normal</label><input class="fi" id="promo-precio-normal" type="number" placeholder="35"/></div>
           <div class="fg"><label class="flbl">Precio promo</label><input class="fi" id="promo-precio-promo" type="number" placeholder="20"/></div>
@@ -429,6 +431,10 @@ let PROMO={activa:false};
 async function loadPromo(){
   try { PROMO = await Sheets.getPromo(); }
   catch(e){ PROMO={activa:false}; }
+  // Llenar el select con los servicios existentes
+  const sel=document.getElementById('promo-servicio');
+  sel.innerHTML='<option value="">Selecciona un servicio...</option>'+
+    SERVICES.map(s=>`<option value="${s.name.replace(/"/g,'&quot;')}">${s.name}</option>`).join('');
   document.getElementById('promo-activa').checked = !!PROMO.activa;
   if(PROMO.tema) document.getElementById('promo-tema').value = PROMO.tema;
   document.getElementById('promo-etiqueta').value = PROMO.etiqueta||'';
@@ -441,6 +447,14 @@ async function loadPromo(){
 
 function togglePromoActiva(){
   PROMO.activa = document.getElementById('promo-activa').checked;
+}
+
+function autoPrecioPromo(){
+  const nombre=document.getElementById('promo-servicio').value;
+  const svc=SERVICES.find(s=>s.name===nombre);
+  if(svc && svc.price>0){
+    document.getElementById('promo-precio-normal').value=svc.price;
+  }
 }
 
 function guardarPromo(){
