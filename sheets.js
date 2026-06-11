@@ -62,5 +62,30 @@ const Sheets = {
     } catch (e) {
       console.error('Error guardando servicios:', e);
     }
+  },
+
+  async getBloqueos() {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=getBloqueos&_=' + Date.now();
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.bloqueos || {dias:[], horas:{}};
+    } catch (e) {
+      console.error('Error cargando bloqueos:', e);
+      return {dias:[], horas:{}};
+    }
+  },
+
+  async guardarBloqueos(bloqueos) {
+    try {
+      await fetch(CONFIG.sheets.scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'guardarBloqueos', bloqueos: JSON.stringify(bloqueos)})
+      });
+    } catch (e) {
+      console.error('Error guardando bloqueos:', e);
+    }
   }
 };
