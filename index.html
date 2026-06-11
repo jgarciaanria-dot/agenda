@@ -179,6 +179,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .cd.hoy.sel{color:white;}
 .cd.emp,.cd.pst{color:#ddd;cursor:default;}
 .cd.dom{color:#e0c0c0;cursor:default;}
+.cd.bloq{color:#ccc;cursor:default;text-decoration:line-through;position:relative;}
 .time-g{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:.875rem;}
 .ts{border:0.5px solid #E5D8B8;border-radius:8px;padding:9px 3px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;position:relative;}
 .ts:hover:not(.tkn){border-color:var(--gold);color:var(--gold-dark);}
@@ -347,6 +348,19 @@ const SVC_ICONS={
 };
 
 let SERVICES=[];
+let BLOQUEOS={dias:[], horas:{}};
+
+async function loadBloqueos(){
+  try {
+    BLOQUEOS = await Sheets.getBloqueos();
+    if(!BLOQUEOS.dias) BLOQUEOS.dias=[];
+    if(!BLOQUEOS.horas) BLOQUEOS.horas={};
+  } catch(e){ BLOQUEOS={dias:[], horas:{}}; }
+}
+
+function fechaISO(y,m,d){
+  return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+}
 
 async function loadServices(){
   try {
@@ -547,14 +561,18 @@ function renderCal(){
   for(let d=1;d<=days;d++){
     const dt=new Date(calY,calM,d);
     const dow=dt.getDay();
+    const iso=fechaISO(calY,calM,d);
+    const isBloq=BLOQUEOS.dias.some(b=>b.fecha===iso);
     const isPast=dt<today,isDom=dow===0,isHoy=dt.getTime()===today.getTime(),isSel=selectedDay===d;
     let cls='cd';
     if(isPast) cls+=' pst';
     else if(isDom) cls+=' dom';
+    else if(isBloq) cls+=' bloq';
     if(isHoy) cls+=' hoy';
-    if(isSel&&!isPast&&!isDom) cls+=' sel';
-    const ok=!isPast&&!isDom;
-    h+=`<div class="${cls}" ${ok?`onclick="selDay2(${d})"`:''} >${d}</div>`;
+    if(isSel&&!isPast&&!isDom&&!isBloq) cls+=' sel';
+    const ok=!isPast&&!isDom&&!isBloq;
+    const title=isBloq?'title="No disponible"':'';
+    h+=`<div class="${cls}" ${title} ${ok?`onclick="selDay2(${d})"`:''} >${d}</div>`;
   }
   document.getElementById('calGrid').innerHTML=h;
 }
@@ -610,9 +628,13 @@ function renderTimes(){
   const durSvc=curSvc.durMin||60;
   const slots=genSlots();
   const grid=document.getElementById('timeGrid');
+  const iso=fechaISO(calY,calM,selectedDay);
+  const horasBloqueadas=BLOQUEOS.horas[iso]||[];
   grid.innerHTML='';
   slots.forEach(({key,lbl})=>{
-    const blocked=isBlocked(key,citas,durSvc);
+    const ocupada=isBlocked(key,citas,durSvc);
+    const bloqueada=horasBloqueadas.includes(key);
+    const blocked=ocupada||bloqueada;
     const isSel=selTime===key;
     const div=document.createElement('div');
     div.className='ts'+(blocked?' tkn':'')+(isSel?' sel':'');
@@ -620,7 +642,7 @@ function renderTimes(){
     if(blocked){
       const sub=document.createElement('span');
       sub.style.cssText='display:block;font-size:9px;color:#ccc;margin-top:1px;';
-      sub.textContent='ocupada';
+      sub.textContent=bloqueada?'no disp.':'ocupada';
       div.appendChild(sub);
     }
     if(!blocked) div.onclick=()=>{selTime=key;renderTimes();document.getElementById('btnContinue').disabled=false;};
@@ -805,6 +827,7 @@ function closeOv(id){
 loadServices().then(() => {
   renderServices();
 });
+loadBloqueos();
 try{Sheets.initSheet();}catch(e){}
 
 // Ocultar botón WA cuando el footer es visible
