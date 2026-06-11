@@ -238,29 +238,29 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 
 <!-- POPUP PROMO -->
 <div id="promo-ov" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem;">
-  <div style="position:relative;max-width:340px;width:100%;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.2);">
-    <div onclick="cerrarPromo()" style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;">
-      <i class="ti ti-x" style="font-size:16px;color:#666;"></i>
+  <div style="position:relative;max-width:280px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.2);">
+    <div onclick="cerrarPromo()" style="position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;">
+      <i class="ti ti-x" style="font-size:15px;color:#666;"></i>
     </div>
-    <div id="promo-top" style="padding:26px 24px 56px;text-align:center;position:relative;overflow:hidden;">
-      <p id="promo-lbl" style="font-size:10px;color:#fff;letter-spacing:.2em;margin:0 0 14px;position:relative;font-weight:600;"></p>
-      <div style="position:relative;height:78px;">
-        <div id="promo-emoji" style="font-size:48px;position:absolute;left:50%;top:8px;transform:translateX(-50%);filter:drop-shadow(0 4px 6px rgba(0,0,0,.25));"></div>
+    <div id="promo-top" style="padding:18px 20px 38px;text-align:center;position:relative;overflow:hidden;">
+      <p id="promo-lbl" style="font-size:9px;color:#fff;letter-spacing:.18em;margin:0 0 8px;position:relative;font-weight:600;"></p>
+      <div style="position:relative;height:54px;">
+        <div id="promo-emoji" style="font-size:38px;position:absolute;left:50%;top:6px;transform:translateX(-50%);filter:drop-shadow(0 4px 6px rgba(0,0,0,.25));"></div>
       </div>
-      <div id="promo-porteria" style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:100px;height:34px;border:2.5px solid rgba(255,255,255,.5);border-bottom:none;border-radius:8px 8px 0 0;"></div>
+      <div id="promo-porteria" style="position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:80px;height:26px;border:2px solid rgba(255,255,255,.5);border-bottom:none;border-radius:6px 6px 0 0;"></div>
     </div>
-    <div style="padding:24px 24px 26px;text-align:center;">
-      <p id="promo-fest" style="font-family:'Cormorant Garamond',serif;font-size:27px;color:#D95F2B;margin:0 0 4px;font-weight:700;letter-spacing:.03em;"></p>
-      <p style="font-size:13px;color:#888;margin:0 0 16px;">Aprovecha esta promo</p>
-      <div id="promo-card" style="border-radius:12px;padding:18px;margin-bottom:18px;">
-        <p id="promo-svc" style="font-family:'Cormorant Garamond',serif;font-size:19px;color:#1a1a1a;margin:0 0 6px;"></p>
-        <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
-          <span id="promo-pn" style="font-size:15px;color:#aaa;text-decoration:line-through;"></span>
-          <span id="promo-pp" style="font-size:30px;font-weight:700;color:#D95F2B;font-family:'Cormorant Garamond',serif;"></span>
+    <div style="padding:18px 20px 20px;text-align:center;">
+      <p id="promo-fest" style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#D95F2B;margin:0 0 2px;font-weight:700;letter-spacing:.03em;"></p>
+      <p style="font-size:12px;color:#888;margin:0 0 12px;">Aprovecha esta promo</p>
+      <div id="promo-card" style="border-radius:10px;padding:14px;margin-bottom:14px;">
+        <p id="promo-svc" style="font-family:'Cormorant Garamond',serif;font-size:17px;color:#1a1a1a;margin:0 0 4px;"></p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+          <span id="promo-pn" style="font-size:14px;color:#aaa;text-decoration:line-through;"></span>
+          <span id="promo-pp" style="font-size:26px;font-weight:700;color:#D95F2B;font-family:'Cormorant Garamond',serif;"></span>
         </div>
-        <p id="promo-vig" style="font-size:11px;margin:8px 0 0;font-weight:500;"></p>
+        <p id="promo-vig" style="font-size:10px;margin:6px 0 0;font-weight:500;"></p>
       </div>
-      <button onclick="agendarPromo()" style="width:100%;background:#F7F4ED;color:#3A372F;border:1px solid #E5DCC9;border-radius:10px;padding:13px;font-size:14px;font-weight:500;font-family:'Cormorant Garamond',serif;cursor:pointer;">Agendar ahora</button>
+      <button onclick="agendarPromo()" style="width:100%;background:#F7F4ED;color:#3A372F;border:1px solid #E5DCC9;border-radius:9px;padding:11px;font-size:13px;font-weight:500;font-family:'Cormorant Garamond',serif;cursor:pointer;">Agendar ahora</button>
     </div>
   </div>
 </div>
@@ -926,8 +926,8 @@ function animarPromo(tema){
   if(tema==='mundial'){
     emoji.animate([
       {transform:'translateX(-50%) translateY(0) scale(1)',offset:0},
-      {transform:'translateX(-50%) translateY(-28px) scale(.7) rotate(360deg)',offset:.6},
-      {transform:'translateX(-50%) translateY(18px) scale(.92) rotate(540deg)',offset:1}
+      {transform:'translateX(-50%) translateY(-20px) scale(.7) rotate(360deg)',offset:.6},
+      {transform:'translateX(-50%) translateY(12px) scale(.92) rotate(540deg)',offset:1}
     ],{duration:1100,easing:'cubic-bezier(.4,1.3,.6,1)',fill:'forwards'});
   } else {
     emoji.animate([
@@ -951,7 +951,7 @@ function animarPromo(tema){
       const drift=(Math.random()*36-18);
       c.animate([
         {transform:'translateY(0) translateX(0) rotate(0deg)',opacity:.85},
-        {transform:'translateY(140px) translateX('+drift+'px) rotate('+(360+Math.random()*360)+'deg)',opacity:.5}
+        {transform:'translateY(105px) translateX('+drift+'px) rotate('+(360+Math.random()*360)+'deg)',opacity:.5}
       ],{duration:dur,delay:delay,iterations:Infinity,easing:'linear'});
     }
   }
