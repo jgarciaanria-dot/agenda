@@ -260,7 +260,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
         </div>
         <p id="promo-vig" style="font-size:11px;margin:8px 0 0;font-weight:500;"></p>
       </div>
-      <button onclick="cerrarPromo()" style="width:100%;background:#F7F4ED;color:#3A372F;border:1px solid #E5DCC9;border-radius:10px;padding:13px;font-size:14px;font-weight:500;font-family:'Cormorant Garamond',serif;cursor:pointer;">Agendar ahora</button>
+      <button onclick="agendarPromo()" style="width:100%;background:#F7F4ED;color:#3A372F;border:1px solid #E5DCC9;border-radius:10px;padding:13px;font-size:14px;font-weight:500;font-family:'Cormorant Garamond',serif;cursor:pointer;">Agendar ahora</button>
     </div>
   </div>
 </div>
@@ -868,11 +868,14 @@ const TEMAS_PROMO={
   fiesta:{emoji:'🎉',bg:'#5A4A8A',porteria:false,cardBg:'#F2F0FA',cardBorder:'#DAD3EC',vigColor:'#52468a'}
 };
 
+let PROMO_SERVICIO=null;
+
 async function loadPromo(){
   let promo;
   try { promo = await Sheets.getPromo(); }
   catch(e){ return; }
   if(!promo || !promo.activa) return;
+  PROMO_SERVICIO=promo.servicio||null;
 
   const tema=TEMAS_PROMO[promo.tema]||TEMAS_PROMO.mundial;
   document.getElementById('promo-top').style.background=tema.bg;
@@ -927,6 +930,22 @@ function animarPromo(tema){
 
 function cerrarPromo(){
   document.getElementById('promo-ov').style.display='none';
+}
+
+function agendarPromo(){
+  cerrarPromo();
+  if(!PROMO_SERVICIO){ return; }
+  // Buscar servicio por nombre (coincidencia flexible)
+  const norm=s=>s.toLowerCase().trim().replace(/\s+/g,' ');
+  const objetivo=norm(PROMO_SERVICIO);
+  let svc=SERVICES.find(s=>norm(s.name)===objetivo);
+  if(!svc) svc=SERVICES.find(s=>norm(s.name).includes(objetivo)||objetivo.includes(norm(s.name)));
+  if(svc){
+    openDetail(svc.id);
+  } else {
+    // Si no encuentra match, hacer scroll a la lista de servicios
+    document.querySelector('.servicios-wrap, #servicios, .svc-grid')?.scrollIntoView({behavior:'smooth'});
+  }
 }
 
 // Ocultar botón WA cuando el footer es visible
