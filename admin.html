@@ -10,17 +10,18 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--forest:#0D1F1A;--gold:#C9A96E;--gold-dark:#8B6F3E;--bg:#F5F7F5;--radius:10px;--radius-lg:14px;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-height:100vh;}
-.adm-hdr{background:var(--forest);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
-.adm-hdr-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#fff;}
-.adm-hdr-sub{font-size:11px;color:rgba(201,169,110,.7);margin-top:2px;}
-.adm-hdr-back{color:rgba(201,169,110,.8);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:5px;}
-.adm-hdr-back:hover{color:var(--gold);}
+.adm-hdr{background:#FBF8F2;border-bottom:2px solid #C9A96E;padding:1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.adm-hdr-title{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:700;color:#3A372F;letter-spacing:.02em;}
+.adm-hdr-sub{font-size:11px;color:#A89878;margin-top:4px;letter-spacing:.16em;text-transform:uppercase;}
+.adm-hdr-back{color:#9A8A6A;font-size:12px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;}
+.adm-hdr-back:hover{color:#7A6F58;}
 .adm-body{padding:1rem;}
 .adm-sec{background:#fff;border:0.5px solid #E4EBE4;border-radius:var(--radius-lg);margin-bottom:1rem;overflow:hidden;}
 .adm-sec-hdr{padding:.875rem 1rem;border-bottom:0.5px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
 .adm-sec-title{font-size:13px;font-weight:500;color:var(--forest);display:flex;align-items:center;gap:7px;}
 .adm-sec-title::before{content:'';width:3px;height:14px;background:var(--gold);border-radius:2px;}
-.btn-add{display:flex;align-items:center;gap:5px;padding:6px 12px;background:var(--forest);color:var(--gold);border:none;border-radius:8px;font-size:12px;cursor:pointer;transition:opacity .15s;}
+.btn-add{display:flex;align-items:center;gap:5px;padding:7px 14px;background:#F7F4ED;color:#7A6F58;border:1px solid #E5DCC9;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:background .15s;}
+.btn-add:hover{background:#F0EBDF;}
 .btn-add:hover{opacity:.85;}
 .svc-row{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;border-bottom:0.5px solid #f5f5f5;transition:background .15s;}
 .svc-row:last-child{border-bottom:none;}
@@ -28,18 +29,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 .svc-toggle{position:relative;width:36px;height:20px;flex-shrink:0;}
 .svc-toggle input{opacity:0;width:0;height:0;position:absolute;}
 .svc-toggle-track{position:absolute;inset:0;border-radius:999px;background:#ddd;cursor:pointer;transition:background .2s;}
-.svc-toggle input:checked+.svc-toggle-track{background:var(--gold);}
+.svc-toggle input:checked+.svc-toggle-track{background:#4CAF50;}
 .svc-toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;}
 .svc-toggle input:checked~.svc-toggle-thumb{transform:translateX(16px);}
 .svc-info{flex:1;min-width:0;}
 .svc-nm{font-size:13px;font-weight:500;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .svc-meta{font-size:11px;color:#aaa;margin-top:1px;}
 .svc-actions{display:flex;gap:6px;flex-shrink:0;}
-.btn-ico{width:30px;height:30px;border-radius:8px;border:0.5px solid #eee;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
-.btn-ico:hover{border-color:var(--gold);background:#faf8f3;}
-.btn-ico i{font-size:14px;color:#888;}
-.btn-ico.del:hover{border-color:#ffcdd2;background:#fff5f5;}
-.btn-ico.del i{color:#e57373;}
+.btn-ico{width:32px;height:32px;border-radius:9px;border:1px solid #E5DCC9;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.btn-ico:hover{background:#F7F4ED;}
+.btn-ico i{font-size:15px;color:#7A6F58;}
+.btn-ico.del{border-color:#E8D5CE;}
+.btn-ico.del:hover{background:#FBF3F0;}
+.btn-ico.del i{color:#A86B5C;}
 
 /* MODAL */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;}
@@ -64,15 +66,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 .btn-rem-incl:hover{border-color:#fca5a5;color:#e57373;}
 .btn-add-incl{display:flex;align-items:center;gap:5px;padding:6px 10px;background:transparent;border:0.5px dashed #E5D8B8;border-radius:8px;font-size:12px;color:var(--gold-dark);cursor:pointer;width:100%;justify-content:center;}
 .btn-add-incl:hover{background:#faf8f3;}
-.btn-save{width:100%;padding:12px;background:var(--gold);color:var(--forest);border:none;border-radius:var(--radius);font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:.5rem;transition:opacity .15s;}
-.btn-save:hover{opacity:.9;}
+.btn-save{width:100%;padding:13px;background:#F7F4ED;color:#3A372F;border:1px solid #E5DCC9;border-radius:10px;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:.5rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-save:hover{background:#F0EBDF;}
 .cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem;}
 .cat-pill{padding:5px 12px;border-radius:999px;font-size:12px;cursor:pointer;border:0.5px solid #eee;background:#fff;color:#666;transition:all .15s;}
 .cat-pill.sel{background:var(--forest);color:var(--gold);border-color:var(--forest);}
 .eval-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:10px;background:#F8F3FB;color:#7C4DA0;border:0.5px solid #D9C5E8;margin-left:6px;}
-.adm-tabs{display:flex;gap:8px;margin-bottom:1rem;}
-.adm-tab{flex:1;padding:10px;background:#fff;border:0.5px solid #E4EBE4;border-radius:10px;font-size:13px;font-weight:500;color:#888;cursor:pointer;transition:all .15s;}
-.adm-tab.active{background:var(--forest);color:var(--gold);border-color:var(--forest);}
+.adm-tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid #EDE8DC;}
+.adm-tab{padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-size:13px;font-weight:500;color:#999;cursor:pointer;transition:all .15s;}
+.adm-tab:hover{color:#4A4844;}
+.adm-tab.active{color:#4A4844;border-bottom-color:#C9A96E;}
 .hora-bloq{border:0.5px solid #E5D8B8;border-radius:8px;padding:8px 3px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;}
 .hora-bloq.sel{background:#E05555;color:#fff;border-color:#E05555;}
 .bloq-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#FFF5F5;border:0.5px solid #FFD9D9;border-radius:8px;margin-bottom:8px;font-size:13px;}
@@ -83,8 +86,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 
 <div class="adm-hdr">
   <div>
-    <div class="adm-hdr-title">Panel de Administración</div>
-    <div class="adm-hdr-sub">Vicelly Hair & Beauty · Servicios</div>
+    <div class="adm-hdr-title">Vicelly Sánchez Studio</div>
+    <div class="adm-hdr-sub">Panel de administración</div>
   </div>
   <a href="index.html" class="adm-hdr-back"><i class="ti ti-arrow-left"></i> Ver sitio</a>
 </div>
@@ -92,6 +95,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 <div class="adm-body">
   <div class="adm-tabs">
     <button class="adm-tab active" id="tab-servicios" onclick="switchTab('servicios')">Servicios</button>
+    <button class="adm-tab" id="tab-citas" onclick="switchTab('citas')">Citas</button>
     <button class="adm-tab" id="tab-bloqueos" onclick="switchTab('bloqueos')">Bloquear días</button>
   </div>
 
@@ -101,6 +105,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
       <button class="btn-add" onclick="openModal(null)" style="margin:auto;padding:10px 20px;font-size:13px;">
         <i class="ti ti-plus"></i> Agregar nuevo servicio
       </button>
+    </div>
+  </div>
+
+  <div id="panel-citas" style="display:none;">
+    <div class="adm-sec">
+      <div class="adm-sec-hdr"><span class="adm-sec-title">Hoy y próximos 7 días</span></div>
+      <div id="lista-citas" style="padding:0.5rem 1rem 1rem;">
+        <p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">Cargando citas...</p>
+      </div>
     </div>
   </div>
 
@@ -282,7 +295,7 @@ function openModal(id,catDefault='Básicos'){
         </div>
       </div>
     </div>
-    <button class="btn-save" onclick="guardar()">Guardar cambios</button>`;
+    <button class="btn-save" onclick="guardar()"><i class="ti ti-check" style="font-size:17px;"></i> Guardar cambios</button>`;
   document.getElementById('ov-modal').classList.add('open');
 }
 
@@ -361,9 +374,97 @@ function saveBloqueos(){
 
 function switchTab(tab){
   document.getElementById('tab-servicios').classList.toggle('active', tab==='servicios');
+  document.getElementById('tab-citas').classList.toggle('active', tab==='citas');
   document.getElementById('tab-bloqueos').classList.toggle('active', tab==='bloqueos');
   document.getElementById('panel-servicios').style.display = tab==='servicios'?'block':'none';
+  document.getElementById('panel-citas').style.display = tab==='citas'?'block':'none';
   document.getElementById('panel-bloqueos').style.display = tab==='bloqueos'?'block':'none';
+  if(tab==='citas') loadCitas();
+}
+
+// ===== CITAS =====
+const MESES_CITAS={'enero':0,'febrero':1,'marzo':2,'abril':3,'mayo':4,'junio':5,'julio':6,'agosto':7,'septiembre':8,'octubre':9,'noviembre':10,'diciembre':11};
+
+function parseFechaCita(fechaStr){
+  // "12 de Junio 2026" -> Date
+  try {
+    const partes=fechaStr.split(' de ');
+    if(partes.length<2) return null;
+    const dia=parseInt(partes[0].trim());
+    const resto=partes[1].trim().split(' ');
+    const mes=MESES_CITAS[resto[0].toLowerCase()];
+    const anio=parseInt(resto[1]);
+    if(isNaN(dia)||mes===undefined||isNaN(anio)) return null;
+    return new Date(anio,mes,dia);
+  } catch(e){ return null; }
+}
+
+async function loadCitas(){
+  const cont=document.getElementById('lista-citas');
+  cont.innerHTML='<p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">Cargando citas...</p>';
+  let citas=[];
+  try { citas=await Sheets.getCitas(); }
+  catch(e){ cont.innerHTML='<p style="font-size:12px;color:#E05555;text-align:center;padding:1rem;">Error al cargar citas.</p>'; return; }
+
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  const limite=new Date(hoy); limite.setDate(limite.getDate()+7);
+
+  // Filtrar hoy + próximos 7 días
+  const filtradas=citas.map(c=>({...c,_fecha:parseFechaCita(c.fecha)}))
+    .filter(c=>c._fecha && c._fecha>=hoy && c._fecha<=limite)
+    .sort((a,b)=>{
+      if(a._fecha.getTime()!==b._fecha.getTime()) return a._fecha-b._fecha;
+      return horaAMin(a.hora)-horaAMin(b.hora);
+    });
+
+  if(filtradas.length===0){
+    cont.innerHTML='<p style="font-size:12px;color:#aaa;text-align:center;padding:1.5rem;">No hay citas en los próximos 7 días.</p>';
+    return;
+  }
+
+  // Agrupar por fecha
+  const grupos={};
+  filtradas.forEach(c=>{
+    const key=c.fecha;
+    if(!grupos[key]) grupos[key]=[];
+    grupos[key].push(c);
+  });
+
+  let html='';
+  Object.keys(grupos).forEach(fecha=>{
+    const esHoy=grupos[fecha][0]._fecha.getTime()===hoy.getTime();
+    html+=`<div style="margin-bottom:14px;">
+      <p style="font-size:12px;font-weight:600;color:var(--forest);margin:0 0 8px;letter-spacing:.02em;">${esHoy?'HOY · ':''}${fecha}</p>`;
+    grupos[fecha].forEach(c=>{
+      html+=`<div style="background:#FAFAF8;border:0.5px solid #E4EBE4;border-radius:8px;padding:10px 12px;margin-bottom:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">
+          <div style="flex:1;">
+            <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin:0 0 2px;">${c.nombre}</p>
+            <p style="font-size:12px;color:#888;margin:0;">${c.servicio}</p>
+          </div>
+          <div style="text-align:right;">
+            <p style="font-size:13px;font-weight:600;color:var(--gold-dark);margin:0;">${c.hora}</p>
+            <p style="font-size:10px;color:#aaa;margin:2px 0 0;">~${c.duracion} min</p>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  cont.innerHTML=html;
+}
+
+function horaAMin(horaStr){
+  // "8:00 AM" o "1:30 PM" -> minutos
+  try {
+    const m=horaStr.match(/(\d+):(\d+)\s*(AM|PM|a\.m\.|p\.m\.)?/i);
+    if(!m) return 0;
+    let h=parseInt(m[1]); const min=parseInt(m[2]);
+    const ampm=(m[3]||'').toUpperCase().replace(/\./g,'');
+    if(ampm==='PM'&&h<12) h+=12;
+    if(ampm==='AM'&&h===12) h=0;
+    return h*60+min;
+  } catch(e){ return 0; }
 }
 
 function fmtFecha(iso){
