@@ -70,6 +70,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 .cat-pill{padding:5px 12px;border-radius:999px;font-size:12px;cursor:pointer;border:0.5px solid #eee;background:#fff;color:#666;transition:all .15s;}
 .cat-pill.sel{background:var(--forest);color:var(--gold);border-color:var(--forest);}
 .eval-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:10px;background:#F8F3FB;color:#7C4DA0;border:0.5px solid #D9C5E8;margin-left:6px;}
+.adm-tabs{display:flex;gap:8px;margin-bottom:1rem;}
+.adm-tab{flex:1;padding:10px;background:#fff;border:0.5px solid #E4EBE4;border-radius:10px;font-size:13px;font-weight:500;color:#888;cursor:pointer;transition:all .15s;}
+.adm-tab.active{background:var(--forest);color:var(--gold);border-color:var(--forest);}
+.hora-bloq{border:0.5px solid #E5D8B8;border-radius:8px;padding:8px 3px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;}
+.hora-bloq.sel{background:#E05555;color:#fff;border-color:#E05555;}
+.bloq-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#FFF5F5;border:0.5px solid #FFD9D9;border-radius:8px;margin-bottom:8px;font-size:13px;}
+.bloq-item-del{width:26px;height:26px;border-radius:6px;border:none;background:#fff;color:#E05555;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 <body>
@@ -83,11 +90,48 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 </div>
 
 <div class="adm-body">
-  <div id="seccionesServicios"></div>
-  <div style="text-align:center;padding:1rem 0;">
-    <button class="btn-add" onclick="openModal(null)" style="margin:auto;padding:10px 20px;font-size:13px;">
-      <i class="ti ti-plus"></i> Agregar nuevo servicio
-    </button>
+  <div class="adm-tabs">
+    <button class="adm-tab active" id="tab-servicios" onclick="switchTab('servicios')">Servicios</button>
+    <button class="adm-tab" id="tab-bloqueos" onclick="switchTab('bloqueos')">Bloquear días</button>
+  </div>
+
+  <div id="panel-servicios">
+    <div id="seccionesServicios"></div>
+    <div style="text-align:center;padding:1rem 0;">
+      <button class="btn-add" onclick="openModal(null)" style="margin:auto;padding:10px 20px;font-size:13px;">
+        <i class="ti ti-plus"></i> Agregar nuevo servicio
+      </button>
+    </div>
+  </div>
+
+  <div id="panel-bloqueos" style="display:none;">
+    <div class="adm-sec">
+      <div class="adm-sec-hdr"><span class="adm-sec-title">Bloquear rango de días</span></div>
+      <div style="padding:1rem;">
+        <p style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.5;">Bloquea uno o varios días seguidos (vacaciones, feriados). Las clientas verán esos días como "No disponible".</p>
+        <div class="frow">
+          <div class="fg"><label class="flbl">Desde</label><input class="fi" type="date" id="bloq-inicio"/></div>
+          <div class="fg"><label class="flbl">Hasta</label><input class="fi" type="date" id="bloq-fin"/></div>
+        </div>
+        <input class="fi" id="bloq-motivo" placeholder="Motivo (opcional): Vacaciones, Feriado..." style="margin-bottom:10px;"/>
+        <button class="btn-add" onclick="agregarBloqueoRango()" style="width:100%;justify-content:center;padding:10px;"><i class="ti ti-plus"></i> Bloquear estos días</button>
+      </div>
+    </div>
+
+    <div class="adm-sec">
+      <div class="adm-sec-hdr"><span class="adm-sec-title">Bloquear horas de un día</span></div>
+      <div style="padding:1rem;">
+        <p style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.5;">Bloquea horas específicas de un día sin cerrar el día completo.</p>
+        <div class="fg"><label class="flbl">Día</label><input class="fi" type="date" id="bloq-hora-dia" onchange="renderHorasBloqueo()"/></div>
+        <div id="horas-bloqueo-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;"></div>
+        <button class="btn-add" onclick="guardarHorasBloqueo()" style="width:100%;justify-content:center;padding:10px;"><i class="ti ti-check"></i> Guardar horas bloqueadas</button>
+      </div>
+    </div>
+
+    <div class="adm-sec">
+      <div class="adm-sec-hdr"><span class="adm-sec-title">Bloqueos activos</span></div>
+      <div id="lista-bloqueos" style="padding:0.5rem 1rem 1rem;"></div>
+    </div>
   </div>
 </div>
 
@@ -103,6 +147,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 </div>
 
 <script src="config.js"></script>
+<script src="sheets.js"></script>
 <script>
 const CATS=['Básicos','Tratamientos','Alisados','Color','Extensiones'];
 let SERVICES=[];
@@ -296,8 +341,127 @@ function guardar(){
 
 function closeModal(){document.getElementById('ov-modal').classList.remove('open');}
 
+// ===== BLOQUEOS =====
+let BLOQUEOS = {dias:[], horas:{}};
+const HORAS_DIA = ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00'];
+
+async function loadBloqueos(){
+  try {
+    BLOQUEOS = await Sheets.getBloqueos();
+    if(!BLOQUEOS.dias) BLOQUEOS.dias = [];
+    if(!BLOQUEOS.horas) BLOQUEOS.horas = {};
+  } catch(e){ BLOQUEOS = {dias:[], horas:{}}; }
+  renderListaBloqueos();
+}
+
+function saveBloqueos(){
+  Sheets.guardarBloqueos(BLOQUEOS);
+  renderListaBloqueos();
+}
+
+function switchTab(tab){
+  document.getElementById('tab-servicios').classList.toggle('active', tab==='servicios');
+  document.getElementById('tab-bloqueos').classList.toggle('active', tab==='bloqueos');
+  document.getElementById('panel-servicios').style.display = tab==='servicios'?'block':'none';
+  document.getElementById('panel-bloqueos').style.display = tab==='bloqueos'?'block':'none';
+}
+
+function fmtFecha(iso){
+  const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const [a,m,d]=iso.split('-');
+  return parseInt(d)+' de '+meses[parseInt(m)-1]+' '+a;
+}
+
+function agregarBloqueoRango(){
+  const inicio=document.getElementById('bloq-inicio').value;
+  const fin=document.getElementById('bloq-fin').value;
+  const motivo=document.getElementById('bloq-motivo').value.trim();
+  if(!inicio||!fin){alert('Selecciona fecha de inicio y fin.');return;}
+  if(fin<inicio){alert('La fecha fin debe ser igual o posterior a la de inicio.');return;}
+  let d=new Date(inicio+'T00:00:00');
+  const f=new Date(fin+'T00:00:00');
+  while(d<=f){
+    const iso=d.toISOString().split('T')[0];
+    if(!BLOQUEOS.dias.find(x=>x.fecha===iso)){
+      BLOQUEOS.dias.push({fecha:iso, motivo:motivo||'No disponible'});
+    }
+    d.setDate(d.getDate()+1);
+  }
+  document.getElementById('bloq-inicio').value='';
+  document.getElementById('bloq-fin').value='';
+  document.getElementById('bloq-motivo').value='';
+  saveBloqueos();
+  alert('Días bloqueados correctamente.');
+}
+
+function renderHorasBloqueo(){
+  const dia=document.getElementById('bloq-hora-dia').value;
+  const grid=document.getElementById('horas-bloqueo-grid');
+  if(!dia){grid.innerHTML='';return;}
+  const bloqueadas=BLOQUEOS.horas[dia]||[];
+  grid.innerHTML=HORAS_DIA.map(h=>{
+    const sel=bloqueadas.includes(h)?' sel':'';
+    const lbl=fmtHora12(h);
+    return `<div class="hora-bloq${sel}" onclick="toggleHoraBloqueo('${h}')">${lbl}</div>`;
+  }).join('');
+}
+
+function fmtHora12(h){
+  const [hh,mm]=h.split(':');
+  const n=parseInt(hh);
+  return (n>12?n-12:n)+':'+mm+(n>=12?' PM':' AM');
+}
+
+let horasSeleccionadas=[];
+function toggleHoraBloqueo(h){
+  const dia=document.getElementById('bloq-hora-dia').value;
+  if(!BLOQUEOS.horas[dia]) BLOQUEOS.horas[dia]=[];
+  const idx=BLOQUEOS.horas[dia].indexOf(h);
+  if(idx>-1) BLOQUEOS.horas[dia].splice(idx,1);
+  else BLOQUEOS.horas[dia].push(h);
+  renderHorasBloqueo();
+}
+
+function guardarHorasBloqueo(){
+  const dia=document.getElementById('bloq-hora-dia').value;
+  if(!dia){alert('Selecciona un día.');return;}
+  // limpiar si quedó vacío
+  if(BLOQUEOS.horas[dia] && BLOQUEOS.horas[dia].length===0) delete BLOQUEOS.horas[dia];
+  saveBloqueos();
+  alert('Horas bloqueadas guardadas.');
+}
+
+function renderListaBloqueos(){
+  const cont=document.getElementById('lista-bloqueos');
+  if(!cont) return;
+  let html='';
+  // Días completos
+  BLOQUEOS.dias.sort((a,b)=>a.fecha.localeCompare(b.fecha)).forEach((b,i)=>{
+    html+=`<div class="bloq-item"><span><strong>${fmtFecha(b.fecha)}</strong> · ${b.motivo}</span><button class="bloq-item-del" onclick="eliminarBloqueoDia('${b.fecha}')"><i class="ti ti-x"></i></button></div>`;
+  });
+  // Horas sueltas
+  Object.keys(BLOQUEOS.horas).sort().forEach(dia=>{
+    if(BLOQUEOS.horas[dia].length>0){
+      const horas=BLOQUEOS.horas[dia].map(fmtHora12).join(', ');
+      html+=`<div class="bloq-item"><span><strong>${fmtFecha(dia)}</strong> · Horas: ${horas}</span><button class="bloq-item-del" onclick="eliminarBloqueoHoras('${dia}')"><i class="ti ti-x"></i></button></div>`;
+    }
+  });
+  cont.innerHTML=html||'<p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">No hay bloqueos activos.</p>';
+}
+
+function eliminarBloqueoDia(fecha){
+  BLOQUEOS.dias=BLOQUEOS.dias.filter(b=>b.fecha!==fecha);
+  saveBloqueos();
+}
+
+function eliminarBloqueoHoras(dia){
+  delete BLOQUEOS.horas[dia];
+  saveBloqueos();
+}
+
 loadServices();
 renderAdmin();
+loadBloqueos();
 </script>
 </body>
 </html>
