@@ -97,6 +97,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
     <button class="adm-tab active" id="tab-servicios" onclick="switchTab('servicios')">Servicios</button>
     <button class="adm-tab" id="tab-citas" onclick="switchTab('citas')">Citas</button>
     <button class="adm-tab" id="tab-bloqueos" onclick="switchTab('bloqueos')">Bloquear días</button>
+    <button class="adm-tab" id="tab-promo" onclick="switchTab('promo')">Promo</button>
   </div>
 
   <div id="panel-servicios">
@@ -144,6 +145,43 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
     <div class="adm-sec">
       <div class="adm-sec-hdr"><span class="adm-sec-title">Bloqueos activos</span></div>
       <div id="lista-bloqueos" style="padding:0.5rem 1rem 1rem;"></div>
+    </div>
+  </div>
+
+  <div id="panel-promo" style="display:none;">
+    <div class="adm-sec">
+      <div class="adm-sec-hdr"><span class="adm-sec-title">Ventana promocional</span></div>
+      <div style="padding:1rem;">
+        <p style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.5;">Configura una ventana emergente con animación que aparece cuando las clientas entran al sitio.</p>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#FAFAF8;border:0.5px solid #E4EBE4;border-radius:8px;padding:12px 14px;margin-bottom:14px;">
+          <span style="font-size:13px;color:#1a1a1a;font-weight:500;">Mostrar promoción</span>
+          <label class="svc-toggle">
+            <input type="checkbox" id="promo-activa" onchange="togglePromoActiva()"/>
+            <div class="svc-toggle-track"></div>
+            <div class="svc-toggle-thumb"></div>
+          </label>
+        </div>
+
+        <div class="fg"><label class="flbl">Tema / animación</label>
+          <select class="fi" id="promo-tema">
+            <option value="mundial">⚽ Mundial (gol)</option>
+            <option value="regalo">🎁 Navidad / Cumpleaños (regalo)</option>
+            <option value="corazon">💝 San Valentín / Día de la Madre (corazón)</option>
+            <option value="fiesta">🎉 Genérico (confeti)</option>
+          </select>
+        </div>
+        <div class="fg"><label class="flbl">Etiqueta superior</label><input class="fi" id="promo-etiqueta" placeholder="PROMO MUNDIAL"/></div>
+        <div class="fg"><label class="flbl">Texto de festejo</label><input class="fi" id="promo-festejo" placeholder="¡GOOOL!"/></div>
+        <div class="fg"><label class="flbl">Servicio en promo</label><input class="fi" id="promo-servicio" placeholder="Lavado y Blower"/></div>
+        <div class="frow">
+          <div class="fg"><label class="flbl">Precio normal</label><input class="fi" id="promo-precio-normal" type="number" placeholder="35"/></div>
+          <div class="fg"><label class="flbl">Precio promo</label><input class="fi" id="promo-precio-promo" type="number" placeholder="20"/></div>
+        </div>
+        <div class="fg"><label class="flbl">Vigencia</label><input class="fi" id="promo-vigencia" placeholder="Válido durante el Mundial"/></div>
+
+        <button class="btn-save" onclick="guardarPromo()"><i class="ti ti-check" style="font-size:17px;"></i> Guardar promoción</button>
+      </div>
     </div>
   </div>
 </div>
@@ -376,10 +414,48 @@ function switchTab(tab){
   document.getElementById('tab-servicios').classList.toggle('active', tab==='servicios');
   document.getElementById('tab-citas').classList.toggle('active', tab==='citas');
   document.getElementById('tab-bloqueos').classList.toggle('active', tab==='bloqueos');
+  document.getElementById('tab-promo').classList.toggle('active', tab==='promo');
   document.getElementById('panel-servicios').style.display = tab==='servicios'?'block':'none';
   document.getElementById('panel-citas').style.display = tab==='citas'?'block':'none';
   document.getElementById('panel-bloqueos').style.display = tab==='bloqueos'?'block':'none';
+  document.getElementById('panel-promo').style.display = tab==='promo'?'block':'none';
   if(tab==='citas') loadCitas();
+  if(tab==='promo') loadPromo();
+}
+
+// ===== PROMO =====
+let PROMO={activa:false};
+
+async function loadPromo(){
+  try { PROMO = await Sheets.getPromo(); }
+  catch(e){ PROMO={activa:false}; }
+  document.getElementById('promo-activa').checked = !!PROMO.activa;
+  if(PROMO.tema) document.getElementById('promo-tema').value = PROMO.tema;
+  document.getElementById('promo-etiqueta').value = PROMO.etiqueta||'';
+  document.getElementById('promo-festejo').value = PROMO.festejo||'';
+  document.getElementById('promo-servicio').value = PROMO.servicio||'';
+  document.getElementById('promo-precio-normal').value = PROMO.precioNormal||'';
+  document.getElementById('promo-precio-promo').value = PROMO.precioPromo||'';
+  document.getElementById('promo-vigencia').value = PROMO.vigencia||'';
+}
+
+function togglePromoActiva(){
+  PROMO.activa = document.getElementById('promo-activa').checked;
+}
+
+function guardarPromo(){
+  PROMO = {
+    activa: document.getElementById('promo-activa').checked,
+    tema: document.getElementById('promo-tema').value,
+    etiqueta: document.getElementById('promo-etiqueta').value.trim(),
+    festejo: document.getElementById('promo-festejo').value.trim(),
+    servicio: document.getElementById('promo-servicio').value.trim(),
+    precioNormal: document.getElementById('promo-precio-normal').value,
+    precioPromo: document.getElementById('promo-precio-promo').value,
+    vigencia: document.getElementById('promo-vigencia').value.trim()
+  };
+  Sheets.guardarPromo(PROMO);
+  alert('Promoción guardada.');
 }
 
 // ===== CITAS =====
