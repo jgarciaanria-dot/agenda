@@ -867,10 +867,10 @@ try{Sheets.initSheet();}catch(e){}
 
 // ===== POPUP PROMO =====
 const TEMAS_PROMO={
-  mundial:{emoji:'⚽',bg:'#3A8A3F',porteria:true,cardBg:'#F0F7F0',cardBorder:'#C8DFC8',vigColor:'#3a7a3f'},
-  regalo:{emoji:'🎁',bg:'#B23A48',porteria:false,cardBg:'#FBF0F1',cardBorder:'#EAD0D3',vigColor:'#9c3540'},
-  corazon:{emoji:'💝',bg:'#C24E6B',porteria:false,cardBg:'#FBF0F3',cardBorder:'#EDD2DA',vigColor:'#a8455f'},
-  fiesta:{emoji:'🎉',bg:'#5A4A8A',porteria:false,cardBg:'#F2F0FA',cardBorder:'#DAD3EC',vigColor:'#52468a'}
+  mundial:{emoji:'⚽',bg:'linear-gradient(160deg,#7BA87F 0%,#4E7A53 100%)',lblColor:'#fff',porteria:true,confeti:false,cardBg:'#F0F7F0',cardBorder:'#C8DFC8',vigColor:'#3a7a3f'},
+  regalo:{emoji:'🎁',bg:'#FBF0F3',bgBorder:'#D693AA',lblColor:'#B85478',porteria:false,confeti:true,confetiLight:true,cardBg:'#FBF0F3',cardBorder:'#EDD2DA',vigColor:'#B85478'},
+  corazon:{emoji:'💝',bg:'linear-gradient(160deg,#F0A8B8 0%,#D67D95 100%)',lblColor:'#fff',porteria:false,confeti:true,confetiLight:false,cardBg:'#FBF0F3',cardBorder:'#EDD2DA',vigColor:'#a8455f'},
+  fiesta:{emoji:'🎉',bg:'linear-gradient(160deg,#A89BD9 0%,#7A6AB5 100%)',lblColor:'#fff',porteria:false,confeti:true,confetiLight:false,cardBg:'#F2F0FA',cardBorder:'#DAD3EC',vigColor:'#52468a'}
 };
 
 let PROMO_DATA=null;
@@ -883,10 +883,14 @@ async function loadPromo(){
   PROMO_DATA=promo;
 
   const tema=TEMAS_PROMO[promo.tema]||TEMAS_PROMO.mundial;
-  document.getElementById('promo-top').style.background=tema.bg;
+  const topEl=document.getElementById('promo-top');
+  topEl.style.background=tema.bg;
+  topEl.style.borderBottom=tema.bgBorder?('3px solid '+tema.bgBorder):'none';
   document.getElementById('promo-emoji').textContent=tema.emoji;
   document.getElementById('promo-porteria').style.display=tema.porteria?'block':'none';
-  document.getElementById('promo-lbl').textContent=promo.etiqueta||'PROMOCIÓN';
+  const lblEl=document.getElementById('promo-lbl');
+  lblEl.textContent=promo.etiqueta||'PROMOCIÓN';
+  lblEl.style.color=tema.lblColor;
   document.getElementById('promo-fest').textContent=promo.festejo||'¡Oferta especial!';
   document.getElementById('promo-svc').textContent=promo.servicio||'';
   const card=document.getElementById('promo-card');
@@ -911,7 +915,13 @@ async function loadPromo(){
 function animarPromo(tema){
   const emoji=document.getElementById('promo-emoji');
   const fest=document.getElementById('promo-fest');
+  const topEl=document.getElementById('promo-top');
   if(!emoji) return;
+  const conf=TEMAS_PROMO[tema]||TEMAS_PROMO.mundial;
+
+  // Limpiar confeti previo
+  topEl.querySelectorAll('.promo-confeti').forEach(c=>c.remove());
+
   fest.style.opacity='0';
   if(tema==='mundial'){
     emoji.animate([
@@ -926,6 +936,26 @@ function animarPromo(tema){
       {transform:'translateX(-50%) scale(1) rotate(0)',offset:1}
     ],{duration:900,easing:'cubic-bezier(.4,1.3,.6,1)',fill:'forwards'});
   }
+
+  // Confeti en movimiento
+  if(conf.confeti){
+    const colors=conf.confetiLight?['#E8A23C','#D26C7A','#7BA87F','#5B9BD5','#C77F3C']:['#F5D76E','#fff','#A6D9F4','#C8F4A6','#FCE8A0'];
+    for(let i=0;i<14;i++){
+      const c=document.createElement('div');
+      c.className='promo-confeti';
+      const size=4+Math.random()*4;
+      c.style.cssText='position:absolute;width:'+size+'px;height:'+(size+2)+'px;background:'+colors[i%colors.length]+';top:-12px;left:'+(Math.random()*100)+'%;border-radius:1px;opacity:.8;z-index:1;pointer-events:none;';
+      topEl.appendChild(c);
+      const dur=2200+Math.random()*1600;
+      const delay=Math.random()*2500;
+      const drift=(Math.random()*36-18);
+      c.animate([
+        {transform:'translateY(0) translateX(0) rotate(0deg)',opacity:.85},
+        {transform:'translateY(140px) translateX('+drift+'px) rotate('+(360+Math.random()*360)+'deg)',opacity:.5}
+      ],{duration:dur,delay:delay,iterations:Infinity,easing:'linear'});
+    }
+  }
+
   setTimeout(()=>{
     fest.style.transition='opacity .4s';
     fest.style.opacity='1';
