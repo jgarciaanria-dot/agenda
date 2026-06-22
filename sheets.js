@@ -1,7 +1,7 @@
 const Sheets = {
   async initSheet() {},
 
-async guardarCita(cita) {
+  async guardarCita(cita) {
     try {
       const params = new URLSearchParams({
         action: 'guardar',
@@ -11,6 +11,7 @@ async guardarCita(cita) {
         servicio: cita.servicio || '',
         categoria: cita.categoria || '',
         precioTotal: cita.precioTotal || 0,
+        precioEsConsultar: cita.precioEsConsultar || false,
         fecha: cita.fecha || '',
         hora: cita.hora || '',
         duracionMin: cita.duracionMin || 60,
