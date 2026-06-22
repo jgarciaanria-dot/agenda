@@ -328,6 +328,39 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   </div>
 </div>
 
+<!-- MARCAS -->
+<style>
+.marcas-strip{background:#2E2B2B;padding:8px 0;overflow:hidden;}
+.marcas-div{height:0.5px;background:linear-gradient(to right,transparent,rgba(201,169,110,.3),transparent);margin:0 12px;}
+.marquee-wrap{overflow:hidden;padding:8px 0;}
+.marquee-track{display:flex;align-items:center;gap:36px;width:max-content;animation:scrollMarcas 16s linear infinite;}
+.marquee-track:hover{animation-play-state:paused;}
+.marquee-item{display:flex;align-items:center;gap:36px;flex-shrink:0;}
+.marca-logo{object-fit:contain;opacity:.85;}
+@keyframes scrollMarcas{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+</style>
+<div class="marcas-strip">
+  <div class="marcas-div"></div>
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda-dev/main/loreal.png" alt="L'Oréal" style="height:12px;"/>
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda-dev/main/truss.png" alt="Truss" style="height:24px;"/>
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda-dev/main/wella.png" alt="Wella" style="height:22px;"/>
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda-dev/main/ybera.png" alt="Ybera" style="height:36px;"/>
+      </div>
+      <div class="marquee-item">
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda/main/loreal.png" alt="L'Oréal" style="height:12px;"/>
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda/main/truss.png" alt="Truss" style="height:24px;"/>
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda/main/wella.png" alt="Wella" style="height:22px;"/>
+        <img class="marca-logo" src="https://raw.githubusercontent.com/jgarciaanria-dot/agenda/main/ybera.png" alt="Ybera" style="height:36px;"/>
+      </div>
+    </div>
+  </div>
+  <div class="marcas-div"></div>
+</div>
+
+  
 <!-- FOOTER -->
 <footer style="background:#2E2B2B;margin-top:0;">
   <div style="padding:1.25rem;text-align:center;border-bottom:0.5px solid rgba(201,169,110,.12);">
