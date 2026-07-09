@@ -25,16 +25,15 @@ function abrirModalRuleta(identificador, nombre, citaId) {
   btnGirar.onclick = () => girarRuletaUI(identificador, nombre, citaId);
 }
 
-// Debe coincidir EXACTAMENTE (texto "premio") con las filas de la hoja RuletaConfig.
-// "label" es solo lo que se muestra en el segmento (puede ser más corto).
-// "angle" es el ángulo central del segmento en el SVG (6 segmentos de 60° c/u).
+// Debe coincidir EXACTAMENTE (texto "premio") con las filas de RuletaConfig.
+// 6 segmentos de 60° c/u, en el mismo orden que la hoja.
 const RULETA_SEGMENTOS = [
-  { id: 'seg1', premio: '20% dto próxima visita',     label: '20% dto',       angle: 30  },
-  { id: 'seg2', premio: '15% dto próxima visita',     label: '15% dto',       angle: 90  },
-  { id: 'seg3', premio: '10% dto próxima visita',     label: '10% dto',       angle: 150 },
-  { id: 'seg4', premio: 'Premio doble (2 servicios)', label: 'Premio doble',  angle: 210 },
-  { id: 'seg5', premio: 'Sigue jugando',              label: 'Sigue jugando', angle: 270 },
-  { id: 'seg6', premio: 'Gracias por participar',     label: 'Gracias',       angle: 330 }
+  { id: 'seg1', premio: '20% dto próxima visita',     angle: 30  },
+  { id: 'seg2', premio: '15% dto próxima visita',     angle: 90  },
+  { id: 'seg3', premio: '10% dto próxima visita',     angle: 150 },
+  { id: 'seg4', premio: 'Premio doble (2 servicios)', angle: 210 },
+  { id: 'seg5', premio: 'Sigue jugando',              angle: 270 },
+  { id: 'seg6', premio: 'Gracias por participar',     angle: 330 }
 ];
 
 async function girarRuletaUI(identificador, nombre, citaId) {
@@ -55,7 +54,7 @@ async function girarRuletaUI(identificador, nombre, citaId) {
 
   const seg = RULETA_SEGMENTOS.find(s => s.premio === resultado.premio);
   if (!seg) {
-    console.error('Premio devuelto por el backend no coincide con ningún segmento del SVG:', resultado.premio);
+    console.error('Premio devuelto por el backend no coincide con ningún segmento del SVG:', resultado.premio, '— revisa RuletaConfig vs RULETA_SEGMENTOS');
   }
   const segFinal = seg || RULETA_SEGMENTOS[0];
 
@@ -74,14 +73,14 @@ function resaltarSegmentoGanador(segId) {
   const el = document.getElementById(segId);
   if (!el) return;
   el.style.transition = 'filter 0.4s ease';
-  el.style.filter = 'drop-shadow(0 0 10px #F0DDAE) brightness(1.5)';
+  el.style.filter = 'drop-shadow(0 0 10px #F0DDAE) brightness(1.4)';
   setTimeout(() => { el.style.filter = 'none'; }, 1600);
 }
 
 function lanzarConfetti() {
   const layer = document.getElementById('confettiLayer');
   if (!layer) return;
-  const colors = ['#F0DDAE', '#D9B25C', '#E8C077', '#FBF3E4'];
+  const colors = ['#E8C077', '#D4A94F', '#F0DDAE', '#FBF3E4'];
   for (let i = 0; i < 36; i++) {
     const p = document.createElement('div');
     const size = 5 + Math.random() * 5;
