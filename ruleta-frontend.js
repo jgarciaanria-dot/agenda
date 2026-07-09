@@ -86,12 +86,12 @@ async function girarRuletaUI(identificador, nombre, citaId) {
   wheel.style.transform = 'rotate(' + currentAngle + 'deg)';
   void wheel.offsetWidth; // fuerza reflow
 
-  const desiredMod = ((360 - segFinal.angle - 8) % 360 + 360) % 360;
+  const desiredMod = ((90 - segFinal.angle - 8) % 360 + 360) % 360;
   const currentMod = ((currentAngle % 360) + 360) % 360;
   const adjustment = ((desiredMod - currentMod) % 360 + 360) % 360;
   const finalAngle = currentAngle + 2160 + adjustment;
 
-  wheel.style.transition = 'transform 3.5s cubic-bezier(0.12, 0.85, 0.15, 1)';
+  wheel.style.transition = 'transform 4.5s cubic-bezier(0.22, 1, 0.36, 1)';
   wheel.style.transform = 'rotate(' + finalAngle + 'deg)';
 
   setTimeout(() => {
@@ -99,7 +99,7 @@ async function girarRuletaUI(identificador, nombre, citaId) {
     resaltarSegmentoGanador(segFinal.id);
     lanzarConfetti();
     mostrarResultadoRuleta(resultado);
-  }, 3500);
+  }, 4500);
 }
 
 function getCurrentRotationDeg(el) {
