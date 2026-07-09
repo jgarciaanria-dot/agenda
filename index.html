@@ -430,7 +430,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   margin:1.5rem auto 1.75rem;
 }
 #wheelSvg{
-  transition: transform 3.5s cubic-bezier(0.12, 0.85, 0.15, 1);
+  transition: transform 4.5s cubic-bezier(0.22, 1, 0.36, 1);
   transform: rotate(0deg);
 }
 @keyframes ruletaFastSpin{
@@ -458,28 +458,28 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 }
 
 .ruleta-pointer{
-  position:absolute; top:-4px; left:50%;
-  transform:translateX(-50%);
+  position:absolute; top:50%; right:-6px;
+  transform:translateY(-50%);
   width:0; height:0;
-  border-left:9px solid transparent;
-  border-right:9px solid transparent;
-  border-top:15px solid #C9A24B;
+  border-top:9px solid transparent;
+  border-bottom:9px solid transparent;
+  border-right:15px solid #C9A24B;
   z-index:5;
 }
 
 .ruleta-vs-logo{
-  position:absolute; top:-22px; left:50%;
+  position:absolute; top:-16px; left:50%;
   transform:translateX(-50%);
-  width:56px; height:56px;
+  width:42px; height:42px;
   border-radius:50%;
   background:#0D0C0A;
   border:2px solid #E8C077;
   display:flex; align-items:center; justify-content:center;
   z-index:15;
-  box-shadow:0 0 14px rgba(232,192,119,0.5);
+  box-shadow:0 0 10px rgba(232,192,119,0.5);
 }
 .ruleta-vs-logo img{
-  width:40px; height:40px;
+  width:30px; height:30px;
   object-fit:contain;
   border-radius:50%;
 }
@@ -618,14 +618,19 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
       const headline = ruletaPt(cx, cy, R * 0.62, midAngle);
       const icon = ruletaPt(cx, cy, R * 0.86, midAngle);
 
+      // Contra-rotación: calibrada para que este texto quede horizontal
+      // justo cuando ESTE segmento gane y la rueda lo lleve al puntero (derecha, 90°)
+      const desiredMod = ((90 - midAngle - 8) % 360 + 360) % 360;
+      const counterAngle = ((360 - desiredMod) % 360 + 360) % 360;
+
       const lineas = ruletaWordWrap(premiosActivos[k].premio, maxLineLen);
       const startY = parseFloat(headline.y) - ((lineas.length - 1) * lineHeight) / 2;
       const tspans = lineas.map((linea, i) =>
         `<tspan x="${headline.x}" dy="${i === 0 ? 0 : lineHeight}">${ruletaEscapeHtml(linea)}</tspan>`
       ).join('');
 
-      textsHtml += `<text x="${headline.x}" y="${startY.toFixed(1)}" font-size="${fontSize}" font-weight="800" fill="${color.text}" text-anchor="middle">${tspans}</text>\n`;
-      textsHtml += `<text x="${icon.x}" y="${icon.y}" font-size="12" text-anchor="middle">🎁</text>\n`;
+      textsHtml += `<text x="${headline.x}" y="${startY.toFixed(1)}" font-size="${fontSize}" font-weight="800" fill="${color.text}" text-anchor="middle" transform="rotate(${counterAngle.toFixed(1)} ${headline.x} ${startY.toFixed(1)})">${tspans}</text>\n`;
+      textsHtml += `<text x="${icon.x}" y="${icon.y}" font-size="12" text-anchor="middle" transform="rotate(${counterAngle.toFixed(1)} ${icon.x} ${icon.y})">🎁</text>\n`;
 
       segmentos.push({ id: segId, premio: premiosActivos[k].premio, angle: midAngle });
     }
