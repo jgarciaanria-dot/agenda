@@ -72,14 +72,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 .cat-pill{padding:5px 12px;border-radius:999px;font-size:12px;cursor:pointer;border:0.5px solid #eee;background:#fff;color:#666;transition:all .15s;}
 .cat-pill.sel{background:var(--forest);color:var(--gold);border-color:var(--forest);}
 .eval-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:10px;background:#F8F3FB;color:#7C4DA0;border:0.5px solid #D9C5E8;margin-left:6px;}
-.adm-tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid #EDE8DC;}
-.adm-tab{padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-size:13px;font-weight:500;color:#999;cursor:pointer;transition:all .15s;}
+.adm-tabs{display:flex;gap:4px;margin-bottom:1.25rem;border-bottom:1px solid #EDE8DC;overflow-x:auto;}
+.adm-tab{padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-size:13px;font-weight:500;color:#999;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .adm-tab:hover{color:#4A4844;}
 .adm-tab.active{color:#4A4844;border-bottom-color:#C9A96E;}
 .hora-bloq{border:0.5px solid #E5D8B8;border-radius:8px;padding:8px 3px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;}
 .hora-bloq.sel{background:#E05555;color:#fff;border-color:#E05555;}
 .bloq-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#FFF5F5;border:0.5px solid #FFD9D9;border-radius:8px;margin-bottom:8px;font-size:13px;}
 .bloq-item-del{width:26px;height:26px;border-radius:6px;border:none;background:#fff;color:#E05555;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.premio-card{background:#FAFAF8;border:0.5px solid #E4EBE4;border-radius:8px;padding:12px;margin-bottom:8px;}
+.premio-card-top{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
 </style>
 </head>
 <body>
@@ -98,6 +100,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
     <button class="adm-tab" id="tab-citas" onclick="switchTab('citas')">Citas</button>
     <button class="adm-tab" id="tab-bloqueos" onclick="switchTab('bloqueos')">Bloquear días</button>
     <button class="adm-tab" id="tab-promo" onclick="switchTab('promo')">Promo</button>
+    <button class="adm-tab" id="tab-ruleta" onclick="switchTab('ruleta')">Ruleta</button>
   </div>
 
   <div id="panel-servicios">
@@ -183,6 +186,43 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
         <div class="fg"><label class="flbl">Vigencia</label><input class="fi" id="promo-vigencia" placeholder="Válido durante el Mundial"/></div>
 
         <button class="btn-save" onclick="guardarPromo()"><i class="ti ti-check" style="font-size:17px;"></i> Guardar promoción</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-ruleta" style="display:none;">
+    <div class="adm-sec">
+      <div class="adm-sec-hdr">
+        <span class="adm-sec-title">Ruleta de premios</span>
+        <label class="svc-toggle">
+          <input type="checkbox" id="ruleta-activa" onchange="toggleRuletaActiva()"/>
+          <div class="svc-toggle-track"></div>
+          <div class="svc-toggle-thumb"></div>
+        </label>
+      </div>
+      <div style="padding:1rem;">
+        <p style="font-size:12px;color:#888;margin-bottom:10px;line-height:1.5;">Controla si la ruleta aparece después de confirmar una cita, y ajusta los premios y sus probabilidades. Las probabilidades son pesos relativos — no necesitan sumar exactamente 100, pero se recomienda mantenerlo así para leerlas como porcentaje directo.</p>
+        <div style="background:#FFF8EC;border:0.5px solid #F0DFB8;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:11px;color:#8B6F3E;line-height:1.5;">
+          <i class="ti ti-alert-triangle" style="vertical-align:-2px;"></i>
+          El texto de cada premio y la cantidad de premios activos deben coincidir con lo que muestra la rueda en <code>index.html</code>. Si cambias el nombre de un premio o agregas/quitas uno, avísale a Claude para actualizar la rueda visual también (por ahora no es automático).
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;background:#FAFAF8;border:0.5px solid #E4EBE4;border-radius:8px;padding:10px 14px;margin-bottom:14px;">
+          <span style="font-size:12px;color:#888;">Suma de probabilidades activas</span>
+          <span id="ruleta-suma" style="font-size:14px;font-weight:600;color:var(--gold-dark);">0</span>
+        </div>
+
+        <div id="lista-premios-ruleta"></div>
+
+        <button class="btn-add" onclick="agregarPremio()" style="width:100%;justify-content:center;padding:10px;margin-top:8px;margin-bottom:8px;"><i class="ti ti-plus"></i> Agregar premio</button>
+        <button class="btn-save" onclick="guardarRuleta()"><i class="ti ti-check" style="font-size:17px;"></i> Guardar cambios de la ruleta</button>
+      </div>
+    </div>
+
+    <div class="adm-sec">
+      <div class="adm-sec-hdr"><span class="adm-sec-title">Ganadores recientes</span></div>
+      <div id="lista-ganadores-ruleta" style="padding:0.5rem 1rem 1rem;">
+        <p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">Cargando...</p>
       </div>
     </div>
   </div>
@@ -417,12 +457,15 @@ function switchTab(tab){
   document.getElementById('tab-citas').classList.toggle('active', tab==='citas');
   document.getElementById('tab-bloqueos').classList.toggle('active', tab==='bloqueos');
   document.getElementById('tab-promo').classList.toggle('active', tab==='promo');
+  document.getElementById('tab-ruleta').classList.toggle('active', tab==='ruleta');
   document.getElementById('panel-servicios').style.display = tab==='servicios'?'block':'none';
   document.getElementById('panel-citas').style.display = tab==='citas'?'block':'none';
   document.getElementById('panel-bloqueos').style.display = tab==='bloqueos'?'block':'none';
   document.getElementById('panel-promo').style.display = tab==='promo'?'block':'none';
+  document.getElementById('panel-ruleta').style.display = tab==='ruleta'?'block':'none';
   if(tab==='citas') loadCitas();
   if(tab==='promo') loadPromo();
+  if(tab==='ruleta') loadRuleta();
 }
 
 // ===== PROMO =====
@@ -470,6 +513,135 @@ function guardarPromo(){
   };
   Sheets.guardarPromo(PROMO);
   alert('Promoción guardada.');
+}
+
+// ===== RULETA =====
+let RULETA_CONFIG = {activa:false, premios:[]};
+
+async function loadRuleta(){
+  const cont=document.getElementById('lista-premios-ruleta');
+  cont.innerHTML='<p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">Cargando...</p>';
+  try { RULETA_CONFIG = await Sheets.getRuletaConfig(); }
+  catch(e){ RULETA_CONFIG = {activa:false, premios:[]}; }
+  if(!RULETA_CONFIG.premios) RULETA_CONFIG.premios = [];
+  document.getElementById('ruleta-activa').checked = !!RULETA_CONFIG.activa;
+  renderPremios();
+  loadGanadoresRuleta();
+}
+
+function premioRowHtml(p, idx){
+  const stockVal = (p.stock===null || p.stock===undefined) ? '' : p.stock;
+  return `<div class="premio-card" data-idx="${idx}">
+    <div class="premio-card-top">
+      <input class="fi premio-nombre" value="${(p.premio||'').replace(/"/g,'&quot;')}" style="flex:1;font-weight:500;" placeholder="Nombre del premio">
+      <label class="svc-toggle" style="flex-shrink:0;">
+        <input type="checkbox" class="premio-activo" ${p.activo?'checked':''}/>
+        <div class="svc-toggle-track"></div>
+        <div class="svc-toggle-thumb"></div>
+      </label>
+      <button class="btn-ico del" onclick="eliminarPremio(${idx})" title="Eliminar"><i class="ti ti-trash"></i></button>
+    </div>
+    <div class="frow">
+      <div class="fg" style="margin-bottom:0;"><label class="flbl">Probabilidad</label><input class="fi premio-prob" type="number" min="0" step="1" value="${p.probabilidad||0}"></div>
+      <div class="fg" style="margin-bottom:0;"><label class="flbl">Stock (vacío = ilimitado)</label><input class="fi premio-stock" type="number" min="0" value="${stockVal}"></div>
+    </div>
+  </div>`;
+}
+
+function renderPremios(){
+  const cont = document.getElementById('lista-premios-ruleta');
+  if(RULETA_CONFIG.premios.length===0){
+    cont.innerHTML = '<p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">No hay premios configurados.</p>';
+    return;
+  }
+  cont.innerHTML = RULETA_CONFIG.premios.map((p,i)=>premioRowHtml(p,i)).join('');
+  cont.querySelectorAll('.premio-prob, .premio-activo').forEach(inp=>{
+    inp.addEventListener('input', actualizarSumaProbabilidades);
+    inp.addEventListener('change', actualizarSumaProbabilidades);
+  });
+  actualizarSumaProbabilidades();
+}
+
+function actualizarSumaProbabilidades(){
+  let suma = 0;
+  document.querySelectorAll('#lista-premios-ruleta .premio-card').forEach(row=>{
+    const activo = row.querySelector('.premio-activo').checked;
+    const prob = parseFloat(row.querySelector('.premio-prob').value) || 0;
+    if(activo) suma += prob;
+  });
+  document.getElementById('ruleta-suma').textContent = suma;
+}
+
+function agregarPremio(){
+  RULETA_CONFIG.premios.push({premio:'Nuevo premio', probabilidad:0, activo:true, stock:null});
+  renderPremios();
+}
+
+function eliminarPremio(idx){
+  if(!confirm('¿Eliminar este premio de la lista?')) return;
+  RULETA_CONFIG.premios.splice(idx,1);
+  renderPremios();
+}
+
+function toggleRuletaActiva(){
+  // solo actualiza el valor en memoria; se guarda al presionar "Guardar cambios"
+}
+
+function recolectarPremiosDesdeDOM(){
+  const filas = document.querySelectorAll('#lista-premios-ruleta .premio-card');
+  const premios = [];
+  filas.forEach(row=>{
+    const nombre = row.querySelector('.premio-nombre').value.trim();
+    const activo = row.querySelector('.premio-activo').checked;
+    const prob = parseFloat(row.querySelector('.premio-prob').value) || 0;
+    const stockRaw = row.querySelector('.premio-stock').value.trim();
+    premios.push({
+      premio: nombre,
+      probabilidad: prob,
+      activo: activo,
+      stock: stockRaw === '' ? null : parseInt(stockRaw)
+    });
+  });
+  return premios;
+}
+
+async function guardarRuleta(){
+  const premios = recolectarPremiosDesdeDOM();
+  if(premios.some(p=>!p.premio)){
+    alert('Todos los premios necesitan un nombre.');
+    return;
+  }
+  const payload = {
+    activa: document.getElementById('ruleta-activa').checked,
+    premios: premios
+  };
+  await Sheets.guardarRuletaConfig(payload);
+  RULETA_CONFIG = payload;
+  alert('Ruleta actualizada. Recuerda: si cambiaste nombres de premios o agregaste/quitaste alguno, avísale a Claude para actualizar la rueda visual también.');
+}
+
+async function loadGanadoresRuleta(){
+  const cont = document.getElementById('lista-ganadores-ruleta');
+  try {
+    const url = CONFIG.sheets.scriptUrl + '?action=getRuletaGanadores&_=' + Date.now();
+    const res = await fetch(url);
+    const data = await res.json();
+    const ganadores = data.ganadores || [];
+    if(ganadores.length===0){
+      cont.innerHTML = '<p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">Aún no hay ganadores registrados.</p>';
+      return;
+    }
+    cont.innerHTML = ganadores.slice(-15).reverse().map(g=>`
+      <div style="background:#FAFAF8;border:0.5px solid #E4EBE4;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <div>
+          <p style="font-size:13px;font-weight:500;color:#1a1a1a;margin:0;">${g.nombre||'Sin nombre'} <span style="color:#aaa;font-weight:400;">· ${g.telefono||''}</span></p>
+          <p style="font-size:12px;color:#888;margin:2px 0 0;">${g.premio}${g.codigoCanje?' · '+g.codigoCanje:''}</p>
+        </div>
+        <span style="font-size:11px;padding:3px 9px;border-radius:999px;background:${g.canjeado==='si'?'#E8F5E9':'#FFF8EC'};color:${g.canjeado==='si'?'#2E7D32':'#8B6F3E'};font-weight:500;white-space:nowrap;">${g.canjeado==='si'?'Canjeado':'Pendiente'}</span>
+      </div>`).join('');
+  } catch(e){
+    cont.innerHTML = '<p style="font-size:12px;color:#E05555;text-align:center;padding:1rem;">Error al cargar ganadores.</p>';
+  }
 }
 
 // ===== CITAS =====
