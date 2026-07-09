@@ -1,18 +1,9 @@
 /* ============================================================
    RULETA - FRONTEND
-   Reemplaza API_URL por la URL de tu deployment de Apps Script
+   Usa CONFIG.sheets.scriptUrl (definido en config.js) —
+   mismo deployment que usan guardarCita, getServicios, etc.
+   No necesita ninguna URL propia.
    ============================================================ */
-
-const RULETA_API_URL = 'https://script.google.com/macros/s/AKfycbwRvaWEm0_rIYFYnQMZ83X0f7FYEqW945nDuXZHddIB0dggrFnG0G8XUSILyGkx0a61/exec';
-
-async function llamarBackendRuleta(accion, datos) {
-  const response = await fetch(RULETA_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' }, // evita preflight OPTIONS con Apps Script
-    body: JSON.stringify({ accion, ...datos })
-  });
-  return response.json();
-}
 
 /**
  * Llamar esto justo después de que guardarCita() confirme éxito.
@@ -22,7 +13,7 @@ async function llamarBackendRuleta(accion, datos) {
  */
 async function intentarMostrarRuleta(identificador, nombre, citaId) {
   try {
-    const check = await llamarBackendRuleta('verificarElegibilidad', { identificador });
+    const check = await Sheets.verificarElegibilidadRuleta(identificador);
     if (!check.elegible) {
       console.log('Ruleta no disponible:', check.motivo);
       return; // ruleta apagada o el cliente ya participó -> no se muestra nada
@@ -59,7 +50,7 @@ async function girarRuletaUI(identificador, nombre, citaId) {
     // ajustar según los premios reales que definan al final
   ];
 
-  const resultado = await llamarBackendRuleta('girarRuleta', { identificador, nombre, citaId });
+  const resultado = await Sheets.girarRuleta(identificador, nombre, citaId);
 
   if (!resultado.ok) {
     subtitle.textContent = 'No se pudo completar el giro. Intenta más tarde.';
