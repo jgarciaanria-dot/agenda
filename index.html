@@ -365,9 +365,166 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   </div>
 </footer>
 
+<!-- ============================================================
+     MODAL RULETA
+     ============================================================ -->
+<style>
+.ruleta-ov{
+  display:none;
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:300;
+  align-items:center; justify-content:center;
+  padding:1rem;
+}
+.ruleta-ov.activo{ display:flex; }
+
+.ruleta-panel{
+  background:#0D0C0A;
+  border-radius:20px;
+  padding:2rem 1.75rem 1.75rem;
+  width:100%; max-width:360px;
+  text-align:center;
+  position:relative;
+  border:1px solid #4A3D22;
+  animation:ruletaSlideUp .35s cubic-bezier(.34,1.2,.64,1);
+}
+@keyframes ruletaSlideUp{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.ruleta-close{
+  position:absolute; top:14px; right:14px;
+  background:none; border:none;
+  color:#8A7A4E; font-size:20px;
+  cursor:pointer; line-height:1;
+}
+
+.ruleta-eyebrow{
+  font-size:12px; letter-spacing:.08em;
+  color:#C9A24B; font-weight:500;
+  margin:0 0 6px; text-transform:uppercase;
+}
+.ruleta-title{
+  margin:0 0 4px;
+  font-family:'Cormorant Garamond', serif;
+  font-weight:600; color:#E3C077;
+  font-size:22px; letter-spacing:.02em;
+}
+.ruleta-subtitle{
+  font-size:13px; color:#8A7A4E;
+  margin:0 0 1.5rem;
+}
+
+.ruleta-wheel-wrap{
+  position:relative;
+  width:250px; height:250px;
+  margin:0 auto 1.75rem;
+}
+#wheelSvg{
+  transition: transform 4.2s cubic-bezier(0.15, 0.85, 0.2, 1);
+  transform: rotate(0deg);
+}
+
+.ruleta-center-btn{
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:68px; height:68px;
+  border-radius:50%;
+  background:#0D0C0A;
+  border:1.5px solid #C9A24B;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+}
+.ruleta-center-btn span{
+  font-size:13px; font-weight:600;
+  color:#E3C077; letter-spacing:.02em;
+  font-family:'Cormorant Garamond', serif;
+}
+
+.ruleta-pointer{
+  position:absolute; top:-4px; left:50%;
+  transform:translateX(-50%);
+  width:0; height:0;
+  border-left:9px solid transparent;
+  border-right:9px solid transparent;
+  border-top:15px solid #C9A24B;
+  z-index:5;
+}
+
+.ruleta-result-card{
+  background:#17140C;
+  border:1px solid #4A3D22;
+  border-radius:10px;
+  padding:14px;
+  font-size:14px; color:#E3C077;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  opacity:0; transform:scale(.9);
+  transition:opacity .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
+  font-weight:500;
+}
+
+#confettiLayer{
+  position:absolute; top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none; overflow:hidden;
+  border-radius:20px;
+}
+</style>
+
+<div class="ruleta-ov" id="ruletaModal">
+  <div class="ruleta-panel">
+    <button class="ruleta-close" id="ruletaCloseBtn" aria-label="Cerrar">&times;</button>
+
+    <p class="ruleta-eyebrow">Cita confirmada</p>
+    <h3 class="ruleta-title">Gira y gana un premio</h3>
+    <p class="ruleta-subtitle" id="ruletaSubtitle">Una sola oportunidad por cliente</p>
+
+    <div id="confettiLayer"></div>
+
+    <div class="ruleta-wheel-wrap">
+      <svg id="wheelSvg" viewBox="0 0 250 250" width="250" height="250">
+        <circle cx="125" cy="125" r="120" fill="none" stroke="#C9A24B" stroke-width="0.5" opacity="0.4"/>
+        <path id="segTop"    d="M125,125 L34.6,49.1 A118,118 0 0,1 215.4,49.1 Z"  fill="#EDE0C0"/>
+        <path id="segRight"  d="M125,125 L215.4,49.1 A118,118 0 0,1 215.4,200.9 Z" fill="#0D0C0A"/>
+        <path id="segBottom" d="M125,125 L215.4,200.9 A118,118 0 0,1 34.6,200.9 Z" fill="#5A564C"/>
+        <path id="segLeft"   d="M125,125 L34.6,200.9 A118,118 0 0,1 34.6,49.1 Z"   fill="#382A10"/>
+        <circle cx="125" cy="125" r="118" fill="none" stroke="#C9A24B" stroke-width="1"/>
+        <line x1="125" y1="125" x2="34.6"  y2="49.1"  stroke="#C9A24B" stroke-width="0.75" opacity="0.5"/>
+        <line x1="125" y1="125" x2="215.4" y2="49.1"  stroke="#C9A24B" stroke-width="0.75" opacity="0.5"/>
+        <line x1="125" y1="125" x2="215.4" y2="200.9" stroke="#C9A24B" stroke-width="0.75" opacity="0.5"/>
+        <line x1="125" y1="125" x2="34.6"  y2="200.9" stroke="#C9A24B" stroke-width="0.75" opacity="0.5"/>
+
+        <text x="125" y="55" font-size="10" fill="#5C4B22" text-anchor="middle">Mejor premio</text>
+        <text x="125" y="78" font-size="20" font-weight="600" fill="#1A140A" text-anchor="middle">20% dto</text>
+        <text x="210" y="125" font-size="15" font-weight="600" fill="#E3C077" text-anchor="middle" transform="rotate(-90 210 125)">10% dto</text>
+        <text x="125" y="205" font-size="16" font-weight="600" fill="#F5F1E6" text-anchor="middle" transform="rotate(180 125 205)">Premio doble</text>
+        <text x="40" y="125" font-size="15" font-weight="600" fill="#E3C077" text-anchor="middle" transform="rotate(90 40 125)">15% dto</text>
+
+        <circle cx="125" cy="125" r="34" fill="#0D0C0A" stroke="#C9A24B" stroke-width="1.5"/>
+      </svg>
+      <div class="ruleta-center-btn" id="ruletaSpinBtn"><span>Girar</span></div>
+      <div class="ruleta-pointer"></div>
+    </div>
+
+    <div class="ruleta-result-card" id="ruletaResultCard">
+      <i class="ti ti-gift" style="font-size:17px;" aria-hidden="true"></i>
+      <span id="ruletaResultText"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('ruletaCloseBtn').addEventListener('click', function(){
+    document.getElementById('ruletaModal').classList.remove('activo');
+  });
+</script>
+
 <script src="config.js?v=4"></script>
 <script src="yappy.js?v=4"></script>
 <script src="sheets.js?v=4"></script>
+<script src="ruleta-frontend.js?v=1"></script>
 <script>
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
@@ -827,10 +984,11 @@ async function confirmar(dayStr){
   const precio=curSvc.price>0?curSvc.price:0;
   const esConsultar = curSvc.price<=0;
   const notaFinal = curSvc._promo ? (nota ? nota+' [PROMO aplicada]' : 'PROMO aplicada') : nota;
+  const citaId = 'cita-' + Date.now();
   const cita={nombre,telefono:tel,correo,nota:notaFinal,servicio:curSvc.name,categoria:curSvc.cat,
     precioTotal:precio,precioEsConsultar:esConsultar,fecha:dayStr,hora:selTime,duracionMin:curSvc.durMin,
     comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?tipoAbono:'',
-    metodoPago:tieneAbono?pagoTipo:''};
+    metodoPago:tieneAbono?pagoTipo:'', citaId:citaId};
   try{await Sheets.guardarCita(cita);}catch(e){console.error(e);}
   await new Promise(r=>setTimeout(r,900));
   const precioStr=esConsultar?'Por confirmar':(curSvc.precioTexto&&curSvc.precioTexto.toLowerCase().includes('desde')?'Desde $'+precio.toFixed(2):'$'+precio.toFixed(2));
@@ -856,6 +1014,8 @@ async function confirmar(dayStr){
       <p style="font-size:11px;color:#aaa;margin-bottom:1rem;">Recuerda: cancelaciones con menos de 24 horas de anticipación no tienen reembolso del abono.</p>
       <button class="btn-main" style="background:#2E2B2B;color:#C9A96E;font-family:'Cormorant Garamond',serif;" onclick="closeOv('ov-form')">Listo</button>
     </div>`;
+
+  intentarMostrarRuleta(tel, nombre, citaId);
 }
 
 function openOv(id){document.getElementById(id).classList.add('open');}
