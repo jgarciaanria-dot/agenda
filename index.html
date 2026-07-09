@@ -372,7 +372,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .ruleta-ov{
   display:none;
   position:fixed; inset:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.5);
   z-index:300;
   align-items:center; justify-content:center;
   padding:1rem;
@@ -380,7 +380,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .ruleta-ov.activo{ display:flex; }
 
 .ruleta-panel{
-  background:#0D0C0A;
+  background:#1A160E;
   border-radius:20px;
   padding:2rem 1.75rem 1.75rem;
   width:100%; max-width:360px;
@@ -432,7 +432,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   transform:translate(-50%,-50%);
   width:68px; height:68px;
   border-radius:50%;
-  background:#0D0C0A;
+  background:#1A160E;
   border:1.5px solid #C9A24B;
   display:flex; align-items:center; justify-content:center;
   cursor:pointer;
@@ -454,7 +454,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 }
 
 .ruleta-result-card{
-  background:#17140C;
+  background:#221D12;
   border:1px solid #4A3D22;
   border-radius:10px;
   padding:14px;
@@ -470,6 +470,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   width:100%; height:100%;
   pointer-events:none; overflow:hidden;
   border-radius:20px;
+  z-index:20;
 }
 </style>
 
@@ -487,9 +488,9 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
       <svg id="wheelSvg" viewBox="0 0 250 250" width="250" height="250">
         <circle cx="125" cy="125" r="120" fill="none" stroke="#C9A24B" stroke-width="0.5" opacity="0.4"/>
         <path id="segTop"    d="M125,125 L34.6,49.1 A118,118 0 0,1 215.4,49.1 Z"  fill="#EDE0C0"/>
-        <path id="segRight"  d="M125,125 L215.4,49.1 A118,118 0 0,1 215.4,200.9 Z" fill="#0D0C0A"/>
+        <path id="segRight"  d="M125,125 L215.4,49.1 A118,118 0 0,1 215.4,200.9 Z" fill="#231F17"/>
         <path id="segBottom" d="M125,125 L215.4,200.9 A118,118 0 0,1 34.6,200.9 Z" fill="#5A564C"/>
-        <path id="segLeft"   d="M125,125 L34.6,200.9 A118,118 0 0,1 34.6,49.1 Z"   fill="#382A10"/>
+        <path id="segLeft"   d="M125,125 L34.6,200.9 A118,118 0 0,1 34.6,49.1 Z"   fill="#3D2E12"/>
         <circle cx="125" cy="125" r="118" fill="none" stroke="#C9A24B" stroke-width="1"/>
         <line x1="125" y1="125" x2="34.6"  y2="49.1"  stroke="#C9A24B" stroke-width="0.75" opacity="0.5"/>
         <line x1="125" y1="125" x2="215.4" y2="49.1"  stroke="#C9A24B" stroke-width="0.75" opacity="0.5"/>
@@ -502,7 +503,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
         <text x="125" y="205" font-size="16" font-weight="600" fill="#F5F1E6" text-anchor="middle" transform="rotate(180 125 205)">Premio doble</text>
         <text x="40" y="125" font-size="15" font-weight="600" fill="#E3C077" text-anchor="middle" transform="rotate(90 40 125)">15% dto</text>
 
-        <circle cx="125" cy="125" r="34" fill="#0D0C0A" stroke="#C9A24B" stroke-width="1.5"/>
+        <circle cx="125" cy="125" r="34" fill="#1A160E" stroke="#C9A24B" stroke-width="1.5"/>
       </svg>
       <div class="ruleta-center-btn" id="ruletaSpinBtn"><span>Girar</span></div>
       <div class="ruleta-pointer"></div>
@@ -1065,9 +1066,17 @@ async function confirmar(dayStr){
       <button class="btn-main" style="background:#2E2B2B;color:#C9A96E;font-family:'Cormorant Garamond',serif;" onclick="closeOv('ov-form')">Listo</button>
     </div>`;
 
-  setTimeout(() => {
-    closeOv('ov-form');
-    intentarMostrarRuleta(tel, nombre, citaId);
+  setTimeout(async () => {
+    try {
+      const check = await Sheets.verificarElegibilidadRuleta(tel);
+      if (check && check.elegible) {
+        closeOv('ov-form');
+        abrirModalRuleta(tel, nombre, citaId);
+      }
+      // si no es elegible (ya participó o ruleta apagada), el modal de confirmación se queda abierto tal cual
+    } catch (err) {
+      console.error('Error verificando elegibilidad de ruleta:', err);
+    }
   }, 1800);
 }
 
