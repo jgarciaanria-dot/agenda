@@ -182,32 +182,29 @@ const Sheets = {
       console.error('Error marcando cupón canjeado:', e);
       return { ok: false };
     }
+  },
+
+  async getRuletaConfig() {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=getRuletaConfig&_=' + Date.now();
+      const res = await fetch(url);
+      return await res.json();
+    } catch (e) {
+      console.error('Error cargando config de ruleta:', e);
+      return { activa: false, premios: [] };
+    }
+  },
+
+  async guardarRuletaConfig(payload) {
+    try {
+      await fetch(CONFIG.sheets.scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'guardarRuletaConfig', payload: payload })
+      });
+    } catch (e) {
+      console.error('Error guardando config de ruleta:', e);
+    }
   }
 };
-/* ============================================================
-   Agregar dentro del objeto Sheets en sheets.js
-   ============================================================ */
-
-async getRuletaConfig() {
-  try {
-    const url = CONFIG.sheets.scriptUrl + '?action=getRuletaConfig&_=' + Date.now();
-    const res = await fetch(url);
-    return await res.json();
-  } catch (e) {
-    console.error('Error cargando config de ruleta:', e);
-    return { activa: false, premios: [] };
-  }
-},
-
-async guardarRuletaConfig(payload) {
-  try {
-    await fetch(CONFIG.sheets.scriptUrl, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'guardarRuletaConfig', payload: payload })
-    });
-  } catch (e) {
-    console.error('Error guardando config de ruleta:', e);
-  }
-}
