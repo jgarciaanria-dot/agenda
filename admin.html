@@ -201,11 +201,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
         </label>
       </div>
       <div style="padding:1rem;">
-        <p style="font-size:12px;color:#888;margin-bottom:10px;line-height:1.5;">Controla si la ruleta aparece después de confirmar una cita, y ajusta los premios y sus probabilidades. Las probabilidades son pesos relativos — no necesitan sumar exactamente 100, pero se recomienda mantenerlo así para leerlas como porcentaje directo.</p>
-        <div style="background:#FFF8EC;border:0.5px solid #F0DFB8;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:11px;color:#8B6F3E;line-height:1.5;">
-          <i class="ti ti-alert-triangle" style="vertical-align:-2px;"></i>
-          El texto de cada premio y la cantidad de premios activos deben coincidir con lo que muestra la rueda en <code>index.html</code>. Si cambias el nombre de un premio o agregas/quitas uno, avísale a Claude para actualizar la rueda visual también (por ahora no es automático).
-        </div>
+        <p style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.5;">Controla si la ruleta aparece después de confirmar una cita, y ajusta los premios y sus probabilidades. Las probabilidades son pesos relativos — no necesitan sumar exactamente 100, pero se recomienda mantenerlo así para leerlas como porcentaje directo. Los cambios aquí (nombres, cantidad de premios, activo/inactivo) se reflejan solos en la rueda visual, sin tocar código.</p>
 
         <div style="display:flex;justify-content:space-between;align-items:center;background:#FAFAF8;border:0.5px solid #E4EBE4;border-radius:8px;padding:10px 14px;margin-bottom:14px;">
           <span style="font-size:12px;color:#888;">Suma de probabilidades activas</span>
@@ -617,7 +613,7 @@ async function guardarRuleta(){
   };
   await Sheets.guardarRuletaConfig(payload);
   RULETA_CONFIG = payload;
-  alert('Ruleta actualizada. Recuerda: si cambiaste nombres de premios o agregaste/quitaste alguno, avísale a Claude para actualizar la rueda visual también.');
+  alert('Ruleta actualizada. Los cambios se verán en la rueda la próxima vez que alguien cargue la agenda.');
 }
 
 async function loadGanadoresRuleta(){
