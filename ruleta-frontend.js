@@ -24,6 +24,11 @@ function abrirModalRuleta(identificador, nombre, citaId) {
   const subtitle = document.getElementById('ruletaSubtitle');
   const resultCard = document.getElementById('ruletaResultCard');
 
+  if (!wheel) {
+    console.error('La rueda no se generó (sin premios activos o falló la carga de RuletaConfig).');
+    return;
+  }
+
   // Reinicia el estado por si el modal ya se usó antes en esta misma sesión
   wheel.classList.remove('spinning-fast');
   wheel.style.transition = 'none';
@@ -39,21 +44,18 @@ function abrirModalRuleta(identificador, nombre, citaId) {
   btnGirar.onclick = () => girarRuletaUI(identificador, nombre, citaId);
 }
 
-// Debe coincidir EXACTAMENTE (texto "premio") con las filas de RuletaConfig.
-// 6 segmentos de 60° c/u, en el mismo orden que la hoja.
-const RULETA_SEGMENTOS = [
-  { id: 'seg1', premio: '20% dto próxima visita',     angle: 30  },
-  { id: 'seg2', premio: '15% dto próxima visita',     angle: 90  },
-  { id: 'seg3', premio: '10% dto próxima visita',     angle: 150 },
-  { id: 'seg4', premio: 'Premio doble (2 servicios)', angle: 210 },
-  { id: 'seg5', premio: 'Sigue jugando',              angle: 270 },
-  { id: 'seg6', premio: 'Gracias por participar',     angle: 330 }
-];
+// Los segmentos ahora se generan dinámicamente desde RuletaConfig
+// (ver RULETA_SEGMENTOS_ACTIVOS y construirRuedaDinamica() en index.html)
 
 async function girarRuletaUI(identificador, nombre, citaId) {
   const btnGirar = document.getElementById('ruletaSpinBtn');
   const subtitle = document.getElementById('ruletaSubtitle');
   const wheel = document.getElementById('wheelSvg');
+
+  if (!wheel || !RULETA_SEGMENTOS_ACTIVOS || RULETA_SEGMENTOS_ACTIVOS.length === 0) {
+    subtitle.textContent = 'La ruleta no está disponible en este momento.';
+    return;
+  }
 
   btnGirar.style.pointerEvents = 'none';
   subtitle.textContent = 'Girando...';
@@ -72,11 +74,11 @@ async function girarRuletaUI(identificador, nombre, citaId) {
     return;
   }
 
-  const seg = RULETA_SEGMENTOS.find(s => s.premio === resultado.premio);
+  const seg = RULETA_SEGMENTOS_ACTIVOS.find(s => s.premio === resultado.premio);
   if (!seg) {
-    console.error('Premio devuelto por el backend no coincide con ningún segmento del SVG:', resultado.premio, '— revisa RuletaConfig vs RULETA_SEGMENTOS');
+    console.error('Premio devuelto por el backend no coincide con ningún segmento activo:', resultado.premio, '— revisa que esté marcado como activo en RuletaConfig');
   }
-  const segFinal = seg || RULETA_SEGMENTOS[0];
+  const segFinal = seg || RULETA_SEGMENTOS_ACTIVOS[0];
 
   // Congela el giro rápido justo donde va (sin salto) y continúa desde ahí hacia el premio
   const currentAngle = getCurrentRotationDeg(wheel);
