@@ -416,11 +416,18 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   font-size:13px; color:#8A7A4E;
   margin:0 0 1.5rem;
 }
+.ruleta-subtitle-fest{
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  font-size:15px; color:#E8C077;
+  margin:0 0 1rem;
+  letter-spacing:.02em;
+}
 
 .ruleta-wheel-wrap{
   position:relative;
   width:250px; height:250px;
-  margin:0 auto 1.75rem;
+  margin:1.5rem auto 1.75rem;
 }
 #wheelSvg{
   transition: transform 5.5s cubic-bezier(0.12, 0.85, 0.15, 1);
@@ -453,16 +460,33 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   z-index:5;
 }
 
+.ruleta-vs-logo{
+  position:absolute; top:-22px; left:50%;
+  transform:translateX(-50%);
+  width:56px; height:56px;
+  border-radius:50%;
+  background:#0D0C0A;
+  border:2px solid #E8C077;
+  display:flex; align-items:center; justify-content:center;
+  z-index:15;
+  box-shadow:0 0 14px rgba(232,192,119,0.5);
+}
+.ruleta-vs-logo img{
+  width:40px; height:40px;
+  object-fit:contain;
+  border-radius:50%;
+}
+
 .ruleta-result-card{
-  background:#2E2415;
-  border:1px solid #4A3D22;
+  background:linear-gradient(135deg,#E8C077,#C9992F);
+  border:1px solid #E8C077;
   border-radius:10px;
   padding:14px;
-  font-size:14px; color:#E3C077;
+  font-size:14px; color:#241D10;
   display:flex; align-items:center; justify-content:center; gap:8px;
   opacity:0; transform:scale(.9);
   transition:opacity .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
-  font-weight:500;
+  font-weight:600;
 }
 
 #confettiLayer{
@@ -479,38 +503,74 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
     <button class="ruleta-close" id="ruletaCloseBtn" aria-label="Cerrar">&times;</button>
 
     <p class="ruleta-eyebrow">Cita confirmada</p>
-    <h3 class="ruleta-title">Gira y gana un premio</h3>
+    <h3 class="ruleta-title">¡Gira y gana!</h3>
+    <p class="ruleta-subtitle-fest">Tu belleza tiene premio</p>
     <p class="ruleta-subtitle" id="ruletaSubtitle">Una sola oportunidad por cliente</p>
 
     <div id="confettiLayer"></div>
 
     <div class="ruleta-wheel-wrap">
+      <div class="ruleta-vs-logo">
+        <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#241B10;font-size:16px;font-family:Georgia,serif;font-weight:700;\'>VS</span>'"/>
+      </div>
       <svg id="wheelSvg" viewBox="0 0 250 250" width="250" height="250">
-        <circle cx="125" cy="125" r="120" fill="none" stroke="#D9B25C" stroke-width="0.5" opacity="0.5"/>
-        <path id="seg1" d="M125,125 L125,7 A118,118 0 0,1 227.2,66 Z" fill="#F0DDAE"/>
-        <path id="seg2" d="M125,125 L227.2,66 A118,118 0 0,1 227.2,184 Z" fill="#8B6F3E"/>
-        <path id="seg3" d="M125,125 L227.2,184 A118,118 0 0,1 125,243 Z" fill="#E8C077"/>
-        <path id="seg4" d="M125,125 L125,243 A118,118 0 0,1 22.8,184 Z" fill="#F0DDAE"/>
-        <path id="seg5" d="M125,125 L22.8,184 A118,118 0 0,1 22.8,66 Z" fill="#8B6F3E"/>
-        <path id="seg6" d="M125,125 L22.8,66 A118,118 0 0,1 125,7 Z" fill="#E8C077"/>
-        <circle cx="125" cy="125" r="118" fill="none" stroke="#D9B25C" stroke-width="1.25"/>
-        <line x1="125" y1="125" x2="125" y2="7" stroke="#D9B25C" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="227.2" y2="66" stroke="#D9B25C" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="227.2" y2="184" stroke="#D9B25C" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="125" y2="243" stroke="#D9B25C" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="22.8" y2="184" stroke="#D9B25C" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="22.8" y2="66" stroke="#D9B25C" stroke-width="0.75" opacity="0.55"/>
+        <circle cx="125" cy="125" r="122" fill="none" stroke="#E8C077" stroke-width="1" opacity="0.6"/>
+        <path id="seg1" d="M125,125 L125,7 A118,118 0 0,1 227.2,66 Z" fill="#EDD9A3"/>
+        <path id="seg2" d="M125,125 L227.2,66 A118,118 0 0,1 227.2,184 Z" fill="#D4A94F"/>
+        <path id="seg3" d="M125,125 L227.2,184 A118,118 0 0,1 125,243 Z" fill="#C9992F"/>
+        <path id="seg4" d="M125,125 L125,243 A118,118 0 0,1 22.8,184 Z" fill="#8B887E"/>
+        <path id="seg5" d="M125,125 L22.8,184 A118,118 0 0,1 22.8,66 Z" fill="#B8965E"/>
+        <path id="seg6" d="M125,125 L22.8,66 A118,118 0 0,1 125,7 Z" fill="#A8916A"/>
+        <circle cx="125" cy="125" r="118" fill="none" stroke="#E8C077" stroke-width="1.5"/>
+        <line x1="125" y1="125" x2="125" y2="7" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
+        <line x1="125" y1="125" x2="227.2" y2="66" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
+        <line x1="125" y1="125" x2="227.2" y2="184" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
+        <line x1="125" y1="125" x2="125" y2="243" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
+        <line x1="125" y1="125" x2="22.8" y2="184" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
+        <line x1="125" y1="125" x2="22.8" y2="66" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
 
-        <text x="161" y="63" font-size="14" font-weight="700" fill="#241D10" text-anchor="middle">20% dto</text>
-        <text x="197" y="121" font-size="14" font-weight="700" fill="#FBF3E4" text-anchor="middle">15% dto</text>
-        <text x="161" y="183" font-size="14" font-weight="700" fill="#241D10" text-anchor="middle">10% dto</text>
-        <text x="89" y="181" font-size="11" font-weight="700" fill="#241D10" text-anchor="middle"><tspan x="89" dy="0">Premio</tspan><tspan x="89" dy="13">doble</tspan></text>
-        <text x="53" y="121" font-size="11" font-weight="700" fill="#FBF3E4" text-anchor="middle"><tspan x="53" dy="0">Sigue</tspan><tspan x="53" dy="13">jugando</tspan></text>
-        <text x="89" y="67" font-size="13" font-weight="700" fill="#241D10" text-anchor="middle">Gracias</text>
+        <circle cx="125.0" cy="4.0" r="2.4" fill="#E8C077"/>
+        <circle cx="162.4" cy="9.9" r="2.4" fill="#E8C077"/>
+        <circle cx="196.1" cy="27.1" r="2.4" fill="#E8C077"/>
+        <circle cx="222.9" cy="53.9" r="2.4" fill="#E8C077"/>
+        <circle cx="240.1" cy="87.6" r="2.4" fill="#E8C077"/>
+        <circle cx="246.0" cy="125.0" r="2.4" fill="#E8C077"/>
+        <circle cx="240.1" cy="162.4" r="2.4" fill="#E8C077"/>
+        <circle cx="222.9" cy="196.1" r="2.4" fill="#E8C077"/>
+        <circle cx="196.1" cy="222.9" r="2.4" fill="#E8C077"/>
+        <circle cx="162.4" cy="240.1" r="2.4" fill="#E8C077"/>
+        <circle cx="125.0" cy="246.0" r="2.4" fill="#E8C077"/>
+        <circle cx="87.6" cy="240.1" r="2.4" fill="#E8C077"/>
+        <circle cx="53.9" cy="222.9" r="2.4" fill="#E8C077"/>
+        <circle cx="27.1" cy="196.1" r="2.4" fill="#E8C077"/>
+        <circle cx="9.9" cy="162.4" r="2.4" fill="#E8C077"/>
+        <circle cx="4.0" cy="125.0" r="2.4" fill="#E8C077"/>
+        <circle cx="9.9" cy="87.6" r="2.4" fill="#E8C077"/>
+        <circle cx="27.1" cy="53.9" r="2.4" fill="#E8C077"/>
+        <circle cx="53.9" cy="27.1" r="2.4" fill="#E8C077"/>
+        <circle cx="87.6" cy="9.9" r="2.4" fill="#E8C077"/>
 
-        <circle cx="125" cy="125" r="34" fill="#241B10" stroke="#D9B25C" stroke-width="1.5"/>
+        <text x="164" y="58" font-size="14" font-weight="800" fill="#241D10" text-anchor="middle">20% dto<tspan x="164" dy="13" font-size="8" font-weight="500" fill="#5C4B22">Mejor premio</tspan></text>
+        <text x="177" y="35" font-size="13" text-anchor="middle">🎁</text>
+
+        <text x="203" y="121" font-size="14" font-weight="800" fill="#241D10" text-anchor="middle">15% dto<tspan x="203" dy="13" font-size="8" font-weight="500" fill="#4A3B18">Próxima visita</tspan></text>
+        <text x="229" y="125" font-size="13" text-anchor="middle">🎁</text>
+
+        <text x="164" y="196" font-size="13" font-weight="800" fill="#241D10" text-anchor="middle">10% dto<tspan x="164" dy="12" font-size="7.5" font-weight="500" fill="#3D3013">Próximo servicio</tspan></text>
+        <text x="177" y="216" font-size="13" text-anchor="middle">🎁</text>
+
+        <text x="86" y="189" font-size="13" font-weight="800" fill="#F5F1E6" text-anchor="middle">Premio<tspan x="86" dy="14">doble</tspan><tspan x="86" dy="14" font-size="7.5" font-weight="500" fill="#D8D4CC">Más beneficios</tspan></text>
+        <text x="73" y="216" font-size="13" text-anchor="middle">🎁</text>
+
+        <text x="47" y="121" font-size="13" font-weight="800" fill="#241D10" text-anchor="middle">Sigue<tspan x="47" dy="14">jugando</tspan><tspan x="47" dy="14" font-size="7.5" font-weight="500" fill="#4A3B18">¡Intenta de nuevo!</tspan></text>
+        <text x="21" y="126" font-size="13" text-anchor="middle">🎁</text>
+
+        <text x="86" y="61" font-size="13" font-weight="800" fill="#241D10" text-anchor="middle">Gracias<tspan x="86" dy="13" font-size="8" font-weight="500" fill="#3D3320">por participar</tspan></text>
+        <text x="73" y="35" font-size="13" text-anchor="middle">🎁</text>
+
+        <circle cx="125" cy="125" r="34" fill="#241B10" stroke="#E8C077" stroke-width="2"/>
       </svg>
-      <div class="ruleta-center-btn" id="ruletaSpinBtn"><span>Girar</span></div>
+      <div class="ruleta-center-btn" id="ruletaSpinBtn"><span>¡Girar!</span></div>
       <div class="ruleta-pointer"></div>
     </div>
 
