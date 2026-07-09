@@ -25,10 +25,10 @@ function abrirModalRuleta(identificador, nombre, citaId) {
   const resultCard = document.getElementById('ruletaResultCard');
 
   // Reinicia el estado por si el modal ya se usó antes en esta misma sesión
+  wheel.classList.remove('spinning-fast');
   wheel.style.transition = 'none';
   wheel.style.transform = 'rotate(0deg)';
   void wheel.offsetWidth; // fuerza reflow para que la próxima transición sí anime
-  wheel.style.transition = 'transform 5.5s cubic-bezier(0.12, 0.85, 0.15, 1)';
 
   btnGirar.style.pointerEvents = 'auto';
   subtitle.textContent = 'Una sola oportunidad por cliente';
@@ -58,9 +58,15 @@ async function girarRuletaUI(identificador, nombre, citaId) {
   btnGirar.style.pointerEvents = 'none';
   subtitle.textContent = 'Girando...';
 
+  // Empieza a girar YA, sin esperar al servidor, para que no se sienta el delay de red
+  wheel.style.transition = 'none';
+  wheel.classList.add('spinning-fast');
+
   const resultado = await Sheets.girarRuleta(identificador, nombre, citaId);
 
   if (!resultado.ok) {
+    wheel.classList.remove('spinning-fast');
+    wheel.style.transform = 'rotate(0deg)';
     subtitle.textContent = 'No se pudo completar el giro. Intenta más tarde.';
     btnGirar.style.pointerEvents = 'auto';
     return;
@@ -72,7 +78,18 @@ async function girarRuletaUI(identificador, nombre, citaId) {
   }
   const segFinal = seg || RULETA_SEGMENTOS[0];
 
-  const finalAngle = 3600 + (360 - segFinal.angle) - 8;
+  // Congela el giro rápido justo donde va (sin salto) y continúa desde ahí hacia el premio
+  const currentAngle = getCurrentRotationDeg(wheel);
+  wheel.classList.remove('spinning-fast');
+  wheel.style.transform = 'rotate(' + currentAngle + 'deg)';
+  void wheel.offsetWidth; // fuerza reflow
+
+  const desiredMod = ((360 - segFinal.angle - 8) % 360 + 360) % 360;
+  const currentMod = ((currentAngle % 360) + 360) % 360;
+  const adjustment = ((desiredMod - currentMod) % 360 + 360) % 360;
+  const finalAngle = currentAngle + 2160 + adjustment;
+
+  wheel.style.transition = 'transform 3.5s cubic-bezier(0.12, 0.85, 0.15, 1)';
   wheel.style.transform = 'rotate(' + finalAngle + 'deg)';
 
   setTimeout(() => {
@@ -80,7 +97,20 @@ async function girarRuletaUI(identificador, nombre, citaId) {
     resaltarSegmentoGanador(segFinal.id);
     lanzarConfetti();
     mostrarResultadoRuleta(resultado);
-  }, 5500);
+  }, 3500);
+}
+
+function getCurrentRotationDeg(el) {
+  const transform = getComputedStyle(el).transform;
+  if (!transform || transform === 'none') return 0;
+  try {
+    const m = new DOMMatrixReadOnly(transform);
+    let angle = Math.atan2(m.b, m.a) * (180 / Math.PI);
+    if (angle < 0) angle += 360;
+    return angle;
+  } catch (e) {
+    return 0;
+  }
 }
 
 function resaltarSegmentoGanador(segId) {
