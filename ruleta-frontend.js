@@ -4,9 +4,6 @@
    mismo deployment que usan guardarCita, getServicios, etc.
    ============================================================ */
 
-/**
- * Llamar esto justo después de que guardarCita() confirme éxito.
- */
 async function intentarMostrarRuleta(identificador, nombre, citaId) {
   try {
     const check = await Sheets.verificarElegibilidadRuleta(identificador);
@@ -28,13 +25,16 @@ function abrirModalRuleta(identificador, nombre, citaId) {
   btnGirar.onclick = () => girarRuletaUI(identificador, nombre, citaId);
 }
 
-// Mapea cada premio (tal como está en RuletaConfig) al id del segmento SVG y su ángulo central
+// Debe coincidir EXACTAMENTE (texto "premio") con las filas de la hoja RuletaConfig.
+// "label" es solo lo que se muestra en el segmento (puede ser más corto).
+// "angle" es el ángulo central del segmento en el SVG (6 segmentos de 60° c/u).
 const RULETA_SEGMENTOS = [
-  { premio: '20% dto próxima visita',        id: 'segTop',    angle: 0   },
-  { premio: '10% dto próxima visita',        id: 'segRight',  angle: 90  },
-  { premio: 'Premio doble (2 servicios)',    id: 'segBottom', angle: 180 },
-  { premio: '15% dto próxima visita',        id: 'segLeft',   angle: 270 }
-  // ajustar/agregar filas aquí si cambian los premios en RuletaConfig
+  { id: 'seg1', premio: '20% dto próxima visita',     label: '20% dto',       angle: 30  },
+  { id: 'seg2', premio: '15% dto próxima visita',     label: '15% dto',       angle: 90  },
+  { id: 'seg3', premio: '10% dto próxima visita',     label: '10% dto',       angle: 150 },
+  { id: 'seg4', premio: 'Premio doble (2 servicios)', label: 'Premio doble',  angle: 210 },
+  { id: 'seg5', premio: 'Sigue jugando',              label: 'Sigue jugando', angle: 270 },
+  { id: 'seg6', premio: 'Gracias por participar',     label: 'Gracias',       angle: 330 }
 ];
 
 async function girarRuletaUI(identificador, nombre, citaId) {
@@ -53,15 +53,18 @@ async function girarRuletaUI(identificador, nombre, citaId) {
     return;
   }
 
-  const seg = RULETA_SEGMENTOS.find(s => s.premio === resultado.premio) || RULETA_SEGMENTOS[0];
+  const seg = RULETA_SEGMENTOS.find(s => s.premio === resultado.premio);
+  if (!seg) {
+    console.error('Premio devuelto por el backend no coincide con ningún segmento del SVG:', resultado.premio);
+  }
+  const segFinal = seg || RULETA_SEGMENTOS[0];
 
-  // Más vueltas para que se sienta más "jugado" (10 vueltas completas + ajuste al segmento ganador)
-  const finalAngle = 3600 + (360 - seg.angle) - 8;
+  const finalAngle = 3600 + (360 - segFinal.angle) - 8;
   wheel.style.transform = 'rotate(' + finalAngle + 'deg)';
 
   setTimeout(() => {
     subtitle.textContent = '¡Felicidades!';
-    resaltarSegmentoGanador(seg.id);
+    resaltarSegmentoGanador(segFinal.id);
     lanzarConfetti();
     mostrarResultadoRuleta(resultado);
   }, 5500);
@@ -71,35 +74,35 @@ function resaltarSegmentoGanador(segId) {
   const el = document.getElementById(segId);
   if (!el) return;
   el.style.transition = 'filter 0.4s ease';
-  el.style.filter = 'drop-shadow(0 0 8px #E3C077) brightness(1.4)';
-  setTimeout(() => { el.style.filter = 'none'; }, 1400);
+  el.style.filter = 'drop-shadow(0 0 10px #F0DDAE) brightness(1.5)';
+  setTimeout(() => { el.style.filter = 'none'; }, 1600);
 }
 
 function lanzarConfetti() {
   const layer = document.getElementById('confettiLayer');
   if (!layer) return;
-  const colors = ['#E3C077', '#C9A24B', '#F5F1E6'];
-  for (let i = 0; i < 24; i++) {
+  const colors = ['#F0DDAE', '#D9B25C', '#E8C077', '#FBF3E4'];
+  for (let i = 0; i < 36; i++) {
     const p = document.createElement('div');
-    const size = 5 + Math.random() * 4;
+    const size = 5 + Math.random() * 5;
     p.style.position = 'absolute';
     p.style.width = size + 'px';
     p.style.height = size + 'px';
     p.style.background = colors[Math.floor(Math.random() * colors.length)];
-    p.style.left = (10 + Math.random() * 80) + '%';
-    p.style.top = '-10px';
+    p.style.left = (5 + Math.random() * 90) + '%';
+    p.style.top = '-12px';
     p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
     p.style.opacity = '0.95';
-    p.style.transition = 'transform 1.8s cubic-bezier(0.25,0.46,0.45,0.94), opacity 1.8s ease';
+    p.style.transition = 'transform 2.2s cubic-bezier(0.25,0.46,0.45,0.94), opacity 2.2s ease';
     layer.appendChild(p);
     requestAnimationFrame(() => {
-      const fall = 380 + Math.random() * 100;
-      const drift = (Math.random() - 0.5) * 80;
-      const rot = Math.random() * 540;
+      const fall = 400 + Math.random() * 140;
+      const drift = (Math.random() - 0.5) * 100;
+      const rot = Math.random() * 620;
       p.style.transform = 'translate(' + drift + 'px,' + fall + 'px) rotate(' + rot + 'deg)';
       p.style.opacity = '0';
     });
-    setTimeout(() => p.remove(), 2000);
+    setTimeout(() => p.remove(), 2400);
   }
 }
 
