@@ -380,13 +380,13 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .ruleta-ov.activo{ display:flex; }
 
 .ruleta-panel{
-  background:#241B10;
+  background:#0D0C0A;
   border-radius:20px;
   padding:2rem 1.75rem 1.75rem;
   width:100%; max-width:360px;
   text-align:center;
   position:relative;
-  border:1px solid #5A4A28;
+  border:1px solid #4A3D22;
   animation:ruletaSlideUp .35s cubic-bezier(.34,1.2,.64,1);
 }
 @keyframes ruletaSlideUp{
@@ -446,7 +446,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   transform:translate(-50%,-50%);
   width:68px; height:68px;
   border-radius:50%;
-  background:#241B10;
+  background:#0D0C0A;
   border:1.5px solid #C9A24B;
   display:flex; align-items:center; justify-content:center;
   cursor:pointer;
@@ -541,12 +541,12 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   let RULETA_SEGMENTOS_ACTIVOS = [];
 
   const RULETA_PALETA = [
-    { fill: '#EDD9A3', text: '#241D10', muted: '#5C4B22' },
-    { fill: '#D4A94F', text: '#241D10', muted: '#4A3B18' },
-    { fill: '#C9992F', text: '#241D10', muted: '#3D3013' },
-    { fill: '#8B887E', text: '#F5F1E6', muted: '#D8D4CC' },
-    { fill: '#B8965E', text: '#241D10', muted: '#4A3B18' },
-    { fill: '#A8916A', text: '#241D10', muted: '#3D3320' }
+    { fill: '#F0D68C', text: '#241B10', muted: '#5C4B22' },
+    { fill: '#C9A24B', text: '#241B10', muted: '#4A3B18' },
+    { fill: '#8A6A24', text: '#F5F1E6', muted: '#D8D4CC' },
+    { fill: '#E3C077', text: '#241B10', muted: '#5C4B22' },
+    { fill: '#B8933D', text: '#241B10', muted: '#4A3B18' },
+    { fill: '#6B5518', text: '#F5F1E6', muted: '#D8D4CC' }
   ];
 
   function ruletaPt(cx, cy, r, angleDeg){
@@ -612,7 +612,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
       const segId = 'seg' + k;
 
       pathsHtml += `<path id="${segId}" d="M${cx},${cy} L${p1.x},${p1.y} A${R},${R} 0 0,1 ${p2.x},${p2.y} Z" fill="${color.fill}"/>\n`;
-      linesHtml += `<line x1="${cx}" y1="${cy}" x2="${p1.x}" y2="${p1.y}" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>\n`;
+      linesHtml += `<line x1="${cx}" y1="${cy}" x2="${p1.x}" y2="${p1.y}" stroke="#C9A24B" stroke-width="0.75" opacity="0.55"/>\n`;
 
       const midAngle = (k + 0.5) * step;
       const headline = ruletaPt(cx, cy, R * 0.62, midAngle);
@@ -634,16 +634,16 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
       [125.0,4.0],[162.4,9.9],[196.1,27.1],[222.9,53.9],[240.1,87.6],[246.0,125.0],
       [240.1,162.4],[222.9,196.1],[196.1,222.9],[162.4,240.1],[125.0,246.0],[87.6,240.1],
       [53.9,222.9],[27.1,196.1],[9.9,162.4],[4.0,125.0],[9.9,87.6],[27.1,53.9],[53.9,27.1],[87.6,9.9]
-    ].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="2.4" fill="#E8C077"/>`).join('\n');
+    ].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="2.4" fill="#C9A24B"/>`).join('\n');
 
     cont.innerHTML = `<svg id="wheelSvg" viewBox="0 0 250 250" width="250" height="250">
-      <circle cx="125" cy="125" r="122" fill="none" stroke="#E8C077" stroke-width="1" opacity="0.6"/>
+      <circle cx="125" cy="125" r="122" fill="none" stroke="#C9A24B" stroke-width="1" opacity="0.6"/>
       ${pathsHtml}
-      <circle cx="125" cy="125" r="118" fill="none" stroke="#E8C077" stroke-width="1.5"/>
+      <circle cx="125" cy="125" r="118" fill="none" stroke="#C9A24B" stroke-width="1.5"/>
       ${linesHtml}
       ${dotsHtml}
       ${textsHtml}
-      <circle cx="125" cy="125" r="34" fill="#241B10" stroke="#E8C077" stroke-width="2"/>
+      <circle cx="125" cy="125" r="34" fill="#0D0C0A" stroke="#C9A24B" stroke-width="2"/>
     </svg>`;
 
     RULETA_SEGMENTOS_ACTIVOS = segmentos;
