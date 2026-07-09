@@ -514,67 +514,11 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 
     <div id="confettiLayer"></div>
 
-    <div class="ruleta-wheel-wrap">
+    <div class="ruleta-wheel-wrap" id="ruletaWheelWrap">
       <div class="ruleta-vs-logo">
         <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#241B10;font-size:16px;font-family:Georgia,serif;font-weight:700;\'>VS</span>'"/>
       </div>
-      <svg id="wheelSvg" viewBox="0 0 250 250" width="250" height="250">
-        <circle cx="125" cy="125" r="122" fill="none" stroke="#E8C077" stroke-width="1" opacity="0.6"/>
-        <path id="seg1" d="M125,125 L125,7 A118,118 0 0,1 227.2,66 Z" fill="#EDD9A3"/>
-        <path id="seg2" d="M125,125 L227.2,66 A118,118 0 0,1 227.2,184 Z" fill="#D4A94F"/>
-        <path id="seg3" d="M125,125 L227.2,184 A118,118 0 0,1 125,243 Z" fill="#C9992F"/>
-        <path id="seg4" d="M125,125 L125,243 A118,118 0 0,1 22.8,184 Z" fill="#8B887E"/>
-        <path id="seg5" d="M125,125 L22.8,184 A118,118 0 0,1 22.8,66 Z" fill="#B8965E"/>
-        <path id="seg6" d="M125,125 L22.8,66 A118,118 0 0,1 125,7 Z" fill="#A8916A"/>
-        <circle cx="125" cy="125" r="118" fill="none" stroke="#E8C077" stroke-width="1.5"/>
-        <line x1="125" y1="125" x2="125" y2="7" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="227.2" y2="66" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="227.2" y2="184" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="125" y2="243" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="22.8" y2="184" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
-        <line x1="125" y1="125" x2="22.8" y2="66" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>
-
-        <circle cx="125.0" cy="4.0" r="2.4" fill="#E8C077"/>
-        <circle cx="162.4" cy="9.9" r="2.4" fill="#E8C077"/>
-        <circle cx="196.1" cy="27.1" r="2.4" fill="#E8C077"/>
-        <circle cx="222.9" cy="53.9" r="2.4" fill="#E8C077"/>
-        <circle cx="240.1" cy="87.6" r="2.4" fill="#E8C077"/>
-        <circle cx="246.0" cy="125.0" r="2.4" fill="#E8C077"/>
-        <circle cx="240.1" cy="162.4" r="2.4" fill="#E8C077"/>
-        <circle cx="222.9" cy="196.1" r="2.4" fill="#E8C077"/>
-        <circle cx="196.1" cy="222.9" r="2.4" fill="#E8C077"/>
-        <circle cx="162.4" cy="240.1" r="2.4" fill="#E8C077"/>
-        <circle cx="125.0" cy="246.0" r="2.4" fill="#E8C077"/>
-        <circle cx="87.6" cy="240.1" r="2.4" fill="#E8C077"/>
-        <circle cx="53.9" cy="222.9" r="2.4" fill="#E8C077"/>
-        <circle cx="27.1" cy="196.1" r="2.4" fill="#E8C077"/>
-        <circle cx="9.9" cy="162.4" r="2.4" fill="#E8C077"/>
-        <circle cx="4.0" cy="125.0" r="2.4" fill="#E8C077"/>
-        <circle cx="9.9" cy="87.6" r="2.4" fill="#E8C077"/>
-        <circle cx="27.1" cy="53.9" r="2.4" fill="#E8C077"/>
-        <circle cx="53.9" cy="27.1" r="2.4" fill="#E8C077"/>
-        <circle cx="87.6" cy="9.9" r="2.4" fill="#E8C077"/>
-
-        <text x="164" y="58" font-size="14" font-weight="800" fill="#241D10" text-anchor="middle">20% dto<tspan x="164" dy="13" font-size="8" font-weight="500" fill="#5C4B22">Mejor premio</tspan></text>
-        <text x="177" y="35" font-size="13" text-anchor="middle">🎁</text>
-
-        <text x="203" y="121" font-size="14" font-weight="800" fill="#241D10" text-anchor="middle">15% dto<tspan x="203" dy="13" font-size="8" font-weight="500" fill="#4A3B18">Próxima visita</tspan></text>
-        <text x="229" y="125" font-size="13" text-anchor="middle">🎁</text>
-
-        <text x="164" y="196" font-size="13" font-weight="800" fill="#241D10" text-anchor="middle">10% dto<tspan x="164" dy="12" font-size="7.5" font-weight="500" fill="#3D3013">Próximo servicio</tspan></text>
-        <text x="177" y="216" font-size="13" text-anchor="middle">🎁</text>
-
-        <text x="86" y="189" font-size="13" font-weight="800" fill="#F5F1E6" text-anchor="middle">Premio<tspan x="86" dy="14">doble</tspan><tspan x="86" dy="14" font-size="7.5" font-weight="500" fill="#D8D4CC">Más beneficios</tspan></text>
-        <text x="73" y="216" font-size="13" text-anchor="middle">🎁</text>
-
-        <text x="47" y="121" font-size="13" font-weight="800" fill="#241D10" text-anchor="middle">Sigue<tspan x="47" dy="14">jugando</tspan><tspan x="47" dy="14" font-size="7.5" font-weight="500" fill="#4A3B18">¡Intenta de nuevo!</tspan></text>
-        <text x="21" y="126" font-size="13" text-anchor="middle">🎁</text>
-
-        <text x="86" y="61" font-size="13" font-weight="800" fill="#241D10" text-anchor="middle">Gracias<tspan x="86" dy="13" font-size="8" font-weight="500" fill="#3D3320">por participar</tspan></text>
-        <text x="73" y="35" font-size="13" text-anchor="middle">🎁</text>
-
-        <circle cx="125" cy="125" r="34" fill="#241B10" stroke="#E8C077" stroke-width="2"/>
-      </svg>
+      <div id="wheelSvgContainer"></div>
       <div class="ruleta-center-btn" id="ruletaSpinBtn"><span>¡Girar!</span></div>
       <div class="ruleta-pointer"></div>
     </div>
@@ -590,6 +534,120 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   document.getElementById('ruletaCloseBtn').addEventListener('click', function(){
     document.getElementById('ruletaModal').classList.remove('activo');
   });
+
+  // ============================================================
+  // RUEDA DINÁMICA - se construye desde RuletaConfig, sin código fijo
+  // ============================================================
+  let RULETA_SEGMENTOS_ACTIVOS = [];
+
+  const RULETA_PALETA = [
+    { fill: '#EDD9A3', text: '#241D10', muted: '#5C4B22' },
+    { fill: '#D4A94F', text: '#241D10', muted: '#4A3B18' },
+    { fill: '#C9992F', text: '#241D10', muted: '#3D3013' },
+    { fill: '#8B887E', text: '#F5F1E6', muted: '#D8D4CC' },
+    { fill: '#B8965E', text: '#241D10', muted: '#4A3B18' },
+    { fill: '#A8916A', text: '#241D10', muted: '#3D3320' }
+  ];
+
+  function ruletaPt(cx, cy, r, angleDeg){
+    const rad = angleDeg * Math.PI / 180;
+    return { x: (cx + r * Math.sin(rad)).toFixed(1), y: (cy - r * Math.cos(rad)).toFixed(1) };
+  }
+
+  function ruletaWordWrap(texto, maxLen){
+    const palabras = texto.split(' ');
+    const lineas = [];
+    let actual = '';
+    palabras.forEach(p => {
+      if ((actual + ' ' + p).trim().length > maxLen && actual) {
+        lineas.push(actual.trim());
+        actual = p;
+      } else {
+        actual = (actual + ' ' + p).trim();
+      }
+    });
+    if (actual) lineas.push(actual);
+    return lineas.slice(0, 2); // máximo 2 líneas para que quepa
+  }
+
+  function ruletaEscapeHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function loadRuletaConfig(){
+    try {
+      const config = await Sheets.getRuletaConfig();
+      const activos = (config.premios || []).filter(p => p.activo);
+      construirRuedaDinamica(activos);
+    } catch(e){
+      console.error('Error cargando config de ruleta:', e);
+    }
+  }
+
+  function construirRuedaDinamica(premiosActivos){
+    const cont = document.getElementById('wheelSvgContainer');
+    const n = premiosActivos.length;
+
+    if (n === 0) {
+      cont.innerHTML = '<p style="color:#8A7A4E;font-size:12px;text-align:center;padding:2rem 0;">La ruleta no tiene premios configurados.</p>';
+      RULETA_SEGMENTOS_ACTIVOS = [];
+      return;
+    }
+
+    const cx = 125, cy = 125, R = 118;
+    const step = 360 / n;
+    const maxLineLen = n <= 4 ? 14 : (n <= 6 ? 11 : 8);
+    const fontSize = n <= 4 ? 15 : (n <= 6 ? 12 : 9);
+    const lineHeight = fontSize * 1.15;
+
+    let pathsHtml = '';
+    let linesHtml = '';
+    let textsHtml = '';
+    const segmentos = [];
+
+    for (let k = 0; k < n; k++) {
+      const p1 = ruletaPt(cx, cy, R, k * step);
+      const p2 = ruletaPt(cx, cy, R, (k + 1) * step);
+      const color = RULETA_PALETA[k % RULETA_PALETA.length];
+      const segId = 'seg' + k;
+
+      pathsHtml += `<path id="${segId}" d="M${cx},${cy} L${p1.x},${p1.y} A${R},${R} 0 0,1 ${p2.x},${p2.y} Z" fill="${color.fill}"/>\n`;
+      linesHtml += `<line x1="${cx}" y1="${cy}" x2="${p1.x}" y2="${p1.y}" stroke="#E8C077" stroke-width="0.75" opacity="0.55"/>\n`;
+
+      const midAngle = (k + 0.5) * step;
+      const headline = ruletaPt(cx, cy, R * 0.62, midAngle);
+      const icon = ruletaPt(cx, cy, R * 0.86, midAngle);
+
+      const lineas = ruletaWordWrap(premiosActivos[k].premio, maxLineLen);
+      const startY = parseFloat(headline.y) - ((lineas.length - 1) * lineHeight) / 2;
+      const tspans = lineas.map((linea, i) =>
+        `<tspan x="${headline.x}" dy="${i === 0 ? 0 : lineHeight}">${ruletaEscapeHtml(linea)}</tspan>`
+      ).join('');
+
+      textsHtml += `<text x="${headline.x}" y="${startY.toFixed(1)}" font-size="${fontSize}" font-weight="800" fill="${color.text}" text-anchor="middle">${tspans}</text>\n`;
+      textsHtml += `<text x="${icon.x}" y="${icon.y}" font-size="12" text-anchor="middle">🎁</text>\n`;
+
+      segmentos.push({ id: segId, premio: premiosActivos[k].premio, angle: midAngle });
+    }
+
+    const dotsHtml = [
+      [125.0,4.0],[162.4,9.9],[196.1,27.1],[222.9,53.9],[240.1,87.6],[246.0,125.0],
+      [240.1,162.4],[222.9,196.1],[196.1,222.9],[162.4,240.1],[125.0,246.0],[87.6,240.1],
+      [53.9,222.9],[27.1,196.1],[9.9,162.4],[4.0,125.0],[9.9,87.6],[27.1,53.9],[53.9,27.1],[87.6,9.9]
+    ].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="2.4" fill="#E8C077"/>`).join('\n');
+
+    cont.innerHTML = `<svg id="wheelSvg" viewBox="0 0 250 250" width="250" height="250">
+      <circle cx="125" cy="125" r="122" fill="none" stroke="#E8C077" stroke-width="1" opacity="0.6"/>
+      ${pathsHtml}
+      <circle cx="125" cy="125" r="118" fill="none" stroke="#E8C077" stroke-width="1.5"/>
+      ${linesHtml}
+      ${dotsHtml}
+      ${textsHtml}
+      <circle cx="125" cy="125" r="34" fill="#241B10" stroke="#E8C077" stroke-width="2"/>
+    </svg>`;
+
+    RULETA_SEGMENTOS_ACTIVOS = segmentos;
+  }
 </script>
 
 <script src="config.js?v=4"></script>
@@ -1161,6 +1219,7 @@ loadServices().then(() => {
 });
 loadBloqueos();
 loadPromo();
+loadRuletaConfig();
 try{Sheets.initSheet();}catch(e){}
 
 const TEMAS_PROMO={
