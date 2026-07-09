@@ -19,7 +19,10 @@ const Sheets = {
         nota: cita.nota || '',
         abonoMonto: cita.abonoMonto || 0,
         abonoTipo: cita.abonoTipo || '',
-        metodoPago: cita.metodoPago || ''
+        metodoPago: cita.metodoPago || '',
+        cuponUsado: cita.cuponUsado || '',
+        descuentoCupon: cita.descuentoCupon || 0,
+        precioFinal: cita.precioFinal || cita.precioTotal || 0
       });
       const url = CONFIG.sheets.scriptUrl + '?' + params.toString();
       await fetch(url, { mode: 'no-cors' });
@@ -156,6 +159,28 @@ const Sheets = {
     } catch (e) {
       console.error('Error girando ruleta:', e);
       return { ok: false, motivo: 'error_red' };
+    }
+  },
+
+  async validarCupon(codigo) {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=validarCupon&codigo=' + encodeURIComponent(codigo) + '&_=' + Date.now();
+      const res = await fetch(url);
+      return await res.json();
+    } catch (e) {
+      console.error('Error validando cupón:', e);
+      return { valido: false, motivo: 'error_red' };
+    }
+  },
+
+  async marcarCuponCanjeado(codigo) {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=marcarCanjeado&codigo=' + encodeURIComponent(codigo) + '&_=' + Date.now();
+      const res = await fetch(url);
+      return await res.json();
+    } catch (e) {
+      console.error('Error marcando cupón canjeado:', e);
+      return { ok: false };
     }
   }
 };
