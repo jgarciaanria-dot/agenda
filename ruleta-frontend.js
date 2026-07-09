@@ -3,7 +3,7 @@
    Reemplaza API_URL por la URL de tu deployment de Apps Script
    ============================================================ */
 
-const RULETA_API_URL = 'PEGA_AQUI_LA_URL_DEL_DEPLOYMENT';
+const RULETA_API_URL = 'https://script.google.com/macros/s/AKfycbwsfRTf8itwDxjaF_vTI-zs4xBRJO8fC0Cva07a2--bzxIJCWqGM_e5BBAN6L_AoGG2/exec';
 
 async function llamarBackendRuleta(accion, datos) {
   const response = await fetch(RULETA_API_URL, {
