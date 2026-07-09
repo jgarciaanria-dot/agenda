@@ -125,5 +125,37 @@ const Sheets = {
     } catch (e) {
       console.error('Error guardando bloqueos:', e);
     }
+  },
+
+  async verificarElegibilidadRuleta(identificador) {
+    try {
+      const url = CONFIG.sheets.scriptUrl
+        + '?action=verificarElegibilidad&identificador=' + encodeURIComponent(identificador)
+        + '&_=' + Date.now();
+      const res = await fetch(url);
+      const data = await res.json();
+      return data;
+    } catch (e) {
+      console.error('Error verificando elegibilidad ruleta:', e);
+      return { elegible: false, motivo: 'error_red' };
+    }
+  },
+
+  async girarRuleta(identificador, nombre, citaId) {
+    try {
+      const params = new URLSearchParams({
+        action: 'girarRuleta',
+        identificador: identificador || '',
+        nombre: nombre || '',
+        citaId: citaId || ''
+      });
+      const url = CONFIG.sheets.scriptUrl + '?' + params.toString() + '&_=' + Date.now();
+      const res = await fetch(url);
+      const data = await res.json();
+      return data;
+    } catch (e) {
+      console.error('Error girando ruleta:', e);
+      return { ok: false, motivo: 'error_red' };
+    }
   }
 };
