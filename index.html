@@ -630,6 +630,7 @@ function getDefaultServices(){
 }
 
 let curSvc=null,calY,calM,selectedDay=null,selTime=null,timerInt=null,timerSecs=300;
+let cuponAplicado=null,cuponDescuentoPct=0,cuponPremioTexto='';
 
 function renderServices(){
   const cats=['Básicos','Tratamientos','Alisados','Color','Extensiones'];
@@ -856,6 +857,7 @@ function chMo(d){
 
 function goForm(){
   closeOv('ov-cal');
+  cuponAplicado=null; cuponDescuentoPct=0; cuponPremioTexto='';
   const dayStr=`${selectedDay} de ${MESES[calM]} ${calY}`;
   timerSecs=300;
   const precio=curSvc.precioTexto||(curSvc.price>0?'$'+curSvc.price.toFixed(2):'A consultar');
@@ -916,6 +918,14 @@ function goForm(){
     </div>
     <div class="fg"><label class="flbl">Correo</label><input class="fi" id="fe" placeholder="tu@correo.com"/></div>
     <div class="fg"><label class="flbl">Nota (opcional)</label><input class="fi" id="fnote" placeholder="Tipo de cabello, tratamientos previos, color deseado..."/></div>
+    <div class="fg">
+      <label class="flbl">¿Tienes un cupón de descuento?</label>
+      <div style="display:flex;gap:8px;">
+        <input class="fi" id="fcupon" placeholder="Ej: RUL-4F2A" style="flex:1;text-transform:uppercase;">
+        <button type="button" onclick="aplicarCupon()" style="padding:0 16px;background:#2E2B2B;color:#C9A96E;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;">Aplicar</button>
+      </div>
+      <p id="cuponMsg" style="font-size:11px;margin-top:6px;min-height:14px;"></p>
+    </div>
     ${pagoSection}
     <button class="btn-main" id="btnConfirmar" onclick="confirmar('${dayStr}')">Confirmar mi cita</button>`;
 
@@ -924,6 +934,34 @@ function goForm(){
 }
 
 function mostrarMensajeRegreso(){setTimeout(()=>{const m=document.getElementById('msgRegreso');if(m)m.style.display='block';},1500);}
+
+async function aplicarCupon(){
+  const input=document.getElementById('fcupon');
+  const msgEl=document.getElementById('cuponMsg');
+  const codigo=input.value.trim();
+  if(!codigo){ msgEl.textContent=''; cuponAplicado=null; cuponDescuentoPct=0; return; }
+  msgEl.style.color='#999';
+  msgEl.textContent='Verificando...';
+  const res=await Sheets.validarCupon(codigo);
+  if(res.valido && res.tipo==='porcentaje'){
+    cuponAplicado=codigo.toUpperCase();
+    cuponDescuentoPct=res.valor;
+    cuponPremioTexto=res.premio;
+    msgEl.style.color='#3a7a3a';
+    msgEl.textContent=`✓ Cupón válido: ${res.valor}% de descuento.`;
+  } else if(res.valido && res.tipo==='especial'){
+    cuponAplicado=codigo.toUpperCase();
+    cuponDescuentoPct=0;
+    cuponPremioTexto=res.premio;
+    msgEl.style.color='#3a7a3a';
+    msgEl.textContent=`✓ Cupón válido: ${res.premio}. Se coordinará el detalle contigo.`;
+  } else {
+    cuponAplicado=null; cuponDescuentoPct=0; cuponPremioTexto='';
+    msgEl.style.color='#c0392b';
+    const motivos={ya_canjeado:'Este cupón ya fue utilizado.',codigo_no_encontrado:'Cupón no válido.',codigo_vacio:'Ingresa un código.'};
+    msgEl.textContent=motivos[res.motivo]||'Cupón no válido.';
+  }
+}
 
 let pagoTipo='yappy';
 function selPago(tipo){
@@ -985,17 +1023,29 @@ async function confirmar(dayStr){
   const esConsultar = curSvc.price<=0;
   const notaFinal = curSvc._promo ? (nota ? nota+' [PROMO aplicada]' : 'PROMO aplicada') : nota;
   const citaId = 'cita-' + Date.now();
+
+  const descuentoMonto = (!esConsultar && cuponDescuentoPct>0) ? precio*(cuponDescuentoPct/100) : 0;
+  const precioFinal = Math.max(0, precio - descuentoMonto);
+
   const cita={nombre,telefono:tel,correo,nota:notaFinal,servicio:curSvc.name,categoria:curSvc.cat,
     precioTotal:precio,precioEsConsultar:esConsultar,fecha:dayStr,hora:selTime,duracionMin:curSvc.durMin,
     comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?tipoAbono:'',
-    metodoPago:tieneAbono?pagoTipo:'', citaId:citaId};
+    metodoPago:tieneAbono?pagoTipo:'', citaId:citaId,
+    cuponUsado:cuponAplicado||'', descuentoCupon:cuponDescuentoPct||0, precioFinal:precioFinal};
   try{await Sheets.guardarCita(cita);}catch(e){console.error(e);}
+  if(cuponAplicado){ try{await Sheets.marcarCuponCanjeado(cuponAplicado);}catch(e){console.error(e);} }
   await new Promise(r=>setTimeout(r,900));
   const precioStr=esConsultar?'Por confirmar':(curSvc.precioTexto&&curSvc.precioTexto.toLowerCase().includes('desde')?'Desde $'+precio.toFixed(2):'$'+precio.toFixed(2));
   const restanteTexto = esConsultar
     ? (tieneAbono ? 'Se aplicará el abono al precio acordado' : 'Por confirmar')
-    : '$'+(tipoAbono==='descontable' ? Math.max(0, precio - montoAbono).toFixed(2) : precio.toFixed(2));
-  const abonoLine=tieneAbono?`<strong>Abono pagado:</strong> <span style="color:#4CAF50;font-weight:600;">$${montoAbono.toFixed(2)}</span> (${textoTipo})<br><strong>Comprobante:</strong> ${ref}<br><strong>Monto a cancelar el día de la cita:</strong> <span style="color:#D95F2B;font-weight:600;">${restanteTexto}</span><br>`:'';
+    : '$'+(tipoAbono==='descontable' ? Math.max(0, precioFinal - montoAbono).toFixed(2) : precioFinal.toFixed(2));
+  const abonoLine=tieneAbono?`<strong>Abono pagado:</strong> <span style="color:#4CAF50;font-weight:600;">$${montoAbono.toFixed(2)}</span> (${textoTipo})<br><strong>Comprobante:</strong> ${ref}<br>`:'';
+  const cuponLine = (cuponAplicado && cuponDescuentoPct>0 && !esConsultar)
+    ? `<strong>Descuento por cupón:</strong> <span style="color:#D95F2B;font-weight:600;">-${cuponDescuentoPct}% (-$${descuentoMonto.toFixed(2)})</span><br>`
+    : (cuponAplicado ? `<strong>Cupón aplicado:</strong> ${cuponPremioTexto}<br>` : '');
+  const totalLine = esConsultar
+    ? `<strong>Monto a cancelar el día de la cita:</strong> ${restanteTexto}<br>`
+    : `<strong>Total a pagar:</strong> <span style="color:#D95F2B;font-weight:600;">${restanteTexto}</span><br>`;
   document.getElementById('form-body').innerHTML=`
     <div class="success-wrap">
       <div class="s-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
@@ -1008,6 +1058,8 @@ async function confirmar(dayStr){
         <strong>Duración aprox.:</strong> ${curSvc.dur}<br>
         <strong>Precio total:</strong> <span style="color:#D95F2B;font-weight:600;">${precioStr}</span><br>
         ${abonoLine}
+        ${cuponLine}
+        ${totalLine}
       </div>
       <p style="font-size:11px;color:#aaa;margin-bottom:1rem;">Recuerda: cancelaciones con menos de 24 horas de anticipación no tienen reembolso del abono.</p>
       <button class="btn-main" style="background:#2E2B2B;color:#C9A96E;font-family:'Cormorant Garamond',serif;" onclick="closeOv('ov-form')">Listo</button>
