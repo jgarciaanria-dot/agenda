@@ -19,9 +19,23 @@ async function intentarMostrarRuleta(identificador, nombre, citaId) {
 
 function abrirModalRuleta(identificador, nombre, citaId) {
   const modal = document.getElementById('ruletaModal');
-  modal.classList.add('activo');
-
+  const wheel = document.getElementById('wheelSvg');
   const btnGirar = document.getElementById('ruletaSpinBtn');
+  const subtitle = document.getElementById('ruletaSubtitle');
+  const resultCard = document.getElementById('ruletaResultCard');
+
+  // Reinicia el estado por si el modal ya se usó antes en esta misma sesión
+  wheel.style.transition = 'none';
+  wheel.style.transform = 'rotate(0deg)';
+  void wheel.offsetWidth; // fuerza reflow para que la próxima transición sí anime
+  wheel.style.transition = 'transform 5.5s cubic-bezier(0.12, 0.85, 0.15, 1)';
+
+  btnGirar.style.pointerEvents = 'auto';
+  subtitle.textContent = 'Una sola oportunidad por cliente';
+  resultCard.style.opacity = '0';
+  resultCard.style.transform = 'scale(.9)';
+
+  modal.classList.add('activo');
   btnGirar.onclick = () => girarRuletaUI(identificador, nombre, citaId);
 }
 
@@ -80,28 +94,30 @@ function resaltarSegmentoGanador(segId) {
 function lanzarConfetti() {
   const layer = document.getElementById('confettiLayer');
   if (!layer) return;
-  const colors = ['#E8C077', '#D4A94F', '#F0DDAE', '#FBF3E4'];
-  for (let i = 0; i < 36; i++) {
+  const colors = ['#FFD700', '#FFC933', '#FFE9A8', '#F5B942'];
+  for (let i = 0; i < 40; i++) {
     const p = document.createElement('div');
-    const size = 5 + Math.random() * 5;
+    const size = 6 + Math.random() * 6;
+    const color = colors[Math.floor(Math.random() * colors.length)];
     p.style.position = 'absolute';
     p.style.width = size + 'px';
     p.style.height = size + 'px';
-    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.background = color;
     p.style.left = (5 + Math.random() * 90) + '%';
-    p.style.top = '-12px';
+    p.style.top = '-14px';
     p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    p.style.opacity = '0.95';
-    p.style.transition = 'transform 2.2s cubic-bezier(0.25,0.46,0.45,0.94), opacity 2.2s ease';
+    p.style.opacity = '1';
+    p.style.boxShadow = '0 0 6px ' + color + ', 0 0 12px rgba(255,215,0,0.6)';
+    p.style.transition = 'transform 2.4s cubic-bezier(0.25,0.46,0.45,0.94), opacity 2.4s ease';
     layer.appendChild(p);
     requestAnimationFrame(() => {
-      const fall = 400 + Math.random() * 140;
-      const drift = (Math.random() - 0.5) * 100;
-      const rot = Math.random() * 620;
+      const fall = 420 + Math.random() * 160;
+      const drift = (Math.random() - 0.5) * 110;
+      const rot = Math.random() * 640;
       p.style.transform = 'translate(' + drift + 'px,' + fall + 'px) rotate(' + rot + 'deg)';
       p.style.opacity = '0';
     });
-    setTimeout(() => p.remove(), 2400);
+    setTimeout(() => p.remove(), 2600);
   }
 }
 
