@@ -91,7 +91,7 @@ async function girarRuletaUI(identificador, nombre, citaId) {
   const adjustment = ((desiredMod - currentMod) % 360 + 360) % 360;
   const finalAngle = currentAngle + 2160 + adjustment;
 
-  wheel.style.transition = 'transform 4.5s cubic-bezier(0.22, 1, 0.36, 1)';
+  wheel.style.transition = 'transform 6s cubic-bezier(0.215, 0.61, 0.355, 1)';
   wheel.style.transform = 'rotate(' + finalAngle + 'deg)';
 
   setTimeout(() => {
@@ -99,7 +99,7 @@ async function girarRuletaUI(identificador, nombre, citaId) {
     resaltarSegmentoGanador(segFinal.id);
     lanzarConfetti();
     mostrarResultadoRuleta(resultado);
-  }, 4500);
+  }, 6000);
 }
 
 function getCurrentRotationDeg(el) {
