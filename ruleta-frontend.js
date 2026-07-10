@@ -59,15 +59,31 @@ async function girarRuletaUI(identificador, nombre, citaId) {
 
   btnGirar.style.pointerEvents = 'none';
   subtitle.textContent = 'Girando...';
-
-  // Empieza a girar YA, sin esperar al servidor, para que no se sienta el delay de red
   wheel.style.transition = 'none';
-  wheel.classList.add('spinning-fast');
+
+  // Fase 1: gira a velocidad constante mientras esperamos al servidor.
+  // Llevamos la cuenta del ángulo nosotros mismos (no le preguntamos al
+  // navegador "dónde vas" — esa lectura puede fallar en algunos navegadores
+  // justo al interrumpir una animación en curso, causando saltos).
+  let anguloActual = 0;
+  let fase1Activa = true;
+  const velocidadGrados = 480; // grados por segundo
+  let ultimoTs = performance.now();
+
+  function loopFase1(ts){
+    if (!fase1Activa) return;
+    const dt = (ts - ultimoTs) / 1000;
+    ultimoTs = ts;
+    anguloActual += velocidadGrados * dt;
+    wheel.style.transform = 'rotate(' + anguloActual + 'deg)';
+    requestAnimationFrame(loopFase1);
+  }
+  requestAnimationFrame(loopFase1);
 
   const resultado = await Sheets.girarRuleta(identificador, nombre, citaId);
+  fase1Activa = false;
 
   if (!resultado.ok) {
-    wheel.classList.remove('spinning-fast');
     wheel.style.transform = 'rotate(0deg)';
     subtitle.textContent = 'No se pudo completar el giro. Intenta más tarde.';
     btnGirar.style.pointerEvents = 'auto';
@@ -80,26 +96,40 @@ async function girarRuletaUI(identificador, nombre, citaId) {
   }
   const segFinal = seg || RULETA_SEGMENTOS_ACTIVOS[0];
 
-  // Congela el giro rápido justo donde va (sin salto) y continúa desde ahí hacia el premio
-  const currentAngle = getCurrentRotationDeg(wheel);
-  wheel.classList.remove('spinning-fast');
-  wheel.style.transform = 'rotate(' + currentAngle + 'deg)';
-  void wheel.offsetWidth; // fuerza reflow
-
   const desiredMod = ((90 - segFinal.angle - 8) % 360 + 360) % 360;
-  const currentMod = ((currentAngle % 360) + 360) % 360;
+  const currentMod = ((anguloActual % 360) + 360) % 360;
   const adjustment = ((desiredMod - currentMod) % 360 + 360) % 360;
-  const finalAngle = currentAngle + 4320 + adjustment;
+  const finalAngle = anguloActual + 2520 + adjustment; // 7 vueltas + ajuste
 
-  wheel.style.transition = 'transform 6s cubic-bezier(0.215, 0.61, 0.355, 1)';
-  wheel.style.transform = 'rotate(' + finalAngle + 'deg)';
-
-  setTimeout(() => {
+  // Fase 2: frenado controlado cuadro por cuadro, arrancando exactamente
+  // desde el ángulo que nosotros mismos veníamos calculando — sin salto.
+  animarFrenadoRuleta(wheel, anguloActual, finalAngle, 6000, () => {
     subtitle.textContent = '¡Felicidades!';
     resaltarSegmentoGanador(segFinal.id);
     lanzarConfetti();
     mostrarResultadoRuleta(resultado);
-  }, 6000);
+  });
+}
+
+function easeOutQuintJS(t){
+  return 1 - Math.pow(1 - t, 5);
+}
+
+function animarFrenadoRuleta(wheel, desde, hasta, duracionMs, alTerminar){
+  const inicio = performance.now();
+  function cuadro(ahora){
+    const transcurrido = ahora - inicio;
+    const t = Math.min(transcurrido / duracionMs, 1);
+    const suavizado = easeOutQuintJS(t);
+    const angulo = desde + (hasta - desde) * suavizado;
+    wheel.style.transform = 'rotate(' + angulo + 'deg)';
+    if (t < 1) {
+      requestAnimationFrame(cuadro);
+    } else {
+      alTerminar();
+    }
+  }
+  requestAnimationFrame(cuadro);
 }
 
 function getCurrentRotationDeg(el) {
