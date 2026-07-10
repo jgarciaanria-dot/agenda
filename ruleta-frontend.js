@@ -89,7 +89,7 @@ async function girarRuletaUI(identificador, nombre, citaId) {
   const desiredMod = ((90 - segFinal.angle - 8) % 360 + 360) % 360;
   const currentMod = ((currentAngle % 360) + 360) % 360;
   const adjustment = ((desiredMod - currentMod) % 360 + 360) % 360;
-  const finalAngle = currentAngle + 2160 + adjustment;
+  const finalAngle = currentAngle + 4320 + adjustment;
 
   wheel.style.transition = 'transform 6s cubic-bezier(0.215, 0.61, 0.355, 1)';
   wheel.style.transform = 'rotate(' + finalAngle + 'deg)';
