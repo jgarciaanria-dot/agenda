@@ -101,6 +101,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
     <button class="adm-tab" id="tab-bloqueos" onclick="switchTab('bloqueos')">Bloquear días</button>
     <button class="adm-tab" id="tab-promo" onclick="switchTab('promo')">Promo</button>
     <button class="adm-tab" id="tab-ruleta" onclick="switchTab('ruleta')">Ruleta</button>
+    <button class="adm-tab" id="tab-clientas" onclick="switchTab('clientas')">Clientas</button>
   </div>
 
   <div id="panel-servicios">
@@ -222,9 +223,68 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
       </div>
     </div>
   </div>
+
+  <div id="panel-clientas" style="display:none;">
+    <div class="adm-sec">
+      <div class="adm-sec-hdr"><span class="adm-sec-title">Importar clientas (CSV)</span></div>
+      <div style="padding:1rem;">
+        <p style="font-size:12px;color:#888;margin-bottom:10px;line-height:1.5;">Pega el contenido del CSV. Primera línea = encabezados. Reconoce columnas: <code>nombre</code>, <code>telefono</code> (o <code>celular</code>/<code>whatsapp</code>), <code>correo</code> (o <code>email</code>).</p>
+        <textarea class="fi" id="csv-clientas" rows="5" style="resize:vertical;font-family:monospace;font-size:12px;" placeholder="nombre,telefono,correo&#10;Maria Perez,66112233,maria@correo.com"></textarea>
+        <button class="btn-add" onclick="importarClientasCSV()" style="width:100%;justify-content:center;padding:10px;margin-top:10px;"><i class="ti ti-upload"></i> Importar (reemplaza la lista actual)</button>
+        <p id="import-msg" style="font-size:12px;margin-top:8px;"></p>
+      </div>
+    </div>
+
+    <div class="adm-sec">
+      <div class="adm-sec-hdr">
+        <span class="adm-sec-title">Clientas</span>
+        <button class="btn-add" onclick="openModalClienta(null)"><i class="ti ti-plus"></i> Agregar</button>
+      </div>
+      <div style="padding:1rem;">
+        <input class="fi" id="buscar-clienta" placeholder="Buscar por nombre o teléfono..." oninput="renderClientas()" style="margin-bottom:12px;">
+        <div id="lista-clientas"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL EDITAR/CREAR -->
+<!-- MODAL CLIENTA (editar/agregar) -->
+<div class="ov" id="ov-modal-clienta">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title" id="modal-clienta-title">Nueva clienta</span>
+      <button class="modal-close" onclick="closeModalClienta()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="flbl">Nombre</label><input class="fi" id="mc-nombre"/></div>
+      <div class="fg"><label class="flbl">Teléfono / WhatsApp</label><input class="fi" id="mc-telefono"/></div>
+      <div class="fg"><label class="flbl">Correo (opcional)</label><input class="fi" id="mc-correo"/></div>
+      <div class="fg"><label class="flbl">Notas (opcional)</label><textarea class="fi" id="mc-notas" rows="2" style="resize:vertical;"></textarea></div>
+      <button class="btn-save" onclick="guardarClientaModal()"><i class="ti ti-check" style="font-size:17px;"></i> Guardar clienta</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RESERVAR (para una clienta VIP) -->
+<div class="ov" id="ov-modal-reservar">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title" id="modal-reservar-title">Reservar</span>
+      <button class="modal-close" onclick="closeModalReservar()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="flbl">Servicio</label><input class="fi" id="mr-servicio" placeholder="Lo que pidió la clienta"/></div>
+      <div class="frow">
+        <div class="fg"><label class="flbl">Fecha</label><input class="fi" type="date" id="mr-fecha"/></div>
+        <div class="fg"><label class="flbl">Hora</label><input class="fi" type="time" id="mr-hora"/></div>
+      </div>
+      <div class="fg"><label class="flbl">Duración (minutos)</label><input class="fi" type="number" id="mr-duracion" value="60" min="15" step="15"/></div>
+      <div class="fg"><label class="flbl">Nota (opcional)</label><textarea class="fi" id="mr-nota" rows="2" style="resize:vertical;"></textarea></div>
+      <button class="btn-save" onclick="guardarReservaVIP()"><i class="ti ti-check" style="font-size:17px;"></i> Guardar cita</button>
+    </div>
+  </div>
+</div>
+
 <div class="ov" id="ov-modal">
   <div class="modal">
     <div class="modal-hdr">
@@ -454,14 +514,17 @@ function switchTab(tab){
   document.getElementById('tab-bloqueos').classList.toggle('active', tab==='bloqueos');
   document.getElementById('tab-promo').classList.toggle('active', tab==='promo');
   document.getElementById('tab-ruleta').classList.toggle('active', tab==='ruleta');
+  document.getElementById('tab-clientas').classList.toggle('active', tab==='clientas');
   document.getElementById('panel-servicios').style.display = tab==='servicios'?'block':'none';
   document.getElementById('panel-citas').style.display = tab==='citas'?'block':'none';
   document.getElementById('panel-bloqueos').style.display = tab==='bloqueos'?'block':'none';
   document.getElementById('panel-promo').style.display = tab==='promo'?'block':'none';
   document.getElementById('panel-ruleta').style.display = tab==='ruleta'?'block':'none';
+  document.getElementById('panel-clientas').style.display = tab==='clientas'?'block':'none';
   if(tab==='citas') loadCitas();
   if(tab==='promo') loadPromo();
   if(tab==='ruleta') loadRuleta();
+  if(tab==='clientas') loadClientas();
 }
 
 // ===== PROMO =====
@@ -816,6 +879,204 @@ function eliminarBloqueoDia(fecha){
 function eliminarBloqueoHoras(dia){
   delete BLOQUEOS.horas[dia];
   saveBloqueos();
+}
+
+// ===== CLIENTAS =====
+let CLIENTAS = [];
+let clientaSeleccionadaParaReserva = null;
+let editClientaIdx = null;
+
+async function loadClientas(){
+  const cont = document.getElementById('lista-clientas');
+  cont.innerHTML = '<p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">Cargando...</p>';
+  try { CLIENTAS = await Sheets.getClientas(); }
+  catch(e){ CLIENTAS = []; }
+  renderClientas();
+}
+
+function parseCSVLinea(linea){
+  // separador simple por coma, soporta comillas básicas
+  const campos = [];
+  let actual = '';
+  let dentroComillas = false;
+  for (let i = 0; i < linea.length; i++){
+    const c = linea[i];
+    if (c === '"'){ dentroComillas = !dentroComillas; continue; }
+    if (c === ',' && !dentroComillas){ campos.push(actual.trim()); actual = ''; continue; }
+    actual += c;
+  }
+  campos.push(actual.trim());
+  return campos;
+}
+
+function importarClientasCSV(){
+  const raw = document.getElementById('csv-clientas').value.trim();
+  const msgEl = document.getElementById('import-msg');
+  if (!raw){ msgEl.style.color = '#c0392b'; msgEl.textContent = 'Pega el contenido del CSV primero.'; return; }
+
+  const lineas = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lineas.length < 2){ msgEl.style.color = '#c0392b'; msgEl.textContent = 'El CSV debe tener encabezado + al menos una fila.'; return; }
+
+  const encabezados = parseCSVLinea(lineas[0]).map(h => h.toLowerCase());
+  const idxNombre = encabezados.findIndex(h => ['nombre','name','cliente'].includes(h));
+  const idxTelefono = encabezados.findIndex(h => ['telefono','teléfono','phone','celular','whatsapp'].includes(h));
+  const idxCorreo = encabezados.findIndex(h => ['correo','email','mail'].includes(h));
+
+  if (idxNombre === -1 || idxTelefono === -1){
+    msgEl.style.color = '#c0392b';
+    msgEl.textContent = 'No encontré columnas de nombre y teléfono. Encabezados detectados: ' + encabezados.join(', ');
+    return;
+  }
+
+  const nuevas = [];
+  for (let i = 1; i < lineas.length; i++){
+    const campos = parseCSVLinea(lineas[i]);
+    const nombre = campos[idxNombre] || '';
+    const telefono = campos[idxTelefono] || '';
+    if (!nombre || !telefono) continue;
+    nuevas.push({
+      nombre: nombre,
+      telefono: telefono,
+      correo: idxCorreo > -1 ? (campos[idxCorreo] || '') : '',
+      notas: ''
+    });
+  }
+
+  if (nuevas.length === 0){
+    msgEl.style.color = '#c0392b';
+    msgEl.textContent = 'No se encontraron filas válidas para importar.';
+    return;
+  }
+
+  CLIENTAS = nuevas;
+  Sheets.guardarClientas(CLIENTAS);
+  renderClientas();
+  msgEl.style.color = '#3a7a3a';
+  msgEl.textContent = `✓ Se importaron ${nuevas.length} clientas.`;
+  document.getElementById('csv-clientas').value = '';
+}
+
+function renderClientas(){
+  const cont = document.getElementById('lista-clientas');
+  const filtro = (document.getElementById('buscar-clienta').value || '').toLowerCase().trim();
+  const filtradas = CLIENTAS.filter(c =>
+    !filtro || c.nombre.toLowerCase().includes(filtro) || (c.telefono||'').includes(filtro)
+  );
+
+  if (filtradas.length === 0){
+    cont.innerHTML = '<p style="font-size:12px;color:#aaa;text-align:center;padding:1rem;">No hay clientas para mostrar.</p>';
+    return;
+  }
+
+  cont.innerHTML = filtradas.map(c => {
+    const idxReal = CLIENTAS.indexOf(c);
+    return `<div class="svc-row" style="padding:.75rem 0;">
+      <div class="svc-info">
+        <div class="svc-nm">${c.nombre}</div>
+        <div class="svc-meta">${c.telefono}${c.correo ? ' · '+c.correo : ''}${c.notas ? ' · '+c.notas : ''}</div>
+      </div>
+      <div class="svc-actions">
+        <button class="btn-ico" onclick="abrirModalReservar(${idxReal})" title="Reservar"><i class="ti ti-calendar-plus"></i></button>
+        <button class="btn-ico" onclick="openModalClienta(${idxReal})" title="Editar"><i class="ti ti-edit"></i></button>
+        <button class="btn-ico del" onclick="eliminarClienta(${idxReal})" title="Eliminar"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function eliminarClienta(idx){
+  if (!confirm('¿Eliminar esta clienta de la lista?')) return;
+  CLIENTAS.splice(idx, 1);
+  Sheets.guardarClientas(CLIENTAS);
+  renderClientas();
+}
+
+function openModalClienta(idx){
+  editClientaIdx = idx;
+  const c = idx !== null ? CLIENTAS[idx] : null;
+  document.getElementById('modal-clienta-title').textContent = c ? 'Editar clienta' : 'Nueva clienta';
+  document.getElementById('mc-nombre').value = c ? c.nombre : '';
+  document.getElementById('mc-telefono').value = c ? c.telefono : '';
+  document.getElementById('mc-correo').value = c ? (c.correo||'') : '';
+  document.getElementById('mc-notas').value = c ? (c.notas||'') : '';
+  document.getElementById('ov-modal-clienta').classList.add('open');
+}
+
+function closeModalClienta(){
+  document.getElementById('ov-modal-clienta').classList.remove('open');
+}
+
+function guardarClientaModal(){
+  const nombre = document.getElementById('mc-nombre').value.trim();
+  const telefono = document.getElementById('mc-telefono').value.trim();
+  const correo = document.getElementById('mc-correo').value.trim();
+  const notas = document.getElementById('mc-notas').value.trim();
+  if (!nombre || !telefono){ alert('Nombre y teléfono son obligatorios.'); return; }
+
+  const clienta = { nombre, telefono, correo, notas };
+  if (editClientaIdx !== null){
+    CLIENTAS[editClientaIdx] = clienta;
+  } else {
+    CLIENTAS.push(clienta);
+  }
+  Sheets.guardarClientas(CLIENTAS);
+  closeModalClienta();
+  renderClientas();
+}
+
+function abrirModalReservar(idx){
+  clientaSeleccionadaParaReserva = CLIENTAS[idx];
+  document.getElementById('modal-reservar-title').textContent = 'Reservar — ' + clientaSeleccionadaParaReserva.nombre;
+  document.getElementById('mr-servicio').value = '';
+  document.getElementById('mr-fecha').value = '';
+  document.getElementById('mr-hora').value = '';
+  document.getElementById('mr-duracion').value = 60;
+  document.getElementById('mr-nota').value = '';
+  document.getElementById('ov-modal-reservar').classList.add('open');
+}
+
+function closeModalReservar(){
+  document.getElementById('ov-modal-reservar').classList.remove('open');
+}
+
+const MESES_RESERVA = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+async function guardarReservaVIP(){
+  const servicio = document.getElementById('mr-servicio').value.trim();
+  const fechaRaw = document.getElementById('mr-fecha').value;
+  const horaRaw = document.getElementById('mr-hora').value;
+  const duracion = parseInt(document.getElementById('mr-duracion').value) || 60;
+  const nota = document.getElementById('mr-nota').value.trim();
+
+  if (!servicio || !fechaRaw || !horaRaw){ alert('Completa servicio, fecha y hora.'); return; }
+
+  const [anio, mes, dia] = fechaRaw.split('-').map(Number);
+  const fechaFormateada = `${dia} de ${MESES_RESERVA[mes-1]} ${anio}`;
+
+  const cita = {
+    nombre: clientaSeleccionadaParaReserva.nombre,
+    telefono: clientaSeleccionadaParaReserva.telefono,
+    correo: clientaSeleccionadaParaReserva.correo || '',
+    servicio: servicio,
+    categoria: 'VIP',
+    precioTotal: 0,
+    precioEsConsultar: true,
+    fecha: fechaFormateada,
+    hora: horaRaw,
+    duracionMin: duracion,
+    comprobante: 'Atención directa VIP',
+    nota: nota,
+    abonoMonto: 0,
+    abonoTipo: '',
+    metodoPago: '',
+    omitirCorreos: true
+  };
+
+  try { await Sheets.guardarCita(cita); }
+  catch(e){ console.error(e); }
+
+  closeModalReservar();
+  alert('Cita guardada para ' + clientaSeleccionadaParaReserva.nombre + '.');
 }
 
 loadServices();
