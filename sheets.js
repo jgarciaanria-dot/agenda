@@ -22,7 +22,8 @@ const Sheets = {
         metodoPago: cita.metodoPago || '',
         cuponUsado: cita.cuponUsado || '',
         descuentoCupon: cita.descuentoCupon || 0,
-        precioFinal: cita.precioFinal || cita.precioTotal || 0
+        precioFinal: cita.precioFinal || cita.precioTotal || 0,
+        omitirCorreos: cita.omitirCorreos ? 'true' : 'false'
       });
       const url = CONFIG.sheets.scriptUrl + '?' + params.toString();
       await fetch(url, { mode: 'no-cors' });
@@ -205,6 +206,31 @@ const Sheets = {
       });
     } catch (e) {
       console.error('Error guardando config de ruleta:', e);
+    }
+  },
+
+  async getClientas() {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=getClientas&_=' + Date.now();
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.clientas || [];
+    } catch (e) {
+      console.error('Error cargando clientas:', e);
+      return [];
+    }
+  },
+
+  async guardarClientas(clientas) {
+    try {
+      await fetch(CONFIG.sheets.scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'guardarClientas', clientas: JSON.stringify(clientas) })
+      });
+    } catch (e) {
+      console.error('Error guardando clientas:', e);
     }
   }
 };
