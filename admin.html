@@ -226,16 +226,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;min-heigh
 
   <div id="panel-clientas" style="display:none;">
     <div class="adm-sec">
-      <div class="adm-sec-hdr"><span class="adm-sec-title">Importar clientas (CSV)</span></div>
-      <div style="padding:1rem;">
-        <p style="font-size:12px;color:#888;margin-bottom:10px;line-height:1.5;">Pega el contenido del CSV. Primera línea = encabezados. Reconoce columnas: <code>nombre</code>, <code>telefono</code> (o <code>celular</code>/<code>whatsapp</code>), <code>correo</code> (o <code>email</code>).</p>
-        <textarea class="fi" id="csv-clientas" rows="5" style="resize:vertical;font-family:monospace;font-size:12px;" placeholder="nombre,telefono,correo&#10;Maria Perez,66112233,maria@correo.com"></textarea>
-        <button class="btn-add" onclick="importarClientasCSV()" style="width:100%;justify-content:center;padding:10px;margin-top:10px;"><i class="ti ti-upload"></i> Importar (reemplaza la lista actual)</button>
-        <p id="import-msg" style="font-size:12px;margin-top:8px;"></p>
-      </div>
-    </div>
-
-    <div class="adm-sec">
       <div class="adm-sec-hdr">
         <span class="adm-sec-title">Clientas</span>
         <button class="btn-add" onclick="openModalClienta(null)"><i class="ti ti-plus"></i> Agregar</button>
@@ -892,68 +882,6 @@ async function loadClientas(){
   try { CLIENTAS = await Sheets.getClientas(); }
   catch(e){ CLIENTAS = []; }
   renderClientas();
-}
-
-function parseCSVLinea(linea){
-  // separador simple por coma, soporta comillas básicas
-  const campos = [];
-  let actual = '';
-  let dentroComillas = false;
-  for (let i = 0; i < linea.length; i++){
-    const c = linea[i];
-    if (c === '"'){ dentroComillas = !dentroComillas; continue; }
-    if (c === ',' && !dentroComillas){ campos.push(actual.trim()); actual = ''; continue; }
-    actual += c;
-  }
-  campos.push(actual.trim());
-  return campos;
-}
-
-function importarClientasCSV(){
-  const raw = document.getElementById('csv-clientas').value.trim();
-  const msgEl = document.getElementById('import-msg');
-  if (!raw){ msgEl.style.color = '#c0392b'; msgEl.textContent = 'Pega el contenido del CSV primero.'; return; }
-
-  const lineas = raw.split('\n').map(l => l.trim()).filter(Boolean);
-  if (lineas.length < 2){ msgEl.style.color = '#c0392b'; msgEl.textContent = 'El CSV debe tener encabezado + al menos una fila.'; return; }
-
-  const encabezados = parseCSVLinea(lineas[0]).map(h => h.toLowerCase());
-  const idxNombre = encabezados.findIndex(h => ['nombre','name','cliente'].includes(h));
-  const idxTelefono = encabezados.findIndex(h => ['telefono','teléfono','phone','celular','whatsapp'].includes(h));
-  const idxCorreo = encabezados.findIndex(h => ['correo','email','mail'].includes(h));
-
-  if (idxNombre === -1 || idxTelefono === -1){
-    msgEl.style.color = '#c0392b';
-    msgEl.textContent = 'No encontré columnas de nombre y teléfono. Encabezados detectados: ' + encabezados.join(', ');
-    return;
-  }
-
-  const nuevas = [];
-  for (let i = 1; i < lineas.length; i++){
-    const campos = parseCSVLinea(lineas[i]);
-    const nombre = campos[idxNombre] || '';
-    const telefono = campos[idxTelefono] || '';
-    if (!nombre || !telefono) continue;
-    nuevas.push({
-      nombre: nombre,
-      telefono: telefono,
-      correo: idxCorreo > -1 ? (campos[idxCorreo] || '') : '',
-      notas: ''
-    });
-  }
-
-  if (nuevas.length === 0){
-    msgEl.style.color = '#c0392b';
-    msgEl.textContent = 'No se encontraron filas válidas para importar.';
-    return;
-  }
-
-  CLIENTAS = nuevas;
-  Sheets.guardarClientas(CLIENTAS);
-  renderClientas();
-  msgEl.style.color = '#3a7a3a';
-  msgEl.textContent = `✓ Se importaron ${nuevas.length} clientas.`;
-  document.getElementById('csv-clientas').value = '';
 }
 
 function renderClientas(){
