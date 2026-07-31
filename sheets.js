@@ -8,9 +8,9 @@
 // =========================================================
 
 // ⚠️ COMPLETA ESTOS 3 VALORES ANTES DE SUBIR A PRODUCCIÓN
-const SUPABASE_URL = 'PEGA_AQUI_TU_PROJECT_URL';
-const SUPABASE_KEY = 'PEGA_AQUI_TU_PUBLISHABLE_KEY';
-const BUSINESS_ID = 'PEGA_AQUI_EL_UUID_DE_VICELLY_EN_LA_TABLA_BUSINESSES';
+const SUPABASE_URL = 'https://hokrimtsyseuqfjjvmxu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_7JZShvbADW0URka-k_hjBQ_MSE0LM-V';
+const BUSINESS_ID = 'ceae789b-3d46-4ab4-8a0d-f4e3615bc54e';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
