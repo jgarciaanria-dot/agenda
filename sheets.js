@@ -1,236 +1,186 @@
+// =========================================================
+// sheets.js — Adaptador Supabase (reemplaza el backend de Apps Script)
+// Mantiene los mismos nombres de función que usa index.html:
+// Sheets.getServicios, Sheets.getBloqueos, Sheets.getHorasOcupadas,
+// Sheets.guardarCita, Sheets.validarCupon, Sheets.marcarCuponCanjeado,
+// Sheets.getPromo, Sheets.getRuletaConfig, Sheets.verificarElegibilidadRuleta,
+// Sheets.initSheet
+// =========================================================
+
+// ⚠️ COMPLETA ESTOS 3 VALORES ANTES DE SUBIR A PRODUCCIÓN
+const SUPABASE_URL = 'PEGA_AQUI_TU_PROJECT_URL';
+const SUPABASE_KEY = 'PEGA_AQUI_TU_PUBLISHABLE_KEY';
+const BUSINESS_ID = 'PEGA_AQUI_EL_UUID_DE_VICELLY_EN_LA_TABLA_BUSINESSES';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const MESES_MAP = {
+  enero: 0, febrero: 1, marzo: 2, abril: 3, mayo: 4, junio: 5,
+  julio: 6, agosto: 7, septiembre: 8, octubre: 9, noviembre: 10, diciembre: 11
+};
+
+// Convierte "18 de Mayo 2026" -> "2026-05-18"
+function parseFechaTexto(fechaStr) {
+  const m = fechaStr.match(/(\d+)\s+de\s+(\w+)\s+(\d+)/i);
+  if (!m) return null;
+  const dia = parseInt(m[1]);
+  const mesIdx = MESES_MAP[m[2].toLowerCase()];
+  const anio = parseInt(m[3]);
+  if (mesIdx === undefined) return null;
+  return `${anio}-${String(mesIdx + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+}
+
+// Convierte "08:00:00" (formato time de Postgres) -> "8:00" (formato que usa el sitio)
+function formatHoraSitio(horaPg) {
+  if (!horaPg) return '';
+  const [h, m] = horaPg.split(':');
+  return parseInt(h) + ':' + m;
+}
+
 const Sheets = {
-  async initSheet() {},
 
-  async guardarCita(cita) {
-    try {
-      const params = new URLSearchParams({
-        action: 'guardar',
-        nombre: cita.nombre || '',
-        telefono: cita.telefono || '',
-        correo: cita.correo || '',
-        servicio: cita.servicio || '',
-        categoria: cita.categoria || '',
-        precioTotal: cita.precioTotal || 0,
-        precioEsConsultar: cita.precioEsConsultar || false,
-        fecha: cita.fecha || '',
-        hora: cita.hora || '',
-        duracionMin: cita.duracionMin || 60,
-        comprobante: cita.comprobante || 'Sin abono',
-        nota: cita.nota || '',
-        abonoMonto: cita.abonoMonto || 0,
-        abonoTipo: cita.abonoTipo || '',
-        metodoPago: cita.metodoPago || '',
-        cuponUsado: cita.cuponUsado || '',
-        descuentoCupon: cita.descuentoCupon || 0,
-        precioFinal: cita.precioFinal || cita.precioTotal || 0,
-        omitirCorreos: cita.omitirCorreos ? 'true' : 'false'
-      });
-      const url = CONFIG.sheets.scriptUrl + '?' + params.toString();
-      await fetch(url, { mode: 'no-cors' });
-    } catch (e) {
-      console.error('Error guardando cita:', e);
-    }
+  // No requiere inicialización especial con Supabase
+  async initSheet() {
+    return true;
   },
 
-  async getHorasOcupadas(fecha) {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=horas&fecha=' + encodeURIComponent(fecha);
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.citas || [];
-    } catch (e) {
-      console.error('Error consultando horas:', e);
-      return [];
-    }
-  },
-
+  // El catálogo de servicios sigue siendo el hardcodeado en index.html
+  // (devolver arreglo vacío hace que el sitio use su fallback automático)
   async getServicios() {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=getServicios&_=' + Date.now();
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.servicios || [];
-    } catch (e) {
-      console.error('Error cargando servicios:', e);
-      return [];
-    }
+    return [];
   },
 
-  async guardarServicios(servicios) {
-    try {
-      await fetch(CONFIG.sheets.scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({action: 'guardarServicios', servicios: JSON.stringify(servicios)})
-      });
-    } catch (e) {
-      console.error('Error guardando servicios:', e);
-    }
-  },
-
+  // Fechas y horas bloqueadas por el negocio
   async getBloqueos() {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=getBloqueos&_=' + Date.now();
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.bloqueos || {dias:[], horas:{}};
-    } catch (e) {
-      console.error('Error cargando bloqueos:', e);
-      return {dias:[], horas:{}};
+    const { data: fechas, error: e1 } = await supabase
+      .from('blocked_dates')
+      .select('fecha')
+      .eq('business_id', BUSINESS_ID);
+
+    const { data: horas, error: e2 } = await supabase
+      .from('blocked_hours')
+      .select('fecha,hora')
+      .eq('business_id', BUSINESS_ID);
+
+    if (e1 || e2) {
+      console.error('Error cargando bloqueos:', e1 || e2);
+      return { dias: [], horas: {} };
     }
+
+    const horasObj = {};
+    (horas || []).forEach(h => {
+      if (!horasObj[h.fecha]) horasObj[h.fecha] = [];
+      horasObj[h.fecha].push(h.hora);
+    });
+
+    return {
+      dias: (fechas || []).map(f => ({ fecha: f.fecha })),
+      horas: horasObj
+    };
   },
 
-  async getCitas() {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=getCitas&_=' + Date.now();
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.citas || [];
-    } catch (e) {
-      console.error('Error cargando citas:', e);
+  // Citas ya reservadas para una fecha (para calcular disponibilidad)
+  async getHorasOcupadas(fechaStr) {
+    const fechaISO = parseFechaTexto(fechaStr);
+    if (!fechaISO) return [];
+
+    const { data, error } = await supabase
+      .from('appointments')
+      .select('hora, duracion_min')
+      .eq('business_id', BUSINESS_ID)
+      .eq('fecha', fechaISO)
+      .neq('estado', 'cancelada');
+
+    if (error) {
+      console.error('Error consultando disponibilidad:', error);
       return [];
     }
+
+    return (data || []).map(c => ({
+      hora: formatHoraSitio(c.hora),
+      duracion: c.duracion_min || 60
+    }));
   },
 
+  // Guardar una reserva nueva
+  async guardarCita(cita) {
+    const fechaISO = parseFechaTexto(cita.fecha);
+
+    const { data, error } = await supabase.from('appointments').insert([{
+      business_id: BUSINESS_ID,
+      cliente_nombre: cita.nombre,
+      cliente_telefono: cita.telefono,
+      cliente_correo: cita.correo,
+      nota: cita.nota,
+      servicio_nombre: cita.servicio,
+      categoria: cita.categoria,
+      precio_total: cita.precioTotal,
+      precio_es_consultar: cita.precioEsConsultar,
+      fecha: fechaISO,
+      hora: cita.hora,
+      duracion_min: cita.duracionMin,
+      comprobante: cita.comprobante,
+      abono_monto: cita.abonoMonto,
+      abono_tipo: cita.abonoTipo,
+      metodo_pago: cita.metodoPago,
+      cupon_aplicado: cita.cuponUsado,
+      descuento_cupon: cita.descuentoCupon,
+      precio_final: cita.precioFinal,
+      cita_id_externo: cita.citaId,
+      estado: 'confirmada'
+    }]);
+
+    if (error) {
+      console.error('Error guardando la cita:', error);
+      throw error;
+    }
+    return data;
+  },
+
+  // Ruleta: cargar los premios activos
+  async getRuletaConfig() {
+    const { data, error } = await supabase
+      .from('roulette_prizes')
+      .select('nombre, activo')
+      .eq('business_id', BUSINESS_ID);
+
+    if (error || !data) return { premios: [] };
+    return { premios: data.map(p => ({ premio: p.nombre, activo: p.activo })) };
+  },
+
+  // Ruleta: ¿este teléfono ya participó, y está activa la ruleta?
+  async verificarElegibilidadRuleta(tel) {
+    const { data: yaParticipo } = await supabase
+      .from('roulette_wins')
+      .select('id')
+      .eq('business_id', BUSINESS_ID)
+      .eq('telefono', tel)
+      .limit(1);
+
+    if (yaParticipo && yaParticipo.length > 0) {
+      return { elegible: false };
+    }
+
+    const { data: feat } = await supabase
+      .from('business_features')
+      .select('ruleta_premios')
+      .eq('business_id', BUSINESS_ID)
+      .single();
+
+    return { elegible: !!(feat && feat.ruleta_premios) };
+  },
+
+  // --- FASE 2B (pendiente): promos y cupones ---
+  // Por ahora quedan en modo seguro para no romper el sitio.
   async getPromo() {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=getPromo&_=' + Date.now();
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.promo || {activa:false};
-    } catch (e) {
-      console.error('Error cargando promo:', e);
-      return {activa:false};
-    }
-  },
-
-  async guardarPromo(promo) {
-    try {
-      await fetch(CONFIG.sheets.scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({action: 'guardarPromo', promo: JSON.stringify(promo)})
-      });
-    } catch (e) {
-      console.error('Error guardando promo:', e);
-    }
-  },
-
-  async guardarBloqueos(bloqueos) {
-    try {
-      await fetch(CONFIG.sheets.scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({action: 'guardarBloqueos', bloqueos: JSON.stringify(bloqueos)})
-      });
-    } catch (e) {
-      console.error('Error guardando bloqueos:', e);
-    }
-  },
-
-  async verificarElegibilidadRuleta(identificador) {
-    try {
-      const url = CONFIG.sheets.scriptUrl
-        + '?action=verificarElegibilidad&identificador=' + encodeURIComponent(identificador)
-        + '&_=' + Date.now();
-      const res = await fetch(url);
-      const data = await res.json();
-      return data;
-    } catch (e) {
-      console.error('Error verificando elegibilidad ruleta:', e);
-      return { elegible: false, motivo: 'error_red' };
-    }
-  },
-
-  async girarRuleta(identificador, nombre, citaId) {
-    try {
-      const params = new URLSearchParams({
-        action: 'girarRuleta',
-        identificador: identificador || '',
-        nombre: nombre || '',
-        citaId: citaId || ''
-      });
-      const url = CONFIG.sheets.scriptUrl + '?' + params.toString() + '&_=' + Date.now();
-      const res = await fetch(url);
-      const data = await res.json();
-      return data;
-    } catch (e) {
-      console.error('Error girando ruleta:', e);
-      return { ok: false, motivo: 'error_red' };
-    }
+    return null; // el banner de promo simplemente no aparece
   },
 
   async validarCupon(codigo) {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=validarCupon&codigo=' + encodeURIComponent(codigo) + '&_=' + Date.now();
-      const res = await fetch(url);
-      return await res.json();
-    } catch (e) {
-      console.error('Error validando cupón:', e);
-      return { valido: false, motivo: 'error_red' };
-    }
+    return { valido: false, motivo: 'codigo_no_encontrado' };
   },
 
   async marcarCuponCanjeado(codigo) {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=marcarCanjeado&codigo=' + encodeURIComponent(codigo) + '&_=' + Date.now();
-      const res = await fetch(url);
-      return await res.json();
-    } catch (e) {
-      console.error('Error marcando cupón canjeado:', e);
-      return { ok: false };
-    }
-  },
-
-  async getRuletaConfig() {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=getRuletaConfig&_=' + Date.now();
-      const res = await fetch(url);
-      return await res.json();
-    } catch (e) {
-      console.error('Error cargando config de ruleta:', e);
-      return { activa: false, premios: [] };
-    }
-  },
-
-  async guardarRuletaConfig(payload) {
-    try {
-      await fetch(CONFIG.sheets.scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'guardarRuletaConfig', payload: payload })
-      });
-    } catch (e) {
-      console.error('Error guardando config de ruleta:', e);
-    }
-  },
-
-  async getClientas() {
-    try {
-      const url = CONFIG.sheets.scriptUrl + '?action=getClientas&_=' + Date.now();
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.clientas || [];
-    } catch (e) {
-      console.error('Error cargando clientas:', e);
-      return [];
-    }
-  },
-
-  async guardarClientas(clientas) {
-    try {
-      await fetch(CONFIG.sheets.scriptUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'guardarClientas', clientas: JSON.stringify(clientas) })
-      });
-    } catch (e) {
-      console.error('Error guardando clientas:', e);
-    }
+    return true;
   }
 };
