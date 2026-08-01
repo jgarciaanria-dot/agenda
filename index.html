@@ -430,7 +430,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   margin:1.5rem auto 1.75rem;
 }
 #wheelSvg{
-  transition: transform 6s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition: transform 4.5s cubic-bezier(0.22, 1, 0.36, 1);
   transform: rotate(0deg);
 }
 @keyframes ruletaFastSpin{
@@ -616,6 +616,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 
       const midAngle = (k + 0.5) * step;
       const headline = ruletaPt(cx, cy, R * 0.62, midAngle);
+      const icon = ruletaPt(cx, cy, R * 0.86, midAngle);
 
       // Contra-rotación: calibrada para que este texto quede horizontal
       // justo cuando ESTE segmento gane y la rueda lo lleve al puntero (derecha, 90°)
@@ -629,6 +630,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
       ).join('');
 
       textsHtml += `<text x="${headline.x}" y="${startY.toFixed(1)}" font-size="${fontSize}" font-weight="800" fill="${color.text}" text-anchor="middle" transform="rotate(${counterAngle.toFixed(1)} ${headline.x} ${startY.toFixed(1)})">${tspans}</text>\n`;
+      textsHtml += `<text x="${icon.x}" y="${icon.y}" font-size="12" text-anchor="middle" transform="rotate(${counterAngle.toFixed(1)} ${icon.x} ${icon.y})">🎁</text>\n`;
 
       segmentos.push({ id: segId, premio: premiosActivos[k].premio, angle: midAngle });
     }
@@ -652,7 +654,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
     RULETA_SEGMENTOS_ACTIVOS = segmentos;
   }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="config.js?v=4"></script>
 <script src="yappy.js?v=4"></script>
 <script src="sheets.js?v=4"></script>
