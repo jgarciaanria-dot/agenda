@@ -866,7 +866,7 @@ function openDetail(id, esPromo){
   openOv('ov-detail');
 }
 
-function openCal(){
+async function openCal(){
   closeOv('ov-detail');
   selectedDay=null; selTime=null;
   const now=new Date(); calY=now.getFullYear(); calM=now.getMonth();
@@ -876,10 +876,13 @@ function openCal(){
     <div class="svc-pill-meta"><span class="svc-pill-price">${curSvc.price>0?'$'+curSvc.price.toFixed(2):curSvc.precioTexto||'A consultar'}</span><span class="svc-pill-dur">${curSvc.dur}</span></div>`;
   document.getElementById('timeSec').style.display='none';
   document.getElementById('btnContinue').disabled=true;
+
+  // Refresca bloqueos justo antes de mostrar el calendario
+  try { await loadBloqueos(); } catch(e){ console.error(e); }
+
   renderCal();
   openOv('ov-cal');
 }
-
 function renderCal(){
   document.getElementById('calMoLbl').textContent=MESES[calM]+' '+calY;
   const dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
