@@ -482,7 +482,7 @@ function closeModal(){document.getElementById('ov-modal').classList.remove('open
 
 // ===== BLOQUEOS =====
 let BLOQUEOS = {dias:[], horas:{}};
-const HORAS_DIA = ['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00'];
+const HORAS_DIA = ['9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00'];
 
 async function loadBloqueos(){
   try {
@@ -1004,7 +1004,27 @@ async function guardarReservaVIP(){
   catch(e){ console.error(e); }
 
   closeModalReservar();
-  alert('Cita guardada para ' + clientaSeleccionadaParaReserva.nombre + '.');
+  mostrarToast('Cita guardada para ' + clientaSeleccionadaParaReserva.nombre + '.');
+}
+
+function mostrarToast(mensaje, tipo){
+  let toast = document.getElementById('adm-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'adm-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2E2B2B;color:#C9A96E;padding:13px 22px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:500;opacity:0;transition:opacity .25s ease,transform .25s ease;max-width:88%;text-align:center;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.style.background = tipo === 'error' ? '#E05555' : '#2E2B2B';
+  toast.style.color = tipo === 'error' ? '#fff' : '#C9A96E';
+  toast.textContent = mensaje;
+  toast.style.transform = 'translateX(-50%) translateY(8px)';
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
 }
 
 loadServices();
