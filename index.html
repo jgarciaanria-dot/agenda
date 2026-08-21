@@ -352,7 +352,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
     <div style="display:flex;justify-content:center;align-items:flex-start;gap:16px;margin-bottom:.875rem;">
       <div style="text-align:center;flex:1;">
         <p style="font-size:10px;color:rgba(201,169,110,.8);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Horario</p>
-        <p style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;">Lun – Vie · 9AM – 4PM<br>Sáb · 9AM – 4PM</p>
+        <p style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.7;">Lun – Vie · 9AM – 5PM<br>Sáb · 9AM – 5PM</p>
       </div>
       <div style="width:0.5px;background:rgba(201,169,110,.15);align-self:stretch;"></div>
       <div style="text-align:center;flex:1;">
@@ -910,7 +910,7 @@ function timeToMin(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
 function genSlots(){
   const slots=[];
   let h=9,m=0;
-  while(h<16||(h===16&&m===0)){
+  while(h<17||(h===17&&m===0)){
     const key=h+':'+(m===0?'00':'30');
     const lbl=(h>12?h-12:h)+':'+(m===0?'00':'30')+(h>=12?' PM':' AM');
     slots.push({key,lbl});
