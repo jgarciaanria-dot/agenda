@@ -1,7 +1,7 @@
 {
   "name": "Asistente Vicelly Sánchez Studio",
   "short_name": "Vicelly Studio",
-  "start_url": "./agente-vicelly.html",
+  "start_url": "./agente-chat.html",
   "display": "standalone",
   "background_color": "#f7f2e8",
   "theme_color": "#1c2128",
