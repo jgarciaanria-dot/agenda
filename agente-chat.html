@@ -3,39 +3,36 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#faf6ee" />
+<meta name="theme-color" content="#1c2128" />
 <title>Asistente · Vicelly Sánchez Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --crema: #faf6ee;
-    --crema-panel: #ffffff;
-    --linea: #e9e2d3;
-    --dorado: #b8862f;
-    --dorado-suave: #f2e6cc;
-    --tinta: #2b2620;
-    --tinta-suave: #8a8072;
-    --burbuja-usuario: #2b2620;
-    --burbuja-usuario-texto: #faf6ee;
-    --burbuja-agente: #f3efe4;
+    --oscuro: #1c2128;
+    --oscuro-suave: #2a313b;
+    --crema: #f7f2e8;
+    --panel: #fffdf9;
+    --linea: #e7ddc9;
+    --acento: #c08a4e;
+    --acento-suave: #ecd9bb;
+    --texto: #2b2620;
+    --texto-claro: #f7f2e8;
+    --texto-suave: #948a78;
+    --verde: #4caf6f;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  html, body {
-    height: 100%;
-    overscroll-behavior-y: none;
-  }
+  html, body { height: 100%; overscroll-behavior-y: none; }
 
   body {
     font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
     background: var(--crema);
     margin: 0;
-    color: var(--tinta);
+    color: var(--texto);
     height: 100dvh;
     display: flex;
     justify-content: center;
@@ -48,122 +45,162 @@
     background: var(--crema);
     display: flex;
     flex-direction: column;
-    position: relative;
   }
 
   /* ---- Header ---- */
   .encabezado {
     flex: 0 0 auto;
-    padding: calc(14px + var(--safe-top)) 20px 14px;
-    background: var(--crema);
-    border-bottom: 1px solid var(--linea);
+    padding: calc(14px + var(--safe-top)) 16px 14px;
+    background: var(--oscuro);
+    color: var(--texto-claro);
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
   }
-  .encabezado-titulo {
+  .avatar {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--oscuro-suave);
+    border: 2px solid var(--acento-suave);
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--acento-suave);
   }
+  .encabezado-titulo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .encabezado-marca {
     font-family: "Fraunces", Georgia, serif;
     font-weight: 600;
-    font-size: 18px;
-    letter-spacing: 0.01em;
+    font-size: 16.5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .encabezado-estado {
-    font-size: 12.5px;
-    color: var(--tinta-suave);
+    font-size: 12px;
+    color: #c7c1b3;
     display: flex;
     align-items: center;
     gap: 6px;
   }
-  .punto-activo {
-    width: 6px;
-    height: 6px;
+  .punto-activo { width: 6px; height: 6px; border-radius: 50%; background: var(--verde); flex: none; }
+
+  .boton-menu {
+    flex: none;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: #5c9a6b;
-    flex: none;
-  }
-  .boton-reiniciar {
-    flex: none;
-    font-size: 12.5px;
-    font-weight: 500;
-    padding: 8px 13px;
-    border-radius: 20px;
-    border: 1px solid var(--linea);
-    background: var(--crema-panel);
-    color: var(--tinta);
+    border: none;
+    background: transparent;
+    color: #c7c1b3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
   }
-  .boton-reiniciar:active { background: var(--dorado-suave); }
+  .boton-menu:active { background: rgba(255,255,255,0.08); }
 
   /* ---- Mensajes ---- */
   .chat-mensajes {
     flex: 1 1 auto;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 18px 16px 8px;
+    padding: 16px 14px 8px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 3px;
   }
 
-  .fila { display: flex; }
+  .pildora-reiniciar {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    margin-bottom: 14px;
+    border-radius: 20px;
+    border: 1px solid var(--linea);
+    background: var(--panel);
+    color: var(--texto-suave);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .pildora-reiniciar:active { background: var(--acento-suave); }
+  .pildora-reiniciar svg { width: 13px; height: 13px; }
+
+  .fila { display: flex; gap: 8px; margin-top: 10px; align-items: flex-end; }
   .fila.usuario { justify-content: flex-end; }
   .fila.agente { justify-content: flex-start; }
 
+  .avatar-mini {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--oscuro);
+    border: 1.5px solid var(--acento-suave);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--acento-suave);
+  }
+
+  .burbuja-columna { display: flex; flex-direction: column; max-width: 78%; }
+  .fila.usuario .burbuja-columna { align-items: flex-end; }
+  .fila.agente .burbuja-columna { align-items: flex-start; }
+
   .msg {
-    padding: 11px 14px;
-    border-radius: 18px;
-    max-width: 82%;
+    padding: 10px 13px;
+    border-radius: 16px;
     font-size: 14.5px;
     line-height: 1.5;
     white-space: pre-wrap;
     word-wrap: break-word;
   }
   .msg.usuario {
-    background: var(--burbuja-usuario);
-    color: var(--burbuja-usuario-texto);
-    border-bottom-right-radius: 5px;
+    background: var(--oscuro);
+    color: var(--texto-claro);
+    border-bottom-right-radius: 4px;
   }
   .msg.agente {
-    background: var(--burbuja-agente);
-    color: var(--tinta);
-    border-bottom-left-radius: 5px;
+    background: var(--panel);
+    color: var(--texto);
+    border: 1px solid var(--linea);
+    border-bottom-left-radius: 4px;
   }
   .msg.error {
     background: #f6e3df;
     color: #8a3b2c;
+    border: 1px solid #ecc7bf;
   }
 
-  .marca-lateral {
+  .meta-hora {
     font-size: 10.5px;
-    color: var(--tinta-suave);
-    margin: 4px 4px 0;
-    letter-spacing: 0.02em;
-  }
-  .fila.agente .marca-lateral { text-align: left; }
-  .fila.usuario + .marca-espaciador { display: none; }
-
-  /* ---- Indicador de "escribiendo" ---- */
-  .escribiendo {
-    display: inline-flex;
+    color: var(--texto-suave);
+    margin-top: 4px;
+    padding: 0 3px;
+    display: flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 2px;
   }
+  .meta-hora svg { width: 12px; height: 12px; }
+
+  /* ---- Indicador de "escribiendo" ---- */
+  .escribiendo { display: inline-flex; align-items: center; gap: 4px; padding: 3px 2px; }
   .escribiendo span {
-    width: 6px;
-    height: 6px;
+    width: 5.5px;
+    height: 5.5px;
     border-radius: 50%;
-    background: var(--tinta-suave);
+    background: var(--texto-suave);
     animation: rebote 1.1s infinite ease-in-out;
   }
   .escribiendo span:nth-child(2) { animation-delay: 0.15s; }
@@ -179,28 +216,44 @@
     display: flex;
     align-items: flex-end;
     gap: 8px;
-    padding: 10px 14px calc(10px + var(--safe-bottom));
+    padding: 10px 12px calc(10px + var(--safe-bottom));
     background: var(--crema);
     border-top: 1px solid var(--linea);
   }
+  .campo-envoltorio {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    background: var(--panel);
+    border: 1px solid var(--linea);
+    border-radius: 22px;
+    padding: 6px 8px 6px 14px;
+  }
+  .campo-envoltorio:focus-within { border-color: var(--acento); }
+  .icono-emoji {
+    flex: none;
+    color: var(--texto-suave);
+    display: flex;
+    align-items: center;
+    padding-bottom: 6px;
+  }
+  .icono-emoji svg { width: 19px; height: 19px; }
+
   .chat-input textarea {
     flex: 1;
     resize: none;
     max-height: 110px;
-    padding: 11px 15px;
-    border-radius: 20px;
-    border: 1px solid var(--linea);
-    background: var(--crema-panel);
+    padding: 5px 0;
+    border: none;
+    background: transparent;
     font-size: 15px;
     font-family: inherit;
-    color: var(--tinta);
+    color: var(--texto);
     line-height: 1.35;
   }
-  .chat-input textarea:focus {
-    outline: none;
-    border-color: var(--dorado);
-  }
-  .chat-input textarea::placeholder { color: var(--tinta-suave); }
+  .chat-input textarea:focus { outline: none; }
+  .chat-input textarea::placeholder { color: var(--texto-suave); }
 
   .boton-enviar {
     flex: none;
@@ -208,14 +261,14 @@
     height: 42px;
     border-radius: 50%;
     border: none;
-    background: var(--tinta);
-    color: var(--crema);
+    background: var(--acento);
+    color: var(--texto-claro);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
   }
-  .boton-enviar:disabled { background: var(--linea); color: var(--tinta-suave); }
+  .boton-enviar:disabled { background: var(--linea); color: var(--texto-suave); }
   .boton-enviar svg { width: 18px; height: 18px; }
 
   .chat-mensajes::-webkit-scrollbar { width: 4px; }
@@ -226,17 +279,25 @@
 
 <div class="app">
   <div class="encabezado">
+    <div class="avatar">VS</div>
     <div class="encabezado-titulo">
       <div class="encabezado-marca">Vicelly Sánchez Studio</div>
       <div class="encabezado-estado"><span class="punto-activo"></span>Asistente en línea</div>
     </div>
-    <button class="boton-reiniciar" id="botonReiniciar" title="Empezar una conversación nueva">Nueva conversación</button>
+    <button class="boton-menu" id="botonReiniciar" title="Empezar una conversación nueva" aria-label="Nueva conversación">
+      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+    </button>
   </div>
 
   <div class="chat-mensajes" id="mensajes"></div>
 
   <div class="chat-input">
-    <textarea id="entrada" placeholder="Escribe tu mensaje..." rows="1"></textarea>
+    <div class="campo-envoltorio">
+      <span class="icono-emoji">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14s1.2 2 3.5 2 3.5-2 3.5-2"/><line x1="9" y1="9.5" x2="9.01" y2="9.5"/><line x1="15" y1="9.5" x2="15.01" y2="9.5"/></svg>
+      </span>
+      <textarea id="entrada" placeholder="Escribe tu mensaje..." rows="1"></textarea>
+    </div>
     <button class="boton-enviar" id="botonEnviar" aria-label="Enviar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
     </button>
@@ -255,15 +316,30 @@
   // Se reenvía completa con cada pregunta para que el agente recuerde el contexto (ej. confirmaciones).
   let historialConversacion = [];
 
+  const iconoCheck = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+  function horaActual() {
+    return new Date().toLocaleTimeString("es-PA", { hour: "numeric", minute: "2-digit", hour12: true });
+  }
+
   function agregarMensaje(texto, tipo) {
     const fila = document.createElement("div");
     fila.className = "fila " + (tipo === "usuario" ? "usuario" : "agente");
 
-    const burbuja = document.createElement("div");
-    burbuja.className = "msg " + tipo;
-    burbuja.textContent = texto;
+    let html = "";
+    if (tipo !== "usuario") {
+      html += '<div class="avatar-mini">VS</div>';
+    }
 
-    fila.appendChild(burbuja);
+    const claseGlobo = tipo === "error" ? "error" : tipo;
+    html += '<div class="burbuja-columna">';
+    html += '<div class="msg ' + claseGlobo + '"></div>';
+    html += '<div class="meta-hora">' + horaActual() + (tipo === "usuario" ? iconoCheck : "") + '</div>';
+    html += '</div>';
+
+    fila.innerHTML = html;
+    fila.querySelector(".msg").textContent = texto;
+
     contenedorMensajes.appendChild(fila);
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
     return fila;
@@ -272,7 +348,9 @@
   function mostrarEscribiendo() {
     const fila = document.createElement("div");
     fila.className = "fila agente";
-    fila.innerHTML = '<div class="msg agente escribiendo"><span></span><span></span><span></span></div>';
+    fila.innerHTML =
+      '<div class="avatar-mini">VS</div>' +
+      '<div class="burbuja-columna"><div class="msg agente escribiendo"><span></span><span></span><span></span></div></div>';
     contenedorMensajes.appendChild(fila);
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
     return fila;
@@ -324,7 +402,7 @@
   function reiniciarConversacion() {
     historialConversacion = [];
     contenedorMensajes.innerHTML = "";
-    agregarMensaje("Conversación reiniciada. ¿En qué puedo ayudarte?", "agente");
+    agregarMensaje("¡Hola! 👋 ¿En qué puedo ayudarte?", "agente");
   }
 
   botonEnviar.addEventListener("click", enviarPregunta);
