@@ -424,6 +424,15 @@
   botonReiniciar.addEventListener("click", reiniciarConversacion);
 
   reiniciarConversacion();
+
+  // Registro del service worker — requisito de Chrome para permitir
+  // "Instalar app" (no solo agregar un acceso directo).
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(function(error) {
+      console.log("No se pudo registrar el service worker:", error);
+    });
+  }
+
 </script>
 
 </body>
