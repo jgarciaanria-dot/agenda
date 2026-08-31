@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#1c2128" />
 <title>Asistente · Vicelly Sánchez Studio</title>
+
+<!-- Acceso directo tipo app (Android) -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Acceso directo tipo app (iPhone) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vicelly Studio">
+<link rel="apple-touch-icon" href="iconos/icono-180.png">
+
+<!-- Ícono en pestaña del navegador -->
+<link rel="icon" type="image/png" sizes="192x192" href="iconos/icono-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -64,14 +76,12 @@
     border-radius: 50%;
     background: var(--oscuro-suave);
     border: 2px solid var(--acento-suave);
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Fraunces", Georgia, serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--acento-suave);
   }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
   .encabezado-titulo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .encabezado-marca {
     font-family: "Fraunces", Georgia, serif;
@@ -145,14 +155,12 @@
     border-radius: 50%;
     background: var(--oscuro);
     border: 1.5px solid var(--acento-suave);
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Fraunces", Georgia, serif;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--acento-suave);
   }
+  .avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
 
   .burbuja-columna { display: flex; flex-direction: column; max-width: 78%; }
   .fila.usuario .burbuja-columna { align-items: flex-end; }
@@ -279,7 +287,7 @@
 
 <div class="app">
   <div class="encabezado">
-    <div class="avatar">VS</div>
+    <div class="avatar"><img src="iconos/icono-192.png" alt="" /></div>
     <div class="encabezado-titulo">
       <div class="encabezado-marca">Vicelly Sánchez Studio</div>
       <div class="encabezado-estado"><span class="punto-activo"></span>Asistente en línea</div>
@@ -328,7 +336,7 @@
 
     let html = "";
     if (tipo !== "usuario") {
-      html += '<div class="avatar-mini">VS</div>';
+      html += '<div class="avatar-mini"><img src="iconos/icono-192.png" alt="" /></div>';
     }
 
     const claseGlobo = tipo === "error" ? "error" : tipo;
@@ -349,7 +357,7 @@
     const fila = document.createElement("div");
     fila.className = "fila agente";
     fila.innerHTML =
-      '<div class="avatar-mini">VS</div>' +
+      '<div class="avatar-mini"><img src="iconos/icono-192.png" alt="" /></div>' +
       '<div class="burbuja-columna"><div class="msg agente escribiendo"><span></span><span></span><span></span></div></div>';
     contenedorMensajes.appendChild(fila);
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
@@ -402,7 +410,7 @@
   function reiniciarConversacion() {
     historialConversacion = [];
     contenedorMensajes.innerHTML = "";
-    agregarMensaje("¡Hola! 👋 ¿En qué puedo ayudarte?", "agente");
+    agregarMensaje("¡Hola! 🤖 Soy el asistente virtual de Vicelly Sánchez Studio. Puedo ayudarte a consultar citas, servicios, bloquear horarios y más. ¿En qué te ayudo hoy?", "agente");
   }
 
   botonEnviar.addEventListener("click", enviarPregunta);
