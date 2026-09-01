@@ -84,6 +84,7 @@ body{
 .msg.usuario{background:var(--charcoal);color:#fff;border-bottom-right-radius:4px;}
 .msg.agente{background:var(--white);color:#2c2c2a;border:0.5px solid #E4E4E4;border-bottom-left-radius:4px;}
 .msg.error{background:#f6e3df;color:#8a3b2c;border:0.5px solid #ecc7bf;}
+.msg.agente strong{color:var(--gold-dark);font-weight:600;}
 
 .meta-hora{font-size:10px;color:#aaa;margin-top:4px;padding:0 4px;}
 
@@ -164,7 +165,7 @@ body{
 </div>
 
 <script>
-  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbzWkH9Ilyjn0_6BeZSjsuLtJe0BpAHblbeZKDEc7pOVn-73Hzdk8UVIAzrF-EN7GyGk/exec";
+  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbyKpKVjRBC3VHHrrVS4NwmwDdKtcItI02Cbe6Bb2Qw4MCnvpvcstQSfcdlCJnNVyFfR/exec";
 
   const contenedorMensajes = document.getElementById("mensajes");
   const campoEntrada = document.getElementById("entrada");
@@ -177,6 +178,15 @@ body{
     return new Date().toLocaleTimeString("es-PA", { hour: "numeric", minute: "2-digit", hour12: true });
   }
 
+  function formatearTextoAgente(texto) {
+    // Escapamos HTML primero por seguridad, luego convertimos **negrita** a <strong>
+    const escapado = texto
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    return escapado.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  }
+
   function agregarMensaje(texto, tipo) {
     const fila = document.createElement("div");
     fila.className = "fila " + (tipo === "usuario" ? "usuario" : "agente");
@@ -186,7 +196,12 @@ body{
 
     html += '<div class="burbuja-columna"><div class="msg ' + tipo + '"></div><div class="meta-hora">' + horaActual() + '</div></div>';
     fila.innerHTML = html;
-    fila.querySelector(".msg").textContent = texto;
+    const burbuja = fila.querySelector(".msg");
+    if (tipo === "usuario") {
+      burbuja.textContent = texto;
+    } else {
+      burbuja.innerHTML = formatearTextoAgente(texto);
+    }
 
     contenedorMensajes.appendChild(fila);
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
