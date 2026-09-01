@@ -85,6 +85,7 @@ body{
 .msg.agente{background:var(--white);color:#2c2c2a;border:0.5px solid #E4E4E4;border-bottom-left-radius:4px;}
 .msg.error{background:#f6e3df;color:#8a3b2c;border:0.5px solid #ecc7bf;}
 .msg.agente strong{color:var(--gold-dark);font-weight:600;}
+.msg.agente a{color:var(--gold-dark);text-decoration:underline;font-weight:500;word-break:break-all;}
 
 .meta-hora{font-size:10px;color:#aaa;margin-top:4px;padding:0 4px;}
 
@@ -165,7 +166,7 @@ body{
 </div>
 
 <script>
-  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbyKpKVjRBC3VHHrrVS4NwmwDdKtcItI02Cbe6Bb2Qw4MCnvpvcstQSfcdlCJnNVyFfR/exec";
+  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbwSbE4bdFC714G7kUx1FrIEBGKDCSJa38FEa8gHJdv0ZdOkqyPApASEkuhlPXz0SyMN/exec";
 
   const contenedorMensajes = document.getElementById("mensajes");
   const campoEntrada = document.getElementById("entrada");
@@ -184,7 +185,9 @@ body{
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
-    return escapado.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    const conNegritas = escapado.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    // Convertimos URLs sueltas en links clicables
+    return conNegritas.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   }
 
   function agregarMensaje(texto, tipo) {
