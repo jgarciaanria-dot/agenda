@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#3A3A3A" />
+<title>Vicelly Sánchez Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --charcoal:#3A3A3A;
+  --gold:#C9A96E;--gold-dark:#8B6F3E;
+  --bg:#EDEEF0;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;}
+body{
+  font-family:'Inter',sans-serif;color:#2c2c2a;
+  background-color:#E8E9EC;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.18'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  min-height:100dvh;display:flex;justify-content:center;
+  padding:calc(32px + var(--safe-top)) 20px calc(32px + var(--safe-bottom));
+}
+
+.pagina{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;}
+
+.logo{
+  width:64px;height:64px;border-radius:50%;background:#000;
+  display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+  animation:dropIn 1s cubic-bezier(.34,1.56,.64,1) both, pulseGold 3.5s ease-in-out 1s infinite;
+}
+.logo span{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);}
+@keyframes dropIn{
+  0%{opacity:0;transform:translateY(-30px) scale(.8);}
+  65%{opacity:1;transform:translateY(5px) scale(1.05);}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:drop-shadow(0 0 10px rgba(201,169,110,.5));}
+}
+@keyframes pulseGold{0%,100%{filter:drop-shadow(0 0 6px rgba(201,169,110,.4));}50%{filter:drop-shadow(0 0 16px rgba(201,169,110,.8));}}
+
+.titulo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--charcoal);text-align:center;letter-spacing:.02em;}
+.subtitulo{font-size:13px;color:#888;text-align:center;margin-top:4px;margin-bottom:32px;}
+
+.enlace{
+  width:100%;display:flex;align-items:center;gap:14px;
+  background:#fff;border:0.5px solid #ddd;border-radius:14px;
+  padding:16px 18px;text-decoration:none;color:var(--charcoal);
+  margin-bottom:14px;
+}
+.enlace-icono{
+  flex:none;width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+}
+.enlace-icono.agenda{background:#F3EAD8;color:var(--gold-dark);}
+.enlace-icono.vice{background:#000;color:var(--gold);}
+.enlace-texto{flex:1;min-width:0;}
+.enlace-titulo{font-size:14.5px;font-weight:500;}
+.enlace-sub{font-size:12px;color:#999;margin-top:1px;}
+.enlace-flecha{flex:none;font-size:16px;color:#bbb;}
+
+.whatsapp-min{
+  display:flex;align-items:center;gap:6px;
+  font-size:12.5px;color:#3fa25a;text-decoration:none;margin-top:12px;
+}
+.whatsapp-min i{font-size:15px;}
+</style>
+</head>
+<body>
+
+<div class="pagina">
+  <div class="logo"><span>VS</span></div>
+  <div class="titulo">Vicelly Sánchez Studio</div>
+  <div class="subtitulo">Hair &amp; Beauty · Panamá</div>
+
+  <a class="enlace" href="https://agenda.vicellystudio.com/" target="_blank" rel="noopener">
+    <div class="enlace-icono agenda"><i class="ti ti-calendar-plus" aria-hidden="true"></i></div>
+    <div class="enlace-texto">
+      <div class="enlace-titulo">Agendar cita</div>
+      <div class="enlace-sub">Ver servicios y disponibilidad</div>
+    </div>
+    <i class="ti ti-chevron-right enlace-flecha" aria-hidden="true"></i>
+  </a>
+
+  <a class="enlace" href="https://agenda.vicellystudio.com/vice" target="_blank" rel="noopener">
+    <div class="enlace-icono vice"><i class="ti ti-sparkles" aria-hidden="true"></i></div>
+    <div class="enlace-texto">
+      <div class="enlace-titulo">Chatea con Vice</div>
+      <div class="enlace-sub">Nuestro asistente virtual</div>
+    </div>
+    <i class="ti ti-chevron-right enlace-flecha" aria-hidden="true"></i>
+  </a>
+
+  <a class="whatsapp-min" href="https://wa.me/50765224575" target="_blank" rel="noopener">
+    <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>Prefiero escribir por WhatsApp
+  </a>
+</div>
+
+</body>
+</html>
