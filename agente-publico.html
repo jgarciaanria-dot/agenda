@@ -166,7 +166,7 @@ body{
 </div>
 
 <script>
-  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbxZsXFxkvBGPZW3VIm1GLig71isxjGxbrUq8U36cTtYfIEaa21hmjysF7EQoJctHtzi/exec";
+  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbyXQIL_3Y8NoSzmZ6_WlEEZxKzSuG5ckZ2j9pmlxE3A7Nz9sobPcoTpOr2tyQcSV5Ik/exec";
 
   const contenedorMensajes = document.getElementById("mensajes");
   const campoEntrada = document.getElementById("entrada");
@@ -260,7 +260,9 @@ body{
 
         if (datos.horasDisponibles && datos.horasDisponibles.horas && datos.horasDisponibles.horas.length > 0) {
           renderBotonesHora(datos.horasDisponibles);
-        } else if (/¿Confirmamos tu cita\?/.test(datos.respuesta)) {
+        } else if (datos.correoParaConfirmar) {
+          renderBotonesCorreo();
+        } else if (datos.listoParaConfirmarCita) {
           renderBotonesConfirmar();
         }
       }
@@ -310,6 +312,26 @@ body{
     cambiar.onclick = () => enviarPregunta("Quiero cambiar algo antes de confirmar");
 
     wrap.appendChild(confirmar);
+    wrap.appendChild(cambiar);
+    contenedorMensajes.appendChild(wrap);
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+  }
+
+  function renderBotonesCorreo() {
+    const wrap = document.createElement("div");
+    wrap.className = "chips-wrap chips-dinamicos";
+
+    const mismo = document.createElement("div");
+    mismo.className = "chip";
+    mismo.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i>Sí, es el mismo';
+    mismo.onclick = () => enviarPregunta("Sí, mi correo sigue siendo el mismo");
+
+    const cambiar = document.createElement("div");
+    cambiar.className = "chip";
+    cambiar.innerHTML = '<i class="ti ti-edit" aria-hidden="true"></i>Quiero actualizarlo';
+    cambiar.onclick = () => enviarPregunta("Quiero actualizar mi correo");
+
+    wrap.appendChild(mismo);
     wrap.appendChild(cambiar);
     contenedorMensajes.appendChild(wrap);
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
