@@ -166,7 +166,7 @@ body{
 </div>
 
 <script>
-  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbwDCPUfcoLXRbEaGNYxxeqwGCa_uTQdTss-thh5h7irJ7Yau0vWsMihdJVzMvPFFGz9/exec";
+  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbzr1xqhAnSAVSa4Op33gXzPXMa7KWbO0IyP0WsHoz7KPGRyesn4JtVvtKsf_fE20hIk/exec";
 
   const contenedorMensajes = document.getElementById("mensajes");
   const campoEntrada = document.getElementById("entrada");
@@ -174,6 +174,8 @@ body{
   const botonCerrar = document.getElementById("botonCerrar");
 
   let historialConversacion = [];
+  let mensajesUsuario = [];
+  let telefonoDetectado = null;
   let ultimaActividad = Date.now();
   const LIMITE_INACTIVIDAD_MS = 10 * 60 * 1000; // 10 minutos
 
@@ -238,6 +240,14 @@ body{
     marcarActividad();
     quitarChips();
     agregarMensaje(pregunta, "usuario");
+    mensajesUsuario.push(pregunta);
+    if (!telefonoDetectado) {
+      const soloDigitos = pregunta.replace(/\D/g, "");
+      const soloTexto = pregunta.replace(/\s/g, "");
+      if (soloDigitos.length >= 7 && soloDigitos.length <= 12 && soloDigitos.length >= soloTexto.length * 0.6) {
+        telefonoDetectado = pregunta;
+      }
+    }
     campoEntrada.value = "";
     ajustarAlturaEntrada();
     botonEnviar.disabled = true;
@@ -370,7 +380,29 @@ body{
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
   }
 
+  // Manda al backend todo lo que escribió la persona en esta conversación, sin llamar
+  // a Claude (no consume tokens). Se usa sendBeacon cuando existe, porque funciona
+  // aunque la pestaña se esté cerrando; si no, cae a un fetch normal.
+  function enviarLogConversacion() {
+    if (mensajesUsuario.length === 0) return;
+    const payload = JSON.stringify({
+      accion: "registrar_conversacion",
+      telefono: telefonoDetectado,
+      mensajes: mensajesUsuario
+    });
+    try {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(URL_AGENTE, new Blob([payload], { type: "text/plain" }));
+      } else {
+        fetch(URL_AGENTE, { method: "POST", body: payload, keepalive: true });
+      }
+    } catch (e) {}
+    mensajesUsuario = [];
+    telefonoDetectado = null;
+  }
+
   async function iniciarConversacion() {
+    enviarLogConversacion();
     marcarActividad();
     historialConversacion = [];
     contenedorMensajes.innerHTML = "";
@@ -409,6 +441,13 @@ body{
       iniciarConversacion();
     }
   }, 30000);
+
+  // También registramos lo que se preguntó si la persona simplemente cierra o
+  // abandona la pestaña, sin esperar a que se cumplan los 10 minutos de inactividad.
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "hidden") enviarLogConversacion();
+  });
+  window.addEventListener("pagehide", enviarLogConversacion);
 
   iniciarConversacion();
 </script>
