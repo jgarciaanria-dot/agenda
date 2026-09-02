@@ -56,6 +56,17 @@ body{
 .dot-activo{width:6px;height:6px;border-radius:50%;background:#7BA87F;flex:none;}
 .hdr-close{flex:none;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;z-index:2;font-size:16px;}
 
+/* ---- Accesos rápidos fijos ---- */
+.accesos-rapidos{flex:0 0 auto;display:flex;gap:8px;padding:10px 12px;background:#E4E5E8;border-bottom:0.5px solid #ddd;}
+.acceso-rapido{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  background:#fff;border:0.5px solid #ddd;border-radius:9px;padding:9px 6px;
+  font-size:12.5px;font-weight:500;color:var(--charcoal);text-decoration:none;
+}
+.acceso-rapido i{font-size:16px;}
+.acceso-rapido.whatsapp i{color:#3fa25a;}
+.acceso-rapido.agenda i{color:var(--gold);}
+
 /* ---- Mensajes ---- */
 .chat-mensajes{
   flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -153,6 +164,15 @@ body{
     </button>
   </div>
 
+  <div class="accesos-rapidos">
+    <a class="acceso-rapido agenda" href="https://agenda.vicellystudio.com/" target="_blank" rel="noopener">
+      <i class="ti ti-calendar" aria-hidden="true"></i>Ver agenda
+    </a>
+    <a class="acceso-rapido whatsapp" href="https://wa.me/50765224575" target="_blank" rel="noopener">
+      <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>WhatsApp
+    </a>
+  </div>
+
   <div class="chat-mensajes" id="mensajes"></div>
 
   <div class="chat-input">
@@ -166,7 +186,7 @@ body{
 </div>
 
 <script>
-  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbxrU6fhvhWmMseNeKuXEoFhBwUCq85GRPUAIio0bTUTOs_D1rGpxCthlLOtbMjYg1PK/exec";
+  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbyKpKVjRBC3VHHrrVS4NwmwDdKtcItI02Cbe6Bb2Qw4MCnvpvcstQSfcdlCJnNVyFfR/exec";
 
   const contenedorMensajes = document.getElementById("mensajes");
   const campoEntrada = document.getElementById("entrada");
