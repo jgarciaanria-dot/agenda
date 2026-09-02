@@ -166,7 +166,7 @@ body{
 </div>
 
 <script>
-  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbyLGERGpVhxf9I27QIGwkLgzKu-HAUEgxjDoDOCpOteeOOtViMJAR_Kk-lBezzWLenH/exec";
+  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbyTobO0EA7Y46ideox6hSnG4PdiHr_o6PfuqX7Ef96lIQ8IMbySKhIZnQn_dqk6sVKD/exec";
 
   const contenedorMensajes = document.getElementById("mensajes");
   const campoEntrada = document.getElementById("entrada");
@@ -255,8 +255,14 @@ body{
       if (datos.error) {
         agregarMensaje("Uy, algo falló de mi lado. Escríbenos por WhatsApp: +507 6522-4575", "error");
       } else {
-        agregarMensaje(datos.respuesta, "agente");
+        const filaMensaje = agregarMensaje(datos.respuesta, "agente");
         historialConversacion = datos.historial || historialConversacion;
+
+        if (datos.horasDisponibles && datos.horasDisponibles.horas && datos.horasDisponibles.horas.length > 0) {
+          renderBotonesHora(datos.horasDisponibles);
+        } else if (/¿Confirmamos tu cita\?/.test(datos.respuesta)) {
+          renderBotonesConfirmar();
+        }
       }
     } catch (error) {
       filaEscribiendo.remove();
@@ -267,9 +273,52 @@ body{
     campoEntrada.focus();
   }
 
+  function formatearHora12(hora24) {
+    const [h, m] = hora24.split(":").map(Number);
+    const hh = h % 12 === 0 ? 12 : h % 12;
+    return hh + ":" + String(m).padStart(2, "0") + (h >= 12 ? " PM" : " AM");
+  }
+
+  function renderBotonesHora(datosDisponibilidad) {
+    const wrap = document.createElement("div");
+    wrap.className = "chips-wrap chips-dinamicos";
+
+    datosDisponibilidad.horas.forEach(hora => {
+      const chip = document.createElement("div");
+      chip.className = "chip";
+      chip.innerHTML = '<i class="ti ti-clock" aria-hidden="true"></i>' + formatearHora12(hora);
+      chip.onclick = () => enviarPregunta("Quiero la cita a las " + formatearHora12(hora));
+      wrap.appendChild(chip);
+    });
+
+    contenedorMensajes.appendChild(wrap);
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+  }
+
+  function renderBotonesConfirmar() {
+    const wrap = document.createElement("div");
+    wrap.className = "chips-wrap chips-dinamicos";
+
+    const confirmar = document.createElement("div");
+    confirmar.className = "chip";
+    confirmar.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i>Sí, confirmar';
+    confirmar.onclick = () => enviarPregunta("Sí, confirmo la cita");
+
+    const cambiar = document.createElement("div");
+    cambiar.className = "chip";
+    cambiar.innerHTML = '<i class="ti ti-edit" aria-hidden="true"></i>Cambiar algo';
+    cambiar.onclick = () => enviarPregunta("Quiero cambiar algo antes de confirmar");
+
+    wrap.appendChild(confirmar);
+    wrap.appendChild(cambiar);
+    contenedorMensajes.appendChild(wrap);
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+  }
+
   function quitarChips() {
     const chips = document.getElementById("chipsIniciales");
     if (chips) chips.remove();
+    document.querySelectorAll(".chips-dinamicos").forEach(el => el.remove());
   }
 
   function renderChips(promoActiva) {
