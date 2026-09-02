@@ -3,297 +3,153 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#1c2128" />
+<meta name="theme-color" content="#3A3A3A" />
 <title>Asistente · Vicelly Sánchez Studio</title>
-
-<!-- Acceso directo tipo app (Android) -->
-<link rel="manifest" href="manifest.json">
-
-<!-- Acceso directo tipo app (iPhone) -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Vicelly Studio">
-<link rel="apple-touch-icon" href="iconos/icono-180.png">
-
-<!-- Ícono en pestaña del navegador -->
-<link rel="icon" type="image/png" sizes="192x192" href="iconos/icono-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --oscuro: #1c2128;
-    --oscuro-suave: #2a313b;
-    --crema: #f7f2e8;
-    --panel: #fffdf9;
-    --linea: #e7ddc9;
-    --acento: #c08a4e;
-    --acento-suave: #ecd9bb;
-    --texto: #2b2620;
-    --texto-claro: #f7f2e8;
-    --texto-suave: #948a78;
-    --verde: #4caf6f;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --charcoal:#3A3A3A;--charcoal2:#4A4848;
+  --gold:#C9A96E;--gold-light:#F0DFB8;--gold-dark:#8B6F3E;
+  --bg:#EDEEF0;--white:#FFFFFF;--gray:#888;
+  --radius:10px;--radius-lg:14px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overscroll-behavior-y:none;}
+body{
+  font-family:'Inter',sans-serif;color:#2c2c2a;
+  background-color:#E8E9EC;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.18'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  height:100dvh;display:flex;justify-content:center;
+}
 
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; overscroll-behavior-y: none; }
+.app{width:100%;max-width:480px;height:100dvh;display:flex;flex-direction:column;}
 
-  body {
-    font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--crema);
-    margin: 0;
-    color: var(--texto);
-    height: 100dvh;
-    display: flex;
-    justify-content: center;
-  }
+/* ---- Header ---- */
+.hdr{
+  flex:0 0 auto;
+  background-color:#3A3A3A;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E");
+  padding:calc(14px + var(--safe-top)) 18px 14px;
+  display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;
+}
+.hdr::before{content:'';position:absolute;top:-50px;left:20px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,0.16) 0%,transparent 70%);pointer-events:none;}
+.hdr-logo{
+  flex:none;width:46px;height:46px;border-radius:50%;
+  background:#000;display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:2;
+  animation:dropIn 1s cubic-bezier(.34,1.56,.64,1) both, pulseGold 3.5s ease-in-out 1s infinite;
+}
+.hdr-logo span{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--gold);}
+@keyframes dropIn{
+  0%{opacity:0;transform:translateY(-40px) scale(.8);}
+  65%{opacity:1;transform:translateY(6px) scale(1.05);}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:drop-shadow(0 0 10px rgba(201,169,110,.5));}
+}
+@keyframes pulseGold{0%,100%{filter:drop-shadow(0 0 6px rgba(201,169,110,.4));}50%{filter:drop-shadow(0 0 16px rgba(201,169,110,.8));}}
+.hdr-content{position:relative;z-index:2;min-width:0;flex:1;}
+.hdr-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#fff;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hdr-status{font-size:11px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px;margin-top:2px;}
+.dot-activo{width:6px;height:6px;border-radius:50%;background:#7BA87F;flex:none;}
+.hdr-close{flex:none;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;z-index:2;font-size:16px;}
 
-  .app {
-    width: 100%;
-    max-width: 480px;
-    height: 100dvh;
-    background: var(--crema);
-    display: flex;
-    flex-direction: column;
-  }
+/* ---- Mensajes ---- */
+.chat-mensajes{
+  flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:18px 14px 8px;display:flex;flex-direction:column;gap:3px;
+}
+.fila{display:flex;gap:8px;margin-top:10px;align-items:flex-end;}
+.fila.usuario{justify-content:flex-end;}
+.fila.agente{justify-content:flex-start;}
 
-  /* ---- Header ---- */
-  .encabezado {
-    flex: 0 0 auto;
-    padding: calc(14px + var(--safe-top)) 16px 14px;
-    background: var(--oscuro);
-    color: var(--texto-claro);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .avatar {
-    flex: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--oscuro-suave);
-    border: 2px solid var(--acento-suave);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .encabezado-titulo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .encabezado-marca {
-    font-family: "Fraunces", Georgia, serif;
-    font-weight: 600;
-    font-size: 16.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .encabezado-estado {
-    font-size: 12px;
-    color: #c7c1b3;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .punto-activo { width: 6px; height: 6px; border-radius: 50%; background: var(--verde); flex: none; }
+.avatar-mini{
+  flex:none;width:26px;height:26px;border-radius:50%;
+  background:#000;display:flex;align-items:center;justify-content:center;
+}
+.avatar-mini span{font-family:'Cormorant Garamond',serif;font-size:10px;font-weight:600;color:var(--gold);}
 
-  .boton-menu {
-    flex: none;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    color: #c7c1b3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .boton-menu:active { background: rgba(255,255,255,0.08); }
+.burbuja-columna{display:flex;flex-direction:column;max-width:80%;}
+.fila.usuario .burbuja-columna{align-items:flex-end;}
+.fila.agente .burbuja-columna{align-items:flex-start;}
 
-  /* ---- Mensajes ---- */
-  .chat-mensajes {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 16px 14px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
+.msg{
+  padding:10px 14px;border-radius:var(--radius-lg);
+  font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;
+  animation:msgIn .3s cubic-bezier(.34,1.2,.64,1) both;
+}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.msg.usuario{background:var(--charcoal);color:#fff;border-bottom-right-radius:4px;}
+.msg.agente{background:var(--white);color:#2c2c2a;border:0.5px solid #E4E4E4;border-bottom-left-radius:4px;}
+.msg.error{background:#f6e3df;color:#8a3b2c;border:0.5px solid #ecc7bf;}
+.msg.agente strong{color:var(--gold-dark);font-weight:600;}
+.msg.agente a{color:var(--gold-dark);text-decoration:underline;font-weight:500;word-break:break-all;}
 
-  .pildora-reiniciar {
-    align-self: center;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    margin-bottom: 14px;
-    border-radius: 20px;
-    border: 1px solid var(--linea);
-    background: var(--panel);
-    color: var(--texto-suave);
-    font-size: 12.5px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  .pildora-reiniciar:active { background: var(--acento-suave); }
-  .pildora-reiniciar svg { width: 13px; height: 13px; }
+.meta-hora{font-size:10px;color:#aaa;margin-top:4px;padding:0 4px;}
 
-  .fila { display: flex; gap: 8px; margin-top: 10px; align-items: flex-end; }
-  .fila.usuario { justify-content: flex-end; }
-  .fila.agente { justify-content: flex-start; }
+/* ---- Escribiendo ---- */
+.escribiendo{display:inline-flex;align-items:center;gap:4px;padding:4px 3px;}
+.escribiendo span{width:5.5px;height:5.5px;border-radius:50%;background:var(--gray);animation:rebote 1.1s infinite ease-in-out;}
+.escribiendo span:nth-child(2){animation-delay:.15s;}
+.escribiendo span:nth-child(3){animation-delay:.3s;}
+@keyframes rebote{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-4px);opacity:1;}}
 
-  .avatar-mini {
-    flex: none;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--oscuro);
-    border: 1.5px solid var(--acento-suave);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
+/* ---- Chips de sugerencia ---- */
+.chips-wrap{display:flex;flex-wrap:wrap;gap:7px;padding:2px 4px 4px 34px;animation:msgIn .35s cubic-bezier(.34,1.2,.64,1) both;}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 13px;border-radius:999px;
+  border:1px solid #E5D8B8;background:#fff;
+  font-size:12.5px;color:var(--gold-dark);font-weight:500;
+  cursor:pointer;transition:transform .15s,border-color .15s;white-space:nowrap;
+}
+.chip:active{transform:scale(.96);}
+.chip:hover{border-color:var(--gold);}
+.chip i{font-size:14px;}
+.chip.promo{background:linear-gradient(135deg,#FBF0F3,#F5E4E9);border-color:#D693AA;color:#B85478;}
 
-  .burbuja-columna { display: flex; flex-direction: column; max-width: 78%; }
-  .fila.usuario .burbuja-columna { align-items: flex-end; }
-  .fila.agente .burbuja-columna { align-items: flex-start; }
+/* ---- Entrada ---- */
+.chat-input{
+  flex:0 0 auto;display:flex;align-items:flex-end;gap:8px;
+  padding:10px 12px calc(10px + var(--safe-bottom));
+  background:var(--bg);border-top:0.5px solid #ddd;
+}
+.campo-envoltorio{
+  flex:1;display:flex;align-items:flex-end;
+  background:#fff;border:0.5px solid #ddd;border-radius:22px;padding:6px 8px 6px 15px;
+}
+.campo-envoltorio:focus-within{border-color:var(--gold);}
+.chat-input textarea{
+  flex:1;resize:none;max-height:110px;padding:5px 0;border:none;background:transparent;
+  font-size:15px;font-family:inherit;color:#2c2c2a;line-height:1.35;
+}
+.chat-input textarea:focus{outline:none;}
+.chat-input textarea::placeholder{color:#aaa;}
+.boton-enviar{
+  flex:none;width:42px;height:42px;border-radius:50%;border:none;
+  background:var(--charcoal);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .15s;
+}
+.boton-enviar:disabled{opacity:.35;}
+.boton-enviar i{font-size:18px;}
 
-  .msg {
-    padding: 10px 13px;
-    border-radius: 16px;
-    font-size: 14.5px;
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-  .msg.usuario {
-    background: var(--oscuro);
-    color: var(--texto-claro);
-    border-bottom-right-radius: 4px;
-  }
-  .msg.agente {
-    background: var(--panel);
-    color: var(--texto);
-    border: 1px solid var(--linea);
-    border-bottom-left-radius: 4px;
-  }
-  .msg.error {
-    background: #f6e3df;
-    color: #8a3b2c;
-    border: 1px solid #ecc7bf;
-  }
-
-  .meta-hora {
-    font-size: 10.5px;
-    color: var(--texto-suave);
-    margin-top: 4px;
-    padding: 0 3px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .meta-hora svg { width: 12px; height: 12px; }
-
-  /* ---- Indicador de "escribiendo" ---- */
-  .escribiendo { display: inline-flex; align-items: center; gap: 4px; padding: 3px 2px; }
-  .escribiendo span {
-    width: 5.5px;
-    height: 5.5px;
-    border-radius: 50%;
-    background: var(--texto-suave);
-    animation: rebote 1.1s infinite ease-in-out;
-  }
-  .escribiendo span:nth-child(2) { animation-delay: 0.15s; }
-  .escribiendo span:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes rebote {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-    30% { transform: translateY(-4px); opacity: 1; }
-  }
-
-  /* ---- Entrada ---- */
-  .chat-input {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    padding: 10px 12px calc(10px + var(--safe-bottom));
-    background: var(--crema);
-    border-top: 1px solid var(--linea);
-  }
-  .campo-envoltorio {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-    background: var(--panel);
-    border: 1px solid var(--linea);
-    border-radius: 22px;
-    padding: 6px 8px 6px 14px;
-  }
-  .campo-envoltorio:focus-within { border-color: var(--acento); }
-  .icono-emoji {
-    flex: none;
-    color: var(--texto-suave);
-    display: flex;
-    align-items: center;
-    padding-bottom: 6px;
-  }
-  .icono-emoji svg { width: 19px; height: 19px; }
-
-  .chat-input textarea {
-    flex: 1;
-    resize: none;
-    max-height: 110px;
-    padding: 5px 0;
-    border: none;
-    background: transparent;
-    font-size: 15px;
-    font-family: inherit;
-    color: var(--texto);
-    line-height: 1.35;
-  }
-  .chat-input textarea:focus { outline: none; }
-  .chat-input textarea::placeholder { color: var(--texto-suave); }
-
-  .boton-enviar {
-    flex: none;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: none;
-    background: var(--acento);
-    color: var(--texto-claro);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .boton-enviar:disabled { background: var(--linea); color: var(--texto-suave); }
-  .boton-enviar svg { width: 18px; height: 18px; }
-
-  .chat-mensajes::-webkit-scrollbar { width: 4px; }
-  .chat-mensajes::-webkit-scrollbar-thumb { background: var(--linea); border-radius: 4px; }
+.chat-mensajes::-webkit-scrollbar{width:4px;}
+.chat-mensajes::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px;}
 </style>
 </head>
 <body>
 
 <div class="app">
-  <div class="encabezado">
-    <div class="avatar"><img src="iconos/icono-192.png" alt="" /></div>
-    <div class="encabezado-titulo">
-      <div class="encabezado-marca">Vicelly Sánchez Studio</div>
-      <div class="encabezado-estado"><span class="punto-activo"></span>Asistente en línea</div>
+  <div class="hdr">
+    <div class="hdr-logo"><span>VS</span></div>
+    <div class="hdr-content">
+      <div class="hdr-title">Vice</div>
+      <div class="hdr-status"><span class="dot-activo"></span>Asistente de Vicelly Sánchez Studio</div>
     </div>
-    <button class="boton-menu" id="botonReiniciar" title="Empezar una conversación nueva" aria-label="Nueva conversación">
-      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+    <button class="hdr-close" id="botonCerrar" title="Nueva conversación" aria-label="Nueva conversación">
+      <i class="ti ti-refresh" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -301,33 +157,43 @@
 
   <div class="chat-input">
     <div class="campo-envoltorio">
-      <span class="icono-emoji">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14s1.2 2 3.5 2 3.5-2 3.5-2"/><line x1="9" y1="9.5" x2="9.01" y2="9.5"/><line x1="15" y1="9.5" x2="15.01" y2="9.5"/></svg>
-      </span>
       <textarea id="entrada" placeholder="Escribe tu mensaje..." rows="1"></textarea>
     </div>
     <button class="boton-enviar" id="botonEnviar" aria-label="Enviar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      <i class="ti ti-send-2" aria-hidden="true"></i>
     </button>
   </div>
 </div>
 
 <script>
-  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbxZsXFxkvBGPZW3VIm1GLig71isxjGxbrUq8U36cTtYfIEaa21hmjysF7EQoJctHtzi/exec";
+  const URL_AGENTE = "https://script.google.com/macros/s/AKfycbyV3uDJJXqjq_TKND5X0QqUI9uZSlqRm_eH-8rXZwKLR-yRWCc6OixtNu3f5Q72X7k/exec";
 
   const contenedorMensajes = document.getElementById("mensajes");
   const campoEntrada = document.getElementById("entrada");
   const botonEnviar = document.getElementById("botonEnviar");
-  const botonReiniciar = document.getElementById("botonReiniciar");
+  const botonCerrar = document.getElementById("botonCerrar");
 
-  // Guarda la conversación completa en memoria del navegador.
-  // Se reenvía completa con cada pregunta para que el agente recuerde el contexto (ej. confirmaciones).
   let historialConversacion = [];
+  let ultimaActividad = Date.now();
+  const LIMITE_INACTIVIDAD_MS = 10 * 60 * 1000; // 10 minutos
 
-  const iconoCheck = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  function marcarActividad() {
+    ultimaActividad = Date.now();
+  }
 
   function horaActual() {
     return new Date().toLocaleTimeString("es-PA", { hour: "numeric", minute: "2-digit", hour12: true });
+  }
+
+  function formatearTextoAgente(texto) {
+    // Escapamos HTML primero por seguridad, luego convertimos **negrita** a <strong>
+    const escapado = texto
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    const conNegritas = escapado.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    // Convertimos URLs sueltas en links clicables
+    return conNegritas.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   }
 
   function agregarMensaje(texto, tipo) {
@@ -335,18 +201,16 @@
     fila.className = "fila " + (tipo === "usuario" ? "usuario" : "agente");
 
     let html = "";
-    if (tipo !== "usuario") {
-      html += '<div class="avatar-mini"><img src="iconos/icono-192.png" alt="" /></div>';
-    }
+    if (tipo !== "usuario") html += '<div class="avatar-mini"><span>VS</span></div>';
 
-    const claseGlobo = tipo === "error" ? "error" : tipo;
-    html += '<div class="burbuja-columna">';
-    html += '<div class="msg ' + claseGlobo + '"></div>';
-    html += '<div class="meta-hora">' + horaActual() + (tipo === "usuario" ? iconoCheck : "") + '</div>';
-    html += '</div>';
-
+    html += '<div class="burbuja-columna"><div class="msg ' + tipo + '"></div><div class="meta-hora">' + horaActual() + '</div></div>';
     fila.innerHTML = html;
-    fila.querySelector(".msg").textContent = texto;
+    const burbuja = fila.querySelector(".msg");
+    if (tipo === "usuario") {
+      burbuja.textContent = texto;
+    } else {
+      burbuja.innerHTML = formatearTextoAgente(texto);
+    }
 
     contenedorMensajes.appendChild(fila);
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
@@ -356,9 +220,7 @@
   function mostrarEscribiendo() {
     const fila = document.createElement("div");
     fila.className = "fila agente";
-    fila.innerHTML =
-      '<div class="avatar-mini"><img src="iconos/icono-192.png" alt="" /></div>' +
-      '<div class="burbuja-columna"><div class="msg agente escribiendo"><span></span><span></span><span></span></div></div>';
+    fila.innerHTML = '<div class="avatar-mini"><span>VS</span></div><div class="burbuja-columna"><div class="msg agente escribiendo"><span></span><span></span><span></span></div></div>';
     contenedorMensajes.appendChild(fila);
     contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
     return fila;
@@ -369,10 +231,12 @@
     campoEntrada.style.height = Math.min(campoEntrada.scrollHeight, 110) + "px";
   }
 
-  async function enviarPregunta() {
-    const pregunta = campoEntrada.value.trim();
+  async function enviarPregunta(textoForzado) {
+    const pregunta = (textoForzado !== undefined ? textoForzado : campoEntrada.value).trim();
     if (!pregunta) return;
 
+    marcarActividad();
+    quitarChips();
     agregarMensaje(pregunta, "usuario");
     campoEntrada.value = "";
     ajustarAlturaEntrada();
@@ -383,37 +247,151 @@
     try {
       const respuesta = await fetch(URL_AGENTE, {
         method: "POST",
-        body: JSON.stringify({
-          pregunta: pregunta,
-          historial: historialConversacion
-        })
+        body: JSON.stringify({ pregunta: pregunta, historial: historialConversacion, origen: "publico" })
       });
       const datos = await respuesta.json();
-
       filaEscribiendo.remove();
 
       if (datos.error) {
-        agregarMensaje("Error: " + datos.error, "error");
+        agregarMensaje("Uy, algo falló de mi lado. Escríbenos por WhatsApp: +507 6522-4575", "error");
       } else {
-        agregarMensaje(datos.respuesta, "agente");
+        const filaMensaje = agregarMensaje(datos.respuesta, "agente");
         historialConversacion = datos.historial || historialConversacion;
+
+        if (datos.horasDisponibles && datos.horasDisponibles.horas && datos.horasDisponibles.horas.length > 0) {
+          renderBotonesHora(datos.horasDisponibles);
+        } else if (/¿Confirmamos tu cita\?/.test(datos.respuesta)) {
+          renderBotonesConfirmar();
+        } else if (/¿Tu correo sigue siendo el mismo\?/.test(datos.respuesta)) {
+          renderBotonesCorreo();
+        }
       }
     } catch (error) {
       filaEscribiendo.remove();
-      agregarMensaje("No se pudo conectar con el agente. Revisa la URL o tu conexión.", "error");
+      agregarMensaje("No pude conectarme. Intenta de nuevo o escríbenos por WhatsApp: +507 6522-4575", "error");
     }
 
     botonEnviar.disabled = false;
     campoEntrada.focus();
   }
 
-  function reiniciarConversacion() {
-    historialConversacion = [];
-    contenedorMensajes.innerHTML = "";
-    agregarMensaje("¡Hola! 🤖 Soy el asistente virtual de Vicelly Sánchez Studio. Puedo ayudarte a consultar citas, servicios, bloquear horarios y más. ¿En qué te ayudo hoy?", "agente");
+  function formatearHora12(hora24) {
+    const [h, m] = hora24.split(":").map(Number);
+    const hh = h % 12 === 0 ? 12 : h % 12;
+    return hh + ":" + String(m).padStart(2, "0") + (h >= 12 ? " PM" : " AM");
   }
 
-  botonEnviar.addEventListener("click", enviarPregunta);
+  function renderBotonesHora(datosDisponibilidad) {
+    const wrap = document.createElement("div");
+    wrap.className = "chips-wrap chips-dinamicos";
+
+    datosDisponibilidad.horas.forEach(hora => {
+      const chip = document.createElement("div");
+      chip.className = "chip";
+      chip.innerHTML = '<i class="ti ti-clock" aria-hidden="true"></i>' + formatearHora12(hora);
+      chip.onclick = () => enviarPregunta("Quiero la cita a las " + formatearHora12(hora));
+      wrap.appendChild(chip);
+    });
+
+    contenedorMensajes.appendChild(wrap);
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+  }
+
+  function renderBotonesConfirmar() {
+    const wrap = document.createElement("div");
+    wrap.className = "chips-wrap chips-dinamicos";
+
+    const confirmar = document.createElement("div");
+    confirmar.className = "chip";
+    confirmar.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i>Sí, confirmar';
+    confirmar.onclick = () => enviarPregunta("Sí, confirmo la cita");
+
+    const cambiar = document.createElement("div");
+    cambiar.className = "chip";
+    cambiar.innerHTML = '<i class="ti ti-edit" aria-hidden="true"></i>Cambiar algo';
+    cambiar.onclick = () => enviarPregunta("Quiero cambiar algo antes de confirmar");
+
+    wrap.appendChild(confirmar);
+    wrap.appendChild(cambiar);
+    contenedorMensajes.appendChild(wrap);
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+  }
+
+  function renderBotonesCorreo() {
+    const wrap = document.createElement("div");
+    wrap.className = "chips-wrap chips-dinamicos";
+
+    const mismo = document.createElement("div");
+    mismo.className = "chip";
+    mismo.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i>Sí, es el mismo';
+    mismo.onclick = () => enviarPregunta("Sí, mi correo sigue siendo el mismo");
+
+    const cambiar = document.createElement("div");
+    cambiar.className = "chip";
+    cambiar.innerHTML = '<i class="ti ti-edit" aria-hidden="true"></i>Quiero actualizarlo';
+    cambiar.onclick = () => enviarPregunta("Quiero actualizar mi correo");
+
+    wrap.appendChild(mismo);
+    wrap.appendChild(cambiar);
+    contenedorMensajes.appendChild(wrap);
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+  }
+
+  function quitarChips() {
+    const chips = document.getElementById("chipsIniciales");
+    if (chips) chips.remove();
+    document.querySelectorAll(".chips-dinamicos").forEach(el => el.remove());
+  }
+
+  function renderChips(promoActiva) {
+    quitarChips();
+    const wrap = document.createElement("div");
+    wrap.className = "chips-wrap";
+    wrap.id = "chipsIniciales";
+
+    const opciones = [
+      { icono: "ti-sparkles", texto: "Ver servicios", pregunta: "¿Qué servicios ofrecen y cuánto cuestan?" },
+      { icono: "ti-calendar-plus", texto: "Agendar cita", pregunta: "Quiero agendar una cita" },
+      { icono: "ti-map-pin", texto: "Ubicación y horario", pregunta: "¿Dónde están ubicados y cuál es su horario?" }
+    ];
+    if (promoActiva) {
+      opciones.push({ icono: "ti-gift", texto: "Promoción activa", pregunta: "¿Cuál es la promoción activa?", clase: "promo" });
+    }
+
+    opciones.forEach(op => {
+      const chip = document.createElement("div");
+      chip.className = "chip" + (op.clase ? " " + op.clase : "");
+      chip.innerHTML = '<i class="ti ' + op.icono + '" aria-hidden="true"></i>' + op.texto;
+      chip.onclick = () => enviarPregunta(op.pregunta);
+      wrap.appendChild(chip);
+    });
+
+    contenedorMensajes.appendChild(wrap);
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+  }
+
+  async function iniciarConversacion() {
+    marcarActividad();
+    historialConversacion = [];
+    contenedorMensajes.innerHTML = "";
+
+    const filaEscribiendo = mostrarEscribiendo();
+    let promoActiva = false;
+    try {
+      const resp = await fetch(URL_AGENTE + "?action=promoPublica");
+      const datos = await resp.json();
+      promoActiva = !!(datos.promo && datos.promo.activa);
+    } catch (e) {
+      promoActiva = false;
+    }
+
+    await new Promise(r => setTimeout(r, 700));
+    filaEscribiendo.remove();
+    agregarMensaje("Hola, soy VICE ✨\nTu asistente personal de Vicelly Sánchez Studio.\n¿Lista para tu próximo look? 💇🏻‍♀️", "agente");
+    renderChips(promoActiva);
+  }
+
+  botonEnviar.addEventListener("click", () => enviarPregunta());
   campoEntrada.addEventListener("keydown", function(evento) {
     if (evento.key === "Enter" && !evento.shiftKey) {
       evento.preventDefault();
@@ -421,18 +399,18 @@
     }
   });
   campoEntrada.addEventListener("input", ajustarAlturaEntrada);
-  botonReiniciar.addEventListener("click", reiniciarConversacion);
+  botonCerrar.addEventListener("click", () => { marcarActividad(); iniciarConversacion(); });
 
-  reiniciarConversacion();
+  // Revisa cada 30 segundos si pasaron más de 10 minutos sin actividad,
+  // y si es así, reinicia la conversación sola (contexto fresco, chat limpio).
+  setInterval(function() {
+    if (Date.now() - ultimaActividad > LIMITE_INACTIVIDAD_MS) {
+      marcarActividad();
+      iniciarConversacion();
+    }
+  }, 30000);
 
-  // Registro del service worker — requisito de Chrome para permitir
-  // "Instalar app" (no solo agregar un acceso directo).
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(function(error) {
-      console.log("No se pudo registrar el service worker:", error);
-    });
-  }
-
+  iniciarConversacion();
 </script>
 
 </body>
