@@ -950,6 +950,8 @@ async function selDay2(d){
   renderTimes();
 }
 
+const HORA_CIERRE_MIN = 17*60; // 5:00 PM
+
 function renderTimes(){
   const citas=window._citasOcupadas||[];
   const durSvc=curSvc.durMin||60;
@@ -961,7 +963,8 @@ function renderTimes(){
   slots.forEach(({key,lbl})=>{
     const ocupada=isBlocked(key,citas,durSvc);
     const bloqueada=horasBloqueadas.includes(key);
-    const blocked=ocupada||bloqueada;
+    const excedeCierre=timeToMin(key)+durSvc>HORA_CIERRE_MIN;
+    const blocked=ocupada||bloqueada||excedeCierre;
     const isSel=selTime===key;
     const div=document.createElement('div');
     div.className='ts'+(blocked?' tkn':'')+(isSel?' sel':'');
@@ -969,7 +972,7 @@ function renderTimes(){
     if(blocked){
       const sub=document.createElement('span');
       sub.style.cssText='display:block;font-size:9px;color:#ccc;margin-top:1px;';
-      sub.textContent=bloqueada?'no disp.':'ocupada';
+      sub.textContent=excedeCierre?'no alcanza':(bloqueada?'no disp.':'ocupada');
       div.appendChild(sub);
     }
     if(!blocked) div.onclick=()=>{selTime=key;renderTimes();document.getElementById('btnContinue').disabled=false;};
