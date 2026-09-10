@@ -24,9 +24,29 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);min-height:100v
 .scr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;}
 .wrap{width:100%;max-width:420px;}
 
-.gradient-card{background:linear-gradient(135deg,var(--cream) 0%,var(--nude) 50%,var(--rose) 100%);border-radius:28px;padding:2rem 1.75rem 2rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(43,30,26,0.12);opacity:0;transform:translateY(14px) scale(.98);transition:opacity .55s ease,transform .55s cubic-bezier(.34,1.1,.64,1);}
+.gradient-card{background:linear-gradient(135deg,var(--cream) 0%,var(--nude) 50%,var(--rose) 100%);border-radius:28px;padding:2rem 1.75rem 2rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(43,30,26,0.12);opacity:0;transform:translateY(14px) scale(.9);transition:opacity .5s ease,transform .6s cubic-bezier(.22,1.4,.36,1);}
 .gradient-card.show{opacity:1;transform:translateY(0) scale(1);}
 .deco-line{position:absolute;top:14px;left:12px;width:80px;height:80px;opacity:.5;pointer-events:none;}
+
+.glow-burst{position:absolute;top:50%;left:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(circle,rgba(216,181,138,.9) 0%,rgba(216,181,138,0) 70%);pointer-events:none;opacity:0;}
+.gradient-card.show .glow-burst{animation:glowBurst .9s ease-out both;}
+@keyframes glowBurst{0%{opacity:.9;transform:scale(1);}100%{opacity:0;transform:scale(22);}}
+
+.spark{position:absolute;top:50%;left:50%;width:6px;height:6px;border-radius:50%;background:var(--champagne);pointer-events:none;opacity:0;}
+.gradient-card.show .spark{animation:sparkOut .85s cubic-bezier(.2,.8,.3,1) both;}
+.spark:nth-child(2){animation-delay:.02s;transform:rotate(0deg);}
+.spark:nth-child(3){animation-delay:.05s;transform:rotate(60deg);}
+.spark:nth-child(4){animation-delay:.03s;transform:rotate(120deg);}
+.spark:nth-child(5){animation-delay:.07s;transform:rotate(180deg);}
+.spark:nth-child(6){animation-delay:.01s;transform:rotate(240deg);}
+.spark:nth-child(7){animation-delay:.06s;transform:rotate(300deg);}
+@keyframes sparkOut{0%{opacity:1;transform:rotate(var(--rot,0deg)) translateY(0) scale(1);}100%{opacity:0;transform:rotate(var(--rot,0deg)) translateY(-130px) scale(.3);}}
+.spark:nth-child(2){--rot:0deg;}
+.spark:nth-child(3){--rot:60deg;}
+.spark:nth-child(4){--rot:120deg;}
+.spark:nth-child(5){--rot:180deg;}
+.spark:nth-child(6){--rot:240deg;}
+.spark:nth-child(7){--rot:300deg;}
 
 .logo-badge{width:52px;height:52px;border-radius:50%;background:var(--chocolate);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;position:relative;overflow:hidden;}
 .logo-badge img{width:100%;height:100%;object-fit:contain;}
@@ -57,8 +77,9 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);min-height:100v
 .disclaimer{font-size:8.5px;line-height:1.65;color:#6B534C;text-align:left;border-top:0.5px solid rgba(139,111,62,.25);padding-top:12px;margin-top:1.5rem;}
 .disclaimer b{color:#4A3530;}
 
-.loader{width:36px;height:36px;border-radius:50%;border:3px solid rgba(139,111,62,.2);border-top-color:var(--champagne);animation:spin 1s linear infinite;margin:0 auto;}
+.loader{width:36px;height:36px;border-radius:50%;border:3px solid rgba(139,111,62,.2);border-top-color:var(--champagne);animation:spin 1s linear infinite;margin:0 auto 16px;}
 @keyframes spin{to{transform:rotate(360deg);}}
+.load-msg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:#8B6F3E;text-align:center;transition:opacity .35s ease;}
 
 .err-box{background:#fff;border-radius:20px;padding:2rem 1.5rem;text-align:center;box-shadow:0 10px 30px rgba(43,30,26,0.08);}
 .err-box i{font-size:32px;color:var(--terracotta);margin-bottom:12px;display:block;}
@@ -71,12 +92,17 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);min-height:100v
 <body>
 
 <div class="scr" id="scrLoad">
-  <div class="loader"></div>
+  <div>
+    <div class="loader"></div>
+    <p class="load-msg" id="loadMsg">Añadiendo un toque de magia&hellip;</p>
+  </div>
 </div>
 
 <div class="scr hidden" id="scrCard">
   <div class="wrap">
     <div class="gradient-card" id="giftCard">
+      <div class="glow-burst"></div>
+      <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
       <svg class="deco-line" viewBox="0 0 90 90"><path d="M5,85 Q10,30 85,8" fill="none" stroke="#D8B58A" stroke-width="1"/></svg>
       <div class="logo-badge">
         <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#D8B58A;font-family:Cormorant Garamond,serif;font-size:18px;font-weight:700;\'>VS</span>'"/>
@@ -181,10 +207,20 @@ function copiarCodigo(){
 }
 
 async function init(){
-  if(!codigo){ mostrarError('codigo_vacio'); return; }
+  const frases=['Añadiendo un toque de magia…','Tu regalo está casi listo…'];
+  let fi=0;
+  const msgEl=document.getElementById('loadMsg');
+  const loadCycle=setInterval(()=>{
+    fi=(fi+1)%frases.length;
+    msgEl.style.opacity=0;
+    setTimeout(()=>{ msgEl.textContent=frases[fi]; msgEl.style.opacity=1; },350);
+  },1300);
+
+  if(!codigo){ clearInterval(loadCycle); mostrarError('codigo_vacio'); return; }
   let data;
   try{ data=await Sheets.validarCertificado(codigo); }
-  catch(e){ mostrarError('error_red'); return; }
+  catch(e){ clearInterval(loadCycle); mostrarError('error_red'); return; }
+  clearInterval(loadCycle);
   if(!data || !data.valido){ mostrarError(data?data.motivo:'codigo_no_encontrado'); return; }
   mostrarCertificado(data);
 }
