@@ -232,5 +232,55 @@ const Sheets = {
     } catch (e) {
       console.error('Error guardando clientas:', e);
     }
+  },
+
+  async crearCertificado(cert) {
+    try {
+      const params = new URLSearchParams({
+        action: 'crearCertificado',
+        codigo: cert.codigo || '',
+        montoOriginal: cert.montoOriginal || 0,
+        compradoPorNombre: cert.compradoPorNombre || '',
+        compradoPorTelefono: cert.compradoPorTelefono || '',
+        compradoPorCorreo: cert.compradoPorCorreo || '',
+        destinatarioNombre: cert.destinatarioNombre || '',
+        destinatarioCorreo: cert.destinatarioCorreo || '',
+        mensaje: cert.mensaje || '',
+        comprobante: cert.comprobante || '',
+        metodoPago: cert.metodoPago || ''
+      });
+      const url = CONFIG.sheets.scriptUrl + '?' + params.toString();
+      await fetch(url, { mode: 'no-cors' });
+    } catch (e) {
+      console.error('Error creando certificado:', e);
+    }
+  },
+
+  async validarCertificado(codigo) {
+    try {
+      const url = CONFIG.sheets.scriptUrl + '?action=validarCertificado&codigo=' + encodeURIComponent(codigo) + '&_=' + Date.now();
+      const res = await fetch(url);
+      return await res.json();
+    } catch (e) {
+      console.error('Error validando certificado:', e);
+      return { valido: false, motivo: 'error_red' };
+    }
+  },
+
+  async marcarCertificadoUsado(codigo, montoUsado, citaId) {
+    try {
+      const params = new URLSearchParams({
+        action: 'marcarCertificadoUsado',
+        codigo: codigo || '',
+        montoUsado: montoUsado || 0,
+        citaId: citaId || ''
+      });
+      const url = CONFIG.sheets.scriptUrl + '?' + params.toString() + '&_=' + Date.now();
+      const res = await fetch(url);
+      return await res.json();
+    } catch (e) {
+      console.error('Error marcando certificado usado:', e);
+      return { ok: false };
+    }
   }
 };
