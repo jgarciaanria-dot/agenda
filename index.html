@@ -209,6 +209,20 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .btn-transfer{display:none;width:100%;padding:13px;background:#1a4b8c;color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:8px;}
 .btn-transfer.visible{display:block;}
 
+.gift-banner{background:#2E2B2B;background-image:linear-gradient(135deg,#2E2B2B 0%,#3A3020 100%);border:0.5px solid rgba(201,169,110,.35);border-radius:var(--radius-lg);padding:1rem 1.125rem;display:flex;align-items:center;gap:12px;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s,border-color .2s;}
+.gift-banner:hover{transform:translateY(-2px);border-color:rgba(201,169,110,.6);}
+.gift-banner::before{content:'';position:absolute;top:-40px;right:-20px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.25) 0%,transparent 70%);pointer-events:none;}
+.gift-banner-icon{width:44px;height:44px;border-radius:50%;border:1px solid rgba(201,169,110,.5);background:rgba(201,169,110,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1;}
+.gift-banner-icon i{font-size:20px;color:var(--gold);}
+.gift-banner-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:#fff;line-height:1.2;position:relative;z-index:1;}
+.gift-banner-sub{font-size:11.5px;color:rgba(255,255,255,.55);margin-top:2px;position:relative;z-index:1;}
+.gift-banner-arrow{margin-left:auto;color:var(--gold);font-size:16px;position:relative;z-index:1;flex-shrink:0;}
+
+.amt-g{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:.75rem;}
+.amt-opt{border:0.5px solid #E5D8B8;border-radius:8px;padding:11px 3px;text-align:center;font-size:15px;font-weight:600;font-family:'Cormorant Garamond',serif;cursor:pointer;transition:all .15s;color:#333;}
+.amt-opt:hover{border-color:var(--gold);color:var(--gold-dark);}
+.amt-opt.sel{border:1.5px solid #C9A96E;color:#7A5C28;font-weight:700;background:#FBF7EF;}
+
 .success-wrap{text-align:center;padding:1.5rem 1rem 1rem;}
 .s-icon{width:64px;height:64px;border-radius:50%;border:1px solid rgba(201,169,110,0.4);background:rgba(201,169,110,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;}
 .s-icon i{font-size:28px;color:var(--gold);}
@@ -269,6 +283,17 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   </div>
 </div>
 
+<div style="padding:0 1rem 0.25rem;">
+  <div class="gift-banner" onclick="openGift()">
+    <div class="gift-banner-icon"><i class="ti ti-gift" aria-hidden="true"></i></div>
+    <div>
+      <div class="gift-banner-title">Certificado de Regalo</div>
+      <div class="gift-banner-sub">Regala una experiencia Vicelly Sánchez Studio</div>
+    </div>
+    <div class="gift-banner-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+  </div>
+</div>
+
 <div id="serviceList"></div>
 
 <div class="ov" id="ov-detail">
@@ -302,6 +327,13 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   <div class="panel">
     <div class="phdr"><span class="ptitle">Confirmar cita</span><button class="pclose" onclick="closeOv('ov-form')">×</button></div>
     <div class="pbody" id="form-body"></div>
+  </div>
+</div>
+
+<div class="ov" id="ov-gift">
+  <div class="panel">
+    <div class="phdr"><span class="ptitle">Certificado de Regalo</span><button class="pclose" onclick="closeOv('ov-gift')">×</button></div>
+    <div class="pbody" id="gift-body"></div>
   </div>
 </div>
 
@@ -1218,6 +1250,178 @@ function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id){
   document.getElementById(id).classList.remove('open');
   if(id==='ov-form'&&timerInt)clearInterval(timerInt);
+}
+
+// ============================================================
+// CERTIFICADOS DE REGALO
+// ============================================================
+const GIFT_AMOUNTS=[25,50,100,150];
+let giftMonto=25, giftMontoEsOtro=false, pagoTipoGift='yappy';
+
+function openGift(){
+  giftMonto=25; giftMontoEsOtro=false; pagoTipoGift='yappy';
+  renderGiftForm();
+  openOv('ov-gift');
+}
+
+function renderGiftForm(){
+  document.getElementById('gift-body').innerHTML=`
+    <div class="step-row"><span class="stepn">1</span><span class="step-lbl">Elige el monto</span></div>
+    <div class="amt-g" id="amtGrid">
+      ${GIFT_AMOUNTS.map(a=>`<div class="amt-opt${giftMonto===a&&!giftMontoEsOtro?' sel':''}" onclick="selMonto(${a})">$${a}</div>`).join('')}
+      <div class="amt-opt${giftMontoEsOtro?' sel':''}" onclick="selMontoOtro()">Otro</div>
+    </div>
+    <div class="fg" id="amtOtroWrap" style="display:${giftMontoEsOtro?'block':'none'};">
+      <label class="flbl">Monto personalizado (USD)</label>
+      <input class="fi" id="fMontoOtro" type="number" min="10" step="1" placeholder="Ej: 75" value="${giftMontoEsOtro?giftMonto:''}" oninput="onMontoOtroInput()">
+    </div>
+
+    <div class="step-row" style="margin-top:1rem;"><span class="stepn">2</span><span class="step-lbl">Tus datos (quien regala)</span></div>
+    <div class="frow">
+      <div class="fg"><label class="flbl">Tu nombre</label><input class="fi" id="gNombre" placeholder="Tu nombre"></div>
+      <div class="fg"><label class="flbl">Tu WhatsApp</label><input class="fi" id="gTel" placeholder="+507..."></div>
+    </div>
+    <div class="fg"><label class="flbl">Tu correo</label><input class="fi" id="gCorreo" placeholder="tu@correo.com"></div>
+
+    <div class="step-row" style="margin-top:1rem;"><span class="stepn">3</span><span class="step-lbl">Datos de quien lo recibe</span></div>
+    <div class="fg"><label class="flbl">Nombre del destinatario</label><input class="fi" id="gDestNombre" placeholder="Nombre de quien recibe"></div>
+    <div class="fg"><label class="flbl">Correo del destinatario</label><input class="fi" id="gDestCorreo" placeholder="correo@destinatario.com"></div>
+
+    <div class="step-row" style="margin-top:1rem;"><span class="stepn">4</span><span class="step-lbl">Mensaje personalizado</span></div>
+    <div class="fg">
+      <textarea class="fi" id="gMensaje" rows="3" maxlength="220" style="resize:vertical;font-family:inherit;" placeholder="Escribe un mensaje especial..." oninput="onMensajeInput()"></textarea>
+      <p style="font-size:10px;color:#bbb;margin-top:4px;text-align:right;" id="gMensajeCount">0/220</p>
+    </div>
+
+    <div class="step-row" style="margin-top:1rem;"><span class="stepn">5</span><span class="step-lbl">Pago</span></div>
+    <div class="pay-opt sel" id="gopt-yappy" onclick="selPagoGift('yappy')">
+      <div><span class="pay-badge badge-yappy">Yappy</span><span class="pay-opt-title">Pagar con Yappy</span></div>
+      <div class="pay-opt-sub">Pago rápido y seguro desde tu app Yappy.</div>
+      <div class="pay-detail">Haz clic en el botón azul, ingresa tu número Yappy y confirma el pago del certificado. Copia el número de comprobante aquí.</div>
+    </div>
+    <div class="pay-opt" id="gopt-bank" onclick="selPagoGift('bank')">
+      <div><span class="pay-badge badge-bank">Transferencia</span><span class="pay-opt-title">Banco General</span></div>
+      <div class="pay-opt-sub">Transferencia bancaria a cuenta de ahorros.</div>
+      <div class="pay-detail"><strong>Banco:</strong> Banco General<br><strong>Tipo:</strong> Ahorros<br><strong>Cuenta:</strong> 04-19-99-989328-0<br><strong>Titular:</strong> Vicelly Sanchez Studio<br><strong>Monto:</strong> <span id="gMontoBank">$${giftMonto.toFixed(2)}</span><br><span style="color:#e74c3c;font-size:11px;">Incluye tu nombre en la referencia</span></div>
+    </div>
+    <div class="fg" style="margin-top:.875rem;"><label class="flbl">N° de comprobante / referencia</label><input class="fi" id="gRef" placeholder="Ej: YAPPY-001 o número de transacción"></div>
+    <a id="gBtnYappy" href="${YAPPY.link}" target="_blank" class="btn-yappy" onclick="mostrarMensajeRegresoGift()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5" fill="rgba(255,255,255,0.5)"/></svg>
+      Pagar <span id="gBtnYappyMonto">$${giftMonto.toFixed(2)}</span> con Yappy
+    </a>
+    <div id="gMsgRegreso" style="display:none;background:#e8f7fd;border:0.5px solid #1AACE3;border-radius:var(--radius);padding:.875rem;margin-bottom:8px;font-size:12px;color:#0f6e8a;line-height:1.6;">
+      ¿Ya pagaste? Yappy no regresa automáticamente. Vuelve aquí, copia el número de comprobante e ingrésalo arriba.
+    </div>
+    <button class="btn-transfer" id="gBtnTransfer" onclick="copiarCuentaGift()">Copiar número de cuenta</button>
+    <button class="btn-main" id="btnComprarGift" style="margin-top:.5rem;" onclick="confirmarCertificado()">Comprar certificado</button>`;
+}
+
+function selMonto(a){
+  giftMonto=a; giftMontoEsOtro=false;
+  const wrap=document.getElementById('amtOtroWrap'); if(wrap) wrap.style.display='none';
+  updateMontoUI();
+}
+
+function selMontoOtro(){
+  giftMontoEsOtro=true;
+  document.getElementById('amtOtroWrap').style.display='block';
+  updateMontoUI();
+  document.getElementById('fMontoOtro').focus();
+}
+
+function onMontoOtroInput(){
+  const v=parseFloat(document.getElementById('fMontoOtro').value);
+  giftMonto = (v>0) ? v : 0;
+  updateMontoUI();
+}
+
+function updateMontoUI(){
+  document.querySelectorAll('#amtGrid .amt-opt').forEach((el,i)=>{
+    const esOtro = i===GIFT_AMOUNTS.length;
+    el.classList.toggle('sel', esOtro ? giftMontoEsOtro : (!giftMontoEsOtro && GIFT_AMOUNTS[i]===giftMonto));
+  });
+  const montoStr='$'+(giftMonto||0).toFixed(2);
+  const bank=document.getElementById('gMontoBank'); if(bank) bank.textContent=montoStr;
+  const yb=document.getElementById('gBtnYappyMonto'); if(yb) yb.textContent=montoStr;
+}
+
+function onMensajeInput(){
+  const el=document.getElementById('gMensaje');
+  document.getElementById('gMensajeCount').textContent=el.value.length+'/220';
+}
+
+function selPagoGift(tipo){
+  pagoTipoGift=tipo;
+  document.getElementById('gopt-yappy').classList.toggle('sel',tipo==='yappy');
+  document.getElementById('gopt-bank').classList.toggle('sel',tipo==='bank');
+  const btnY=document.getElementById('gBtnYappy');
+  const btnB=document.getElementById('gBtnTransfer');
+  if(tipo==='bank'){btnY.classList.add('hidden');btnB.classList.add('visible');}
+  else{btnY.classList.remove('hidden');btnB.classList.remove('visible');}
+}
+
+function copiarCuentaGift(){
+  navigator.clipboard.writeText('04-19-99-989328-0').then(()=>{
+    const btn=document.getElementById('gBtnTransfer');
+    btn.textContent='¡Copiado!';
+    setTimeout(()=>{btn.textContent='Copiar número de cuenta';},2000);
+  });
+}
+
+function mostrarMensajeRegresoGift(){setTimeout(()=>{const m=document.getElementById('gMsgRegreso');if(m)m.style.display='block';},1500);}
+
+function generarCodigoCertificado(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s='';
+  for(let i=0;i<8;i++){ if(i===4)s+='-'; s+=chars[Math.floor(Math.random()*chars.length)]; }
+  return 'VS-'+s;
+}
+
+async function confirmarCertificado(){
+  const nombre=document.getElementById('gNombre').value.trim();
+  const tel=document.getElementById('gTel').value.trim();
+  const correo=document.getElementById('gCorreo').value.trim();
+  const destNombre=document.getElementById('gDestNombre').value.trim();
+  const destCorreo=document.getElementById('gDestCorreo').value.trim();
+  const mensaje=document.getElementById('gMensaje').value.trim();
+  const ref=document.getElementById('gRef').value.trim();
+  const monto=giftMonto;
+
+  if(!monto || monto<10){alert('El monto mínimo del certificado es $10.');return;}
+  if(!nombre||!tel||!correo){alert('Por favor completa tu nombre, WhatsApp y correo.');return;}
+  if(!destNombre||!destCorreo){alert('Por favor ingresa el nombre y correo de quien recibe el regalo.');return;}
+  if(!ref){alert('Por favor ingresa el número de comprobante del pago.');return;}
+
+  const btn=document.getElementById('btnComprarGift');
+  if(btn){btn.disabled=true;btn.textContent='Procesando...';}
+
+  const codigo=generarCodigoCertificado();
+  const cert={
+    codigo, montoOriginal:monto, montoDisponible:monto,
+    compradoPorNombre:nombre, compradoPorTelefono:tel, compradoPorCorreo:correo,
+    destinatarioNombre:destNombre, destinatarioCorreo:destCorreo,
+    mensaje, comprobante:ref, metodoPago:pagoTipoGift,
+    fechaCompra:new Date().toISOString(), estado:'activo'
+  };
+
+  try{ await Sheets.crearCertificado(cert); }catch(e){ console.error(e); }
+  await new Promise(r=>setTimeout(r,900));
+
+  document.getElementById('gift-body').innerHTML=`
+    <div class="success-wrap">
+      <div class="s-icon"><i class="ti ti-gift" aria-hidden="true"></i></div>
+      <div class="s-title">¡Certificado creado!</div>
+      <div class="s-sub">${destNombre} recibirá su tarjeta de regalo por correo en breve.</div>
+      <div class="s-detail">
+        <strong>Código:</strong> ${codigo}<br>
+        <strong>Monto:</strong> <span style="color:#D95F2B;font-weight:600;">$${monto.toFixed(2)}</span><br>
+        <strong>Destinatario:</strong> ${destNombre}<br>
+        <strong>Correo enviado a:</strong> ${destCorreo}<br>
+        <strong>Comprobante:</strong> ${ref}
+      </div>
+      <p style="font-size:11px;color:#aaa;margin-bottom:1rem;">Guarda este código como respaldo — también llegará en el correo del destinatario.</p>
+      <button class="btn-main" style="background:#2E2B2B;color:#C9A96E;font-family:'Cormorant Garamond',serif;" onclick="closeOv('ov-gift')">Listo</button>
+    </div>`;
 }
 
 loadServices().then(() => {
