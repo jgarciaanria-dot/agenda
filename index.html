@@ -283,7 +283,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   </div>
 </div>
 
-<div style="padding:0 1rem 0.25rem;">
+<div style="padding:1.5rem 1rem 0.25rem;">
   <div class="gift-banner" onclick="openGift()">
     <div class="gift-banner-icon"><i class="ti ti-gift" aria-hidden="true"></i></div>
     <div>
@@ -334,6 +334,17 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
   <div class="panel">
     <div class="phdr"><span class="ptitle">Certificado de Regalo</span><button class="pclose" onclick="closeOv('ov-gift')">×</button></div>
     <div class="pbody" id="gift-body"></div>
+  </div>
+</div>
+
+<div class="ov" id="ov-scan">
+  <div class="panel">
+    <div class="phdr"><span class="ptitle">Escanear código</span><button class="pclose" onclick="closeScanner()">×</button></div>
+    <div class="pbody">
+      <div id="qr-reader" style="width:100%;border-radius:var(--radius);overflow:hidden;"></div>
+      <p id="scanErr" style="display:none;font-size:12px;color:#c0392b;margin-top:10px;text-align:center;">No pudimos acceder a la cámara. Verifica los permisos o ingresa el código manualmente.</p>
+      <p style="font-size:11px;color:#999;margin-top:10px;text-align:center;">Apunta la cámara al código QR de tu certificado.</p>
+    </div>
   </div>
 </div>
 
@@ -689,6 +700,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 <script src="yappy.js?v=4"></script>
 <script src="sheets.js?v=4"></script>
 <script src="ruleta-frontend.js?v=1"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
@@ -795,6 +807,7 @@ function getDefaultServices(){
 
 let curSvc=null,calY,calM,selectedDay=null,selTime=null,timerInt=null,timerSecs=300;
 let cuponAplicado=null,cuponDescuentoPct=0,cuponPremioTexto='';
+let certAplicado=null,certMontoDisponible=0,qrScanner=null;
 
 function renderServices(){
   const cats=['Básicos','Tratamientos','Alisados','Color','Extensiones'];
@@ -1025,6 +1038,7 @@ function chMo(d){
 function goForm(){
   closeOv('ov-cal');
   cuponAplicado=null; cuponDescuentoPct=0; cuponPremioTexto='';
+  certAplicado=null; certMontoDisponible=0;
   const dayStr=`${selectedDay} de ${MESES[calM]} ${calY}`;
   timerSecs=300;
   const precio=curSvc.precioTexto||(curSvc.price>0?'$'+curSvc.price.toFixed(2):'A consultar');
@@ -1086,9 +1100,12 @@ function goForm(){
     <div class="fg"><label class="flbl">Correo</label><input class="fi" id="fe" placeholder="tu@correo.com"/></div>
     <div class="fg"><label class="flbl">Nota (opcional)</label><input class="fi" id="fnote" placeholder="Tipo de cabello, tratamientos previos, color deseado..."/></div>
     <div class="fg">
-      <label class="flbl">¿Tienes un cupón de descuento?</label>
+      <label class="flbl">¿Tienes un cupón de descuento o certificado de regalo?</label>
       <div style="display:flex;gap:8px;">
-        <input class="fi" id="fcupon" placeholder="Ej: RUL-4F2A" style="flex:1;text-transform:uppercase;">
+        <input class="fi" id="fcupon" placeholder="Ej: RUL-4F2A o VS-XXXX-XXXX" style="flex:1;text-transform:uppercase;">
+        <button type="button" onclick="openScanner()" title="Escanear código" style="width:36px;flex-shrink:0;background:#f5f5f5;border:0.5px solid #eee;border-radius:var(--radius);font-size:15px;cursor:pointer;color:#555;">
+          <i class="ti ti-qrcode" aria-hidden="true"></i>
+        </button>
         <button type="button" onclick="aplicarCupon()" style="padding:0 16px;background:#2E2B2B;color:#C9A96E;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;">Aplicar</button>
       </div>
       <p id="cuponMsg" style="font-size:11px;margin-top:6px;min-height:14px;"></p>
@@ -1106,7 +1123,28 @@ async function aplicarCupon(){
   const input=document.getElementById('fcupon');
   const msgEl=document.getElementById('cuponMsg');
   const codigo=input.value.trim();
-  if(!codigo){ msgEl.textContent=''; cuponAplicado=null; cuponDescuentoPct=0; return; }
+  if(!codigo){ msgEl.textContent=''; cuponAplicado=null; cuponDescuentoPct=0; certAplicado=null; certMontoDisponible=0; return; }
+
+  if(codigo.toUpperCase().startsWith('VS-')){
+    cuponAplicado=null; cuponDescuentoPct=0; cuponPremioTexto='';
+    msgEl.style.color='#999';
+    msgEl.textContent='Verificando...';
+    const res=await Sheets.validarCertificado(codigo);
+    if(res.valido){
+      certAplicado=codigo.toUpperCase();
+      certMontoDisponible=parseFloat(res.montoDisponible)||0;
+      msgEl.style.color='#3a7a3a';
+      msgEl.textContent=`✓ Certificado válido: B/.${certMontoDisponible.toFixed(2)} disponibles.`;
+    } else {
+      certAplicado=null; certMontoDisponible=0;
+      msgEl.style.color='#c0392b';
+      const motivosCert={ya_usado:'Este certificado ya fue utilizado.',vencido:'Este certificado venció.',cancelado:'Este certificado fue cancelado.',codigo_no_encontrado:'Certificado no encontrado.',codigo_vacio:'Ingresa un código.'};
+      msgEl.textContent=motivosCert[res.motivo]||'Certificado no válido.';
+    }
+    return;
+  }
+
+  certAplicado=null; certMontoDisponible=0;
   msgEl.style.color='#999';
   msgEl.textContent='Verificando...';
   const res=await Sheets.validarCupon(codigo);
@@ -1128,6 +1166,42 @@ async function aplicarCupon(){
     const motivos={ya_canjeado:'Este cupón ya fue utilizado.',codigo_no_encontrado:'Cupón no válido.',codigo_vacio:'Ingresa un código.'};
     msgEl.textContent=motivos[res.motivo]||'Cupón no válido.';
   }
+}
+
+function openScanner(){
+  openOv('ov-scan');
+  const el=document.getElementById('qr-reader');
+  el.innerHTML='';
+  qrScanner=new Html5Qrcode('qr-reader');
+  qrScanner.start(
+    {facingMode:'environment'},
+    {fps:10,qrbox:220},
+    onScanSuccess,
+    ()=>{}
+  ).catch(()=>{
+    document.getElementById('scanErr').style.display='block';
+  });
+}
+
+function closeScanner(){
+  if(qrScanner){
+    qrScanner.stop().then(()=>{qrScanner.clear();}).catch(()=>{});
+    qrScanner=null;
+  }
+  closeOv('ov-scan');
+}
+
+function onScanSuccess(decodedText){
+  let codigo=decodedText;
+  try{
+    if(decodedText.indexOf('codigo=')>-1){
+      const url=new URL(decodedText);
+      codigo=url.searchParams.get('codigo')||decodedText;
+    }
+  }catch(ex){}
+  closeScanner();
+  document.getElementById('fcupon').value=codigo.trim().toUpperCase();
+  aplicarCupon();
 }
 
 let pagoTipo='yappy';
@@ -1192,15 +1266,18 @@ async function confirmar(dayStr){
   const citaId = 'cita-' + Date.now();
 
   const descuentoMonto = (!esConsultar && cuponDescuentoPct>0) ? precio*(cuponDescuentoPct/100) : 0;
-  const precioFinal = Math.max(0, precio - descuentoMonto);
+  const descuentoCert = (!esConsultar && certAplicado) ? Math.min(certMontoDisponible, precio) : 0;
+  const precioFinal = Math.max(0, precio - descuentoMonto - descuentoCert);
+  const notaConCert = certAplicado ? (notaFinal ? notaFinal+` [Certificado ${certAplicado} aplicado: -$${descuentoCert.toFixed(2)}]` : `[Certificado ${certAplicado} aplicado: -$${descuentoCert.toFixed(2)}]`) : notaFinal;
 
-  const cita={nombre,telefono:tel,correo,nota:notaFinal,servicio:curSvc.name,categoria:curSvc.cat,
+  const cita={nombre,telefono:tel,correo,nota:notaConCert,servicio:curSvc.name,categoria:curSvc.cat,
     precioTotal:precio,precioEsConsultar:esConsultar,fecha:dayStr,hora:selTime,duracionMin:curSvc.durMin,
     comprobante:ref,abonoMonto:tieneAbono?montoAbono:0,abonoTipo:tieneAbono?tipoAbono:'',
     metodoPago:tieneAbono?pagoTipo:'', citaId:citaId,
     cuponUsado:cuponAplicado||'', descuentoCupon:cuponDescuentoPct||0, precioFinal:precioFinal};
   try{await Sheets.guardarCita(cita);}catch(e){console.error(e);}
   if(cuponAplicado){ try{await Sheets.marcarCuponCanjeado(cuponAplicado);}catch(e){console.error(e);} }
+  if(certAplicado){ try{await Sheets.marcarCertificadoUsado(certAplicado, descuentoCert, citaId);}catch(e){console.error(e);} }
   await new Promise(r=>setTimeout(r,900));
   const precioStr=esConsultar?'Por confirmar':(curSvc.precioTexto&&curSvc.precioTexto.toLowerCase().includes('desde')?'Desde $'+precio.toFixed(2):'$'+precio.toFixed(2));
   const restanteTexto = esConsultar
@@ -1210,6 +1287,9 @@ async function confirmar(dayStr){
   const cuponLine = (cuponAplicado && cuponDescuentoPct>0 && !esConsultar)
     ? `<strong>Descuento por cupón:</strong> <span style="color:#D95F2B;font-weight:600;">-${cuponDescuentoPct}% (-$${descuentoMonto.toFixed(2)})</span><br>`
     : (cuponAplicado ? `<strong>Cupón aplicado:</strong> ${cuponPremioTexto}<br>` : '');
+  const certLine = (certAplicado && !esConsultar)
+    ? `<strong>Certificado de regalo:</strong> <span style="color:#4CAF50;font-weight:600;">-$${descuentoCert.toFixed(2)}</span> <span style="font-size:11px;color:#999;">(${certAplicado})</span><br>`
+    : '';
   const totalLine = esConsultar
     ? `<strong>Monto a cancelar el día de la cita:</strong> ${restanteTexto}<br>`
     : `<strong>Total a pagar:</strong> <span style="color:#D95F2B;font-weight:600;">${restanteTexto}</span><br>`;
@@ -1226,6 +1306,7 @@ async function confirmar(dayStr){
         <strong>Precio total:</strong> <span style="color:#D95F2B;font-weight:600;">${precioStr}</span><br>
         ${abonoLine}
         ${cuponLine}
+        ${certLine}
         ${totalLine}
       </div>
       <p style="font-size:11px;color:#aaa;margin-bottom:1rem;">Recuerda: cancelaciones con menos de 24 horas de anticipación no tienen reembolso del abono.</p>
