@@ -1,6 +1,6 @@
 const CONFIG = {
   sheets: {
-    scriptUrl: 'https://script.google.com/macros/s/AKfycbzvmLeDUSKKGQKPxmocWeRDPLCD4trFUEIulg4PEehOm1sUNKnT-quyCL135qRNFQE/exec',
+    scriptUrl: 'https://script.google.com/macros/s/AKfycbxl5dG20eDqJ0hrb4ylQCRBlssYSILMGSb8VJMOxHNFAyLqh3xy05dy9N57gUhagA/exec',
     sheetId: '1p8NxajPAoxiaQnsomWNo-8P8aL_FwNjBCWT8YXz1G7c'
   },
   negocio: {
