@@ -6,7 +6,7 @@
 <title>Certificado de Regalo — Vicelly Sánchez Estudio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -24,90 +24,64 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);min-height:100v
 .scr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;}
 .wrap{width:100%;max-width:420px;}
 
-.gradient-card{background:linear-gradient(135deg,var(--cream) 0%,var(--nude) 50%,var(--rose) 100%);border-radius:28px;padding:2.25rem 1.75rem 2rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(43,30,26,0.12);animation:fadeIn .6s ease both;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.gradient-card{background:linear-gradient(135deg,var(--cream) 0%,var(--nude) 50%,var(--rose) 100%);border-radius:28px;padding:2rem 1.75rem 2rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(43,30,26,0.12);opacity:0;transform:translateY(14px) scale(.98);transition:opacity .55s ease,transform .55s cubic-bezier(.34,1.1,.64,1);}
+.gradient-card.show{opacity:1;transform:translateY(0) scale(1);}
 .deco-line{position:absolute;top:14px;left:12px;width:80px;height:80px;opacity:.5;pointer-events:none;}
 
-.logo-badge{width:56px;height:56px;border-radius:50%;background:var(--chocolate);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;position:relative;overflow:hidden;}
+.logo-badge{width:52px;height:52px;border-radius:50%;background:var(--chocolate);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;position:relative;overflow:hidden;}
 .logo-badge img{width:100%;height:100%;object-fit:contain;}
-.brand-name{font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--champagne);text-transform:uppercase;margin-bottom:1.5rem;}
-
-.headline{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;font-size:30px;color:var(--chocolate);line-height:1.15;margin-bottom:14px;}
-.headline .heart{color:var(--terracotta);}
-.sub{font-size:10.5px;letter-spacing:.09em;color:#4A3530;text-transform:uppercase;line-height:1.7;margin-bottom:8px;}
-.tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13.5px;color:#6B534C;margin-bottom:1.5rem;}
-
-.btn-cta{display:inline-flex;align-items:center;gap:8px;background:var(--terracotta);color:#fff;border:none;padding:14px 30px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 20px rgba(185,103,104,.35);transition:transform .25s,box-shadow .25s;}
-.btn-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(185,103,104,.42);}
-.btn-cta:active{transform:scale(.97);}
-.btn-cta:disabled{opacity:.6;cursor:default;transform:none;}
-
-.divider{height:1px;width:44px;background:var(--champagne);margin:1.25rem auto .75rem;}
-.benefits{font-size:9px;letter-spacing:.1em;color:#4A3530;margin-bottom:1rem;}
-
-.disclaimer{font-size:8px;line-height:1.65;color:#6B534C;text-align:left;border-top:0.5px solid rgba(139,111,62,.25);padding-top:10px;margin-top:2px;}
-.disclaimer b{color:#4A3530;}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--champagne);text-transform:uppercase;margin-bottom:16px;}
 
 .badge-sorpresa{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--champagne);text-transform:uppercase;margin-bottom:4px;}
 .card-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--chocolate);margin-bottom:16px;}
-.amt{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:700;color:var(--terracotta);line-height:1;margin-bottom:6px;}
+.amt{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:700;color:var(--terracotta);line-height:1;margin-bottom:6px;}
 .amt-sub{font-size:9px;letter-spacing:.09em;color:#6B534C;text-transform:uppercase;margin-bottom:1.25rem;}
 
-.details{text-align:left;font-size:12.5px;color:#4A3530;line-height:1.8;margin-bottom:1.25rem;}
+.details{text-align:left;font-size:12.5px;color:#4A3530;line-height:1.85;margin-bottom:1.5rem;}
 .details b{color:#8B6F3E;font-weight:600;}
 .details i{color:#4A3530;}
 
-.code-box{background:#fff;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;margin-bottom:1.25rem;}
-.code-qr{width:56px;height:56px;flex-shrink:0;border-radius:4px;overflow:hidden;}
-.code-qr img,.code-qr canvas{width:56px !important;height:56px !important;}
-.code-sep{width:1px;align-self:stretch;background:#E8DFC8;}
-.code-lbl{font-size:8.5px;letter-spacing:.09em;color:var(--terracotta);text-transform:uppercase;margin-bottom:3px;}
-.code-val{font-family:'Courier New',monospace;font-size:16px;font-weight:700;letter-spacing:.06em;color:var(--chocolate);}
-.copy-btn{width:34px;height:34px;border-radius:9px;background:var(--nude);border:none;display:flex;align-items:center;justify-content:center;color:var(--terracotta);flex-shrink:0;cursor:pointer;transition:background .15s;}
+.code-box{background:#fff;border-radius:18px;padding:20px 16px;text-align:center;margin-bottom:1.5rem;}
+.code-qr{width:150px;height:150px;margin:0 auto 14px;border-radius:8px;overflow:hidden;}
+.code-qr img,.code-qr canvas{width:150px !important;height:150px !important;}
+.code-lbl{font-size:9px;letter-spacing:.1em;color:var(--terracotta);text-transform:uppercase;margin-bottom:6px;}
+.code-row{display:flex;align-items:center;justify-content:center;gap:10px;}
+.code-val{font-family:'Courier New',monospace;font-size:20px;font-weight:700;letter-spacing:.09em;color:var(--chocolate);}
+.copy-btn{width:38px;height:38px;border-radius:10px;background:var(--nude);border:none;display:flex;align-items:center;justify-content:center;color:var(--terracotta);flex-shrink:0;cursor:pointer;transition:background .15s;}
 .copy-btn:hover{background:var(--rose);}
 .copy-btn.copied{color:#3a7d4f;}
+
+.btn-cta{display:inline-flex;align-items:center;gap:8px;background:var(--terracotta);color:#fff;border:none;padding:14px 30px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;text-decoration:none;box-shadow:0 8px 20px rgba(185,103,104,.35);transition:transform .25s,box-shadow .25s;}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(185,103,104,.42);}
+
+.disclaimer{font-size:8.5px;line-height:1.65;color:#6B534C;text-align:left;border-top:0.5px solid rgba(139,111,62,.25);padding-top:12px;margin-top:1.5rem;}
+.disclaimer b{color:#4A3530;}
+
+.loader{width:36px;height:36px;border-radius:50%;border:3px solid rgba(139,111,62,.2);border-top-color:var(--champagne);animation:spin 1s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 .err-box{background:#fff;border-radius:20px;padding:2rem 1.5rem;text-align:center;box-shadow:0 10px 30px rgba(43,30,26,0.08);}
 .err-box i{font-size:32px;color:var(--terracotta);margin-bottom:12px;display:block;}
 .err-box h2{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--chocolate);margin-bottom:8px;}
 .err-box p{font-size:13px;color:#7a685f;line-height:1.6;}
 
-.card-scr{display:none;}
-.card-scr.show{display:flex;}
+.hidden{display:none !important;}
 </style>
 </head>
 <body>
 
-<div class="scr" id="scrCover">
-  <div class="wrap">
-    <div class="gradient-card">
-      <svg class="deco-line" viewBox="0 0 90 90"><path d="M5,85 Q10,30 85,8" fill="none" stroke="#D8B58A" stroke-width="1"/></svg>
-      <div class="logo-badge">
-        <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#D8B58A;font-family:Cormorant Garamond,serif;font-size:20px;font-weight:700;\'>VS</span>'"/>
-      </div>
-      <div class="brand-name">Vicelly Sánchez Estudio</div>
-
-      <div class="headline">Alguien pensó<br>en ti <span class="heart">&#9825;</span></div>
-      <div class="sub" id="coverSub">Alguien quiere regalarte<br>una experiencia especial</div>
-      <div class="tagline">Un momento para dedicarte tiempo,<br>cuidarte y sentirte increíble.</div>
-
-      <button class="btn-cta" id="btnOpen" onclick="abrirRegalo()">Abrir mi regalo <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-
-      <div class="divider"></div>
-      <div class="benefits">BELLEZA &nbsp;|&nbsp; BIENESTAR &nbsp;|&nbsp; CONFIANZA</div>
-
-      <div class="disclaimer"><b>Vigencia:</b> el certificado tiene una vigencia de 1 mes a partir de su fecha de emisión, durante el cual podrá utilizarse para agendar libremente según la disponibilidad del estudio. Pasado este período, será necesario consultar previamente la disponibilidad de Vicelly Sánchez Studio para hacer uso del certificado.</div>
-    </div>
-  </div>
+<div class="scr" id="scrLoad">
+  <div class="loader"></div>
 </div>
 
-<div class="scr card-scr" id="scrCard">
+<div class="scr hidden" id="scrCard">
   <div class="wrap">
-    <div class="gradient-card">
-      <div class="logo-badge" style="width:46px;height:46px;margin-bottom:6px;">
-        <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#D8B58A;font-family:Cormorant Garamond,serif;font-size:16px;font-weight:700;\'>VS</span>'"/>
+    <div class="gradient-card" id="giftCard">
+      <svg class="deco-line" viewBox="0 0 90 90"><path d="M5,85 Q10,30 85,8" fill="none" stroke="#D8B58A" stroke-width="1"/></svg>
+      <div class="logo-badge">
+        <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#D8B58A;font-family:Cormorant Garamond,serif;font-size:18px;font-weight:700;\'>VS</span>'"/>
       </div>
-      <div class="brand-name" style="margin-bottom:14px;">Vicelly Sánchez Estudio</div>
+      <div class="brand-name">Vicelly Sánchez Estudio</div>
 
       <div class="badge-sorpresa">¡Sorpresa!</div>
       <div class="card-title">Certificado de regalo</div>
@@ -122,21 +96,22 @@ body{font-family:'Montserrat',sans-serif;background:var(--cream);min-height:100v
       </div>
 
       <div class="code-box">
+        <div class="code-lbl">Tu código de regalo</div>
         <div class="code-qr" id="gcQr"></div>
-        <div class="code-sep"></div>
-        <div style="flex:1;">
-          <div class="code-lbl">Tu código de regalo</div>
+        <div class="code-row">
           <div class="code-val" id="gcCodigo">—</div>
+          <button class="copy-btn" id="copyBtn" onclick="copiarCodigo()"><i class="ti ti-copy" aria-hidden="true"></i></button>
         </div>
-        <button class="copy-btn" id="copyBtn" onclick="copiarCodigo()"><i class="ti ti-copy" aria-hidden="true"></i></button>
       </div>
 
       <a class="btn-cta" id="btnBook" href="index.html">Agendar mi cita <i class="ti ti-calendar" aria-hidden="true"></i></a>
+
+      <div class="disclaimer"><b>Vigencia:</b> el certificado tiene una vigencia de 1 mes a partir de su fecha de emisión, durante el cual podrá utilizarse para agendar libremente según la disponibilidad del estudio. Pasado este período, será necesario consultar previamente la disponibilidad de Vicelly Sánchez Studio para hacer uso del certificado.</div>
     </div>
   </div>
 </div>
 
-<div class="scr" id="scrErr" style="display:none;">
+<div class="scr hidden" id="scrErr">
   <div class="wrap">
     <div class="err-box">
       <i class="ti ti-alert-circle" aria-hidden="true"></i>
@@ -154,7 +129,6 @@ function getCodigo(){
   return (params.get('codigo')||'').trim().toUpperCase();
 }
 
-let CERT_DATA=null;
 const codigo=getCodigo();
 
 const MOTIVOS={
@@ -166,49 +140,33 @@ const MOTIVOS={
   error_red:['No pudimos conectar','Revisa tu conexión e intenta de nuevo en unos segundos.']
 };
 
-async function cargarCertificado(){
-  if(!codigo){ CERT_DATA={valido:false,motivo:'codigo_vacio'}; return; }
-  try{
-    CERT_DATA=await Sheets.validarCertificado(codigo);
-    if(CERT_DATA && CERT_DATA.valido && CERT_DATA.compradoPorNombre){
-      document.getElementById('coverSub').textContent = CERT_DATA.compradoPorNombre + ' quiere regalarte una experiencia especial';
-    }
-  } catch(e){ CERT_DATA={valido:false,motivo:'error_red'}; }
-}
-
 function mostrarError(motivo){
-  document.getElementById('scrCover').style.display='none';
-  document.getElementById('scrErr').style.display='flex';
+  document.getElementById('scrLoad').classList.add('hidden');
+  document.getElementById('scrErr').classList.remove('hidden');
   const m=MOTIVOS[motivo]||MOTIVOS.codigo_no_encontrado;
   document.getElementById('errTitle').textContent=m[0];
   document.getElementById('errMsg').textContent=m[1];
 }
 
-async function abrirRegalo(){
-  const btn=document.getElementById('btnOpen');
-  btn.disabled=true;
-  if(!CERT_DATA) await cargarCertificado();
-  if(!CERT_DATA || !CERT_DATA.valido){
-    mostrarError(CERT_DATA?CERT_DATA.motivo:'codigo_no_encontrado');
-    return;
-  }
-
-  document.getElementById('gcAmt').textContent='B/.'+(parseFloat(CERT_DATA.montoDisponible)||0).toFixed(2);
-  document.getElementById('gcDe').textContent=CERT_DATA.compradoPorNombre||'—';
-  document.getElementById('gcPara').textContent=CERT_DATA.destinatarioNombre||'—';
-  if(CERT_DATA.mensaje){
-    document.getElementById('gcMsg').textContent='"'+CERT_DATA.mensaje+'"';
+function mostrarCertificado(data){
+  document.getElementById('gcAmt').textContent='B/.'+(parseFloat(data.montoDisponible)||0).toFixed(2);
+  document.getElementById('gcDe').textContent=data.compradoPorNombre||'—';
+  document.getElementById('gcPara').textContent=data.destinatarioNombre||'—';
+  if(data.mensaje){
+    document.getElementById('gcMsg').textContent='"'+data.mensaje+'"';
     document.getElementById('gcMsgRow').style.display='block';
   }
   document.getElementById('gcCodigo').textContent=codigo;
   document.getElementById('btnBook').href='index.html?certificado='+encodeURIComponent(codigo);
 
-  document.getElementById('scrCover').style.display='none';
-  document.getElementById('scrCard').classList.add('show');
+  document.getElementById('scrLoad').classList.add('hidden');
+  document.getElementById('scrCard').classList.remove('hidden');
+  requestAnimationFrame(()=>{ document.getElementById('giftCard').classList.add('show'); });
+
   try{
     new QRCode(document.getElementById('gcQr'), {
       text: window.location.origin + window.location.pathname + '?codigo=' + codigo,
-      width:56, height:56, colorDark:'#2B1E1A', colorLight:'#ffffff'
+      width:150, height:150, colorDark:'#2B1E1A', colorLight:'#ffffff'
     });
   }catch(ex){}
 }
@@ -222,7 +180,16 @@ function copiarCodigo(){
   });
 }
 
-cargarCertificado();
+async function init(){
+  if(!codigo){ mostrarError('codigo_vacio'); return; }
+  let data;
+  try{ data=await Sheets.validarCertificado(codigo); }
+  catch(e){ mostrarError('error_red'); return; }
+  if(!data || !data.valido){ mostrarError(data?data.motivo:'codigo_no_encontrado'); return; }
+  mostrarCertificado(data);
+}
+
+init();
 </script>
 </body>
 </html>
