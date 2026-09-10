@@ -3,165 +3,146 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Certificado de Regalo — Vicelly Sánchez Studio</title>
+<title>Certificado de Regalo — Vicelly Sánchez Estudio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--gold:#C9A96E;--gold-light:#F0DFB8;--gold-dark:#8B6F3E;--charcoal:#2E2B2B;}
-body{font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+:root{
+  --chocolate:#2B1E1A;
+  --blush:#D98F8D;
+  --rose:#E8B5AE;
+  --nude:#F3DDD4;
+  --cream:#FAF4EE;
+  --champagne:#D8B58A;
+  --terracotta:#B96768;
+}
+body{font-family:'Montserrat',sans-serif;background:var(--cream);min-height:100vh;overflow-x:hidden;}
 
-.scr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1.5rem;position:relative;}
+.scr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;}
+.wrap{width:100%;max-width:420px;}
 
-.cover{background:linear-gradient(180deg,#F7EDE9 0%,#F2E2DC 60%,#EAD3CB 100%);text-align:center;}
-.cover-logo{width:76px;height:76px;border-radius:50%;background:#1a1816;display:flex;align-items:center;justify-content:center;margin-bottom:14px;animation:dropIn 1s cubic-bezier(.34,1.56,.64,1) both;}
-.cover-logo img{width:76px;height:76px;object-fit:contain;border-radius:50%;}
-@keyframes dropIn{0%{opacity:0;transform:translateY(-40px) scale(.8);}100%{opacity:1;transform:translateY(0) scale(1);}}
-.cover-brand{font-size:12px;letter-spacing:.18em;color:#3a2f2a;font-weight:500;margin-bottom:2px;}
-.cover-sub{font-size:9.5px;letter-spacing:.16em;color:#8a7a72;text-transform:uppercase;margin-bottom:2.5rem;}
-.cover-h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-style:italic;font-weight:600;color:#3a2f2a;margin-bottom:10px;line-height:1.15;}
-.cover-p{font-size:12px;letter-spacing:.1em;color:#8a7a72;text-transform:uppercase;line-height:1.9;margin-bottom:2.5rem;}
+.gradient-card{background:linear-gradient(135deg,var(--cream) 0%,var(--nude) 50%,var(--rose) 100%);border-radius:28px;padding:2.25rem 1.75rem 2rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(43,30,26,0.12);animation:fadeIn .6s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.deco-line{position:absolute;top:14px;left:12px;width:80px;height:80px;opacity:.5;pointer-events:none;}
 
-.box-wrap{width:190px;height:190px;position:relative;margin-bottom:2.5rem;animation:floatBox 3.5s ease-in-out infinite;}
-@keyframes floatBox{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.box-wrap.opening{animation:none;}
-.box-body{position:absolute;inset:0;background:linear-gradient(135deg,#fff 0%,#F7EFE9 100%);border:1px solid rgba(201,169,110,.4);border-radius:10px;box-shadow:0 20px 40px rgba(60,40,30,.14);transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s ease;}
-.box-tag{position:absolute;top:-14px;right:-6px;background:#fff;border:1px solid rgba(201,169,110,.5);border-radius:4px;padding:6px 10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:#8B6F3E;transform:rotate(8deg);box-shadow:0 4px 10px rgba(0,0,0,.08);}
-.rib-v{position:absolute;left:50%;top:0;bottom:0;width:22px;transform:translateX(-50%);background:linear-gradient(180deg,var(--gold-light),var(--gold));transition:transform .5s ease,opacity .5s ease;}
-.rib-h{position:absolute;top:50%;left:0;right:0;height:22px;transform:translateY(-50%);background:linear-gradient(90deg,var(--gold-light),var(--gold));transition:transform .5s ease,opacity .5s ease;}
-.bow{position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:70px;height:44px;transition:transform .5s ease,opacity .5s ease;}
-.bow::before,.bow::after{content:'';position:absolute;top:6px;width:34px;height:30px;border-radius:50% 50% 50% 0;background:linear-gradient(135deg,var(--gold-light),var(--gold-dark));}
-.bow::before{left:2px;transform:rotate(-40deg);}
-.bow::after{right:2px;transform:rotate(40deg) scaleX(-1);border-radius:50% 50% 50% 0;}
-.bow-knot{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:var(--gold-dark);z-index:2;}
+.logo-badge{width:56px;height:56px;border-radius:50%;background:var(--chocolate);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;position:relative;overflow:hidden;}
+.logo-badge img{width:100%;height:100%;object-fit:contain;}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--champagne);text-transform:uppercase;margin-bottom:1.5rem;}
 
-.box-wrap.opening .box-body{transform:scale(1.15) rotate(2deg);opacity:0;}
-.box-wrap.opening .rib-v{transform:translateX(-50%) translateY(-160px);opacity:0;}
-.box-wrap.opening .rib-h{transform:translateY(-50%) translateX(160px);opacity:0;}
-.box-wrap.opening .bow{transform:translateX(-50%) translateY(-120px) rotate(-20deg);opacity:0;}
+.headline{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;font-size:30px;color:var(--chocolate);line-height:1.15;margin-bottom:14px;}
+.headline .heart{color:var(--terracotta);}
+.sub{font-size:10.5px;letter-spacing:.09em;color:#4A3530;text-transform:uppercase;line-height:1.7;margin-bottom:8px;}
+.tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13.5px;color:#6B534C;margin-bottom:1.5rem;}
 
-.btn-open{display:inline-flex;align-items:center;gap:10px;background:var(--gold-dark);color:#fff;border:none;padding:14px 30px;border-radius:999px;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 22px rgba(139,111,62,.3);transition:transform .15s,opacity .15s;}
-.btn-open:hover{transform:translateY(-2px);}
-.btn-open:active{transform:scale(.97);}
-.btn-open:disabled{opacity:.5;cursor:default;}
-.cover-foot{position:absolute;bottom:1.75rem;font-size:10px;letter-spacing:.14em;color:#a4948c;text-transform:uppercase;}
-.cover-foot span{margin:0 10px;}
+.btn-cta{display:inline-flex;align-items:center;gap:8px;background:var(--terracotta);color:#fff;border:none;padding:14px 30px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 20px rgba(185,103,104,.35);transition:transform .25s,box-shadow .25s;}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(185,103,104,.42);}
+.btn-cta:active{transform:scale(.97);}
+.btn-cta:disabled{opacity:.6;cursor:default;transform:none;}
 
-.card-scr{display:none;background:#EDEEF0;}
+.divider{height:1px;width:44px;background:var(--champagne);margin:1.25rem auto .75rem;}
+.benefits{font-size:9px;letter-spacing:.1em;color:#4A3530;margin-bottom:1rem;}
+
+.disclaimer{font-size:8px;line-height:1.65;color:#6B534C;text-align:left;border-top:0.5px solid rgba(139,111,62,.25);padding-top:10px;margin-top:2px;}
+.disclaimer b{color:#4A3530;}
+
+.badge-sorpresa{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--champagne);text-transform:uppercase;margin-bottom:4px;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--chocolate);margin-bottom:16px;}
+.amt{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:700;color:var(--terracotta);line-height:1;margin-bottom:6px;}
+.amt-sub{font-size:9px;letter-spacing:.09em;color:#6B534C;text-transform:uppercase;margin-bottom:1.25rem;}
+
+.details{text-align:left;font-size:12.5px;color:#4A3530;line-height:1.8;margin-bottom:1.25rem;}
+.details b{color:#8B6F3E;font-weight:600;}
+.details i{color:#4A3530;}
+
+.code-box{background:#fff;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;margin-bottom:1.25rem;}
+.code-qr{width:56px;height:56px;flex-shrink:0;border-radius:4px;overflow:hidden;}
+.code-qr img,.code-qr canvas{width:56px !important;height:56px !important;}
+.code-sep{width:1px;align-self:stretch;background:#E8DFC8;}
+.code-lbl{font-size:8.5px;letter-spacing:.09em;color:var(--terracotta);text-transform:uppercase;margin-bottom:3px;}
+.code-val{font-family:'Courier New',monospace;font-size:16px;font-weight:700;letter-spacing:.06em;color:var(--chocolate);}
+.copy-btn{width:34px;height:34px;border-radius:9px;background:var(--nude);border:none;display:flex;align-items:center;justify-content:center;color:var(--terracotta);flex-shrink:0;cursor:pointer;transition:background .15s;}
+.copy-btn:hover{background:var(--rose);}
+.copy-btn.copied{color:#3a7d4f;}
+
+.err-box{background:#fff;border-radius:20px;padding:2rem 1.5rem;text-align:center;box-shadow:0 10px 30px rgba(43,30,26,0.08);}
+.err-box i{font-size:32px;color:var(--terracotta);margin-bottom:12px;display:block;}
+.err-box h2{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--chocolate);margin-bottom:8px;}
+.err-box p{font-size:13px;color:#7a685f;line-height:1.6;}
+
+.card-scr{display:none;}
 .card-scr.show{display:flex;}
-.card-logo{width:58px;height:58px;border-radius:50%;background:#1a1816;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
-.card-logo img{width:58px;height:58px;object-fit:contain;border-radius:50%;}
-.card-brand{font-size:11px;letter-spacing:.16em;color:#3a3a3a;font-weight:500;margin-bottom:2px;}
-.card-brandsub{font-size:9px;letter-spacing:.14em;color:#999;text-transform:uppercase;margin-bottom:1.5rem;}
-.card-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:#8B6F3E;margin-bottom:2px;}
-.card-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#1a1816;letter-spacing:.02em;margin-bottom:1.25rem;}
-
-.gift-card{width:100%;max-width:320px;background:linear-gradient(160deg,#FBF8F2 0%,#F3EAD9 100%);border:1px solid var(--gold);border-radius:18px;padding:1.75rem 1.5rem;text-align:center;box-shadow:0 18px 40px rgba(139,111,62,.18);animation:cardIn .55s cubic-bezier(.34,1.2,.64,1) both;}
-@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
-.gift-card::before{content:'✦';display:block;color:var(--gold);font-size:11px;margin-bottom:10px;}
-.gc-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;letter-spacing:.1em;color:#3a3020;text-transform:uppercase;margin-bottom:14px;}
-.gc-amt{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:700;color:var(--gold-dark);line-height:1;margin-bottom:6px;}
-.gc-amt-sub{font-size:10.5px;letter-spacing:.08em;color:#8a7a5a;text-transform:uppercase;margin-bottom:1.25rem;}
-.gc-divider{height:1px;background:linear-gradient(to right,transparent,rgba(139,111,62,.35),transparent);margin-bottom:1.1rem;}
-.gc-row{display:flex;gap:10px;font-size:13px;color:#4a4038;text-align:left;margin-bottom:6px;line-height:1.5;}
-.gc-row b{flex-shrink:0;color:#8a7a5a;font-weight:500;min-width:56px;}
-.gc-msg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:#3a3020;}
-
-.gc-code-box{background:#fff;border:1px solid #E8DFC8;border-radius:12px;padding:14px;margin-top:1.1rem;display:flex;align-items:center;gap:12px;justify-content:center;}
-.gc-qr{width:64px;height:64px;flex-shrink:0;}
-.gc-qr img,.gc-qr canvas{width:64px !important;height:64px !important;}
-.gc-code-lbl{font-size:9px;letter-spacing:.1em;color:#aaa;text-transform:uppercase;margin-bottom:2px;}
-.gc-code{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:#1a1816;letter-spacing:.03em;}
-.gc-note{font-size:10.5px;color:#a4948c;margin-top:.9rem;letter-spacing:.03em;}
-
-.gc-icons{display:flex;justify-content:center;gap:26px;margin:1.5rem 0 1.25rem;}
-.gc-icon{text-align:center;}
-.gc-icon i{font-size:18px;color:var(--gold-dark);display:block;margin-bottom:5px;}
-.gc-icon span{font-size:8.5px;letter-spacing:.06em;color:#8a7a5a;text-transform:uppercase;line-height:1.4;}
-
-.btn-book{width:100%;max-width:320px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--charcoal);color:var(--gold);border:none;padding:15px;border-radius:12px;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;margin-top:1.25rem;transition:opacity .15s;}
-.btn-book:hover{opacity:.9;}
-
-.card-foot{margin-top:1.5rem;text-align:center;}
-.card-foot p{font-size:10px;letter-spacing:.1em;color:#999;text-transform:uppercase;margin-bottom:4px;}
-.card-foot span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--gold-dark);}
-
-.err-box{max-width:320px;text-align:center;background:#fff;border-radius:16px;padding:2rem 1.5rem;border:1px solid #eee;}
-.err-box i{font-size:34px;color:#c0392b;margin-bottom:12px;display:block;}
-.err-box h2{font-family:'Cormorant Garamond',serif;font-size:20px;color:#1a1a1a;margin-bottom:8px;}
-.err-box p{font-size:13px;color:#888;line-height:1.6;}
-
-.ld{opacity:.5;pointer-events:none;}
 </style>
 </head>
 <body>
 
-<div class="scr cover" id="scrCover">
-  <div class="cover-logo"><img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#C9A96E;font-size:22px;font-family:Georgia,serif;font-weight:600;\'>VS</span>'"/></div>
-  <div class="cover-brand">VICELLY SÁNCHEZ STUDIO</div>
-  <div class="cover-sub">Hair &amp; Beauty · Panamá</div>
-  <div class="cover-h1">Alguien pensó en ti</div>
-  <div class="cover-p">Y quiere regalarte<br>una experiencia especial</div>
+<div class="scr" id="scrCover">
+  <div class="wrap">
+    <div class="gradient-card">
+      <svg class="deco-line" viewBox="0 0 90 90"><path d="M5,85 Q10,30 85,8" fill="none" stroke="#D8B58A" stroke-width="1"/></svg>
+      <div class="logo-badge">
+        <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#D8B58A;font-family:Cormorant Garamond,serif;font-size:20px;font-weight:700;\'>VS</span>'"/>
+      </div>
+      <div class="brand-name">Vicelly Sánchez Estudio</div>
 
-  <div class="box-wrap" id="boxWrap">
-    <div class="bow"><div class="bow-knot"></div></div>
-    <div class="box-tag">Para ti ♥</div>
-    <div class="box-body"></div>
-    <div class="rib-v"></div>
-    <div class="rib-h"></div>
+      <div class="headline">Alguien pensó<br>en ti <span class="heart">&#9825;</span></div>
+      <div class="sub" id="coverSub">Alguien quiere regalarte<br>una experiencia especial</div>
+      <div class="tagline">Un momento para dedicarte tiempo,<br>cuidarte y sentirte increíble.</div>
+
+      <button class="btn-cta" id="btnOpen" onclick="abrirRegalo()">Abrir mi regalo <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+
+      <div class="divider"></div>
+      <div class="benefits">BELLEZA &nbsp;|&nbsp; BIENESTAR &nbsp;|&nbsp; CONFIANZA</div>
+
+      <div class="disclaimer"><b>Vigencia:</b> el certificado tiene una vigencia de 1 mes a partir de su fecha de emisión, durante el cual podrá utilizarse para agendar libremente según la disponibilidad del estudio. Pasado este período, será necesario consultar previamente la disponibilidad de Vicelly Sánchez Studio para hacer uso del certificado.</div>
+    </div>
   </div>
-
-  <button class="btn-open" id="btnOpen" onclick="abrirRegalo()"><i class="ti ti-gift" aria-hidden="true"></i> Abrir mi regalo <i class="ti ti-chevron-right" aria-hidden="true"></i></button>
-  <div class="cover-foot">BELLEZA <span>·</span> BIENESTAR <span>·</span> CONFIANZA <span>·</span> SIEMPRE TÚ</div>
 </div>
 
 <div class="scr card-scr" id="scrCard">
-  <div class="card-logo"><img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#C9A96E;font-size:18px;font-family:Georgia,serif;font-weight:600;\'>VS</span>'"/></div>
-  <div class="card-brand">VICELLY SÁNCHEZ STUDIO</div>
-  <div class="card-brandsub">Hair &amp; Beauty · Panamá</div>
-  <div class="card-tag">¡Sorpresa!</div>
-  <div class="card-title">Tienes un regalo especial</div>
-
-  <div class="gift-card" id="giftCard">
-    <div class="gc-title">Certificado de regalo</div>
-    <div class="gc-amt" id="gcAmt">B/.0</div>
-    <div class="gc-amt-sub">Para que disfrutes una experiencia única</div>
-    <div class="gc-divider"></div>
-    <div class="gc-row"><b>De:</b><span id="gcDe"></span></div>
-    <div class="gc-row"><b>Para:</b><span id="gcPara"></span></div>
-    <div class="gc-row" id="gcMsgRow" style="display:none;"><b>Mensaje:</b><span class="gc-msg" id="gcMsg"></span></div>
-
-    <div class="gc-code-box">
-      <div class="gc-qr" id="gcQr"></div>
-      <div style="text-align:left;">
-        <div class="gc-code-lbl">Tu código</div>
-        <div class="gc-code" id="gcCodigo">—</div>
+  <div class="wrap">
+    <div class="gradient-card">
+      <div class="logo-badge" style="width:46px;height:46px;margin-bottom:6px;">
+        <img src="https://raw.githubusercontent.com/jgarciaanria-dot/nails/main/LOGO1.png" alt="VS" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:#D8B58A;font-family:Cormorant Garamond,serif;font-size:16px;font-weight:700;\'>VS</span>'"/>
       </div>
+      <div class="brand-name" style="margin-bottom:14px;">Vicelly Sánchez Estudio</div>
+
+      <div class="badge-sorpresa">¡Sorpresa!</div>
+      <div class="card-title">Certificado de regalo</div>
+
+      <div class="amt" id="gcAmt">B/.0.00</div>
+      <div class="amt-sub">Para que disfrutes una experiencia única</div>
+
+      <div class="details">
+        <div><b>De:</b> <span id="gcDe"></span></div>
+        <div><b>Para:</b> <span id="gcPara"></span></div>
+        <div id="gcMsgRow" style="display:none;"><b>Mensaje:</b> <i id="gcMsg"></i></div>
+      </div>
+
+      <div class="code-box">
+        <div class="code-qr" id="gcQr"></div>
+        <div class="code-sep"></div>
+        <div style="flex:1;">
+          <div class="code-lbl">Tu código de regalo</div>
+          <div class="code-val" id="gcCodigo">—</div>
+        </div>
+        <button class="copy-btn" id="copyBtn" onclick="copiarCodigo()"><i class="ti ti-copy" aria-hidden="true"></i></button>
+      </div>
+
+      <a class="btn-cta" id="btnBook" href="index.html">Agendar mi cita <i class="ti ti-calendar" aria-hidden="true"></i></a>
     </div>
-    <div class="gc-note">Solo para servicios del estudio</div>
-
-    <div class="gc-icons">
-      <div class="gc-icon"><i class="ti ti-leaf" aria-hidden="true"></i><span>Cuida tu<br>cabello</span></div>
-      <div class="gc-icon"><i class="ti ti-heart" aria-hidden="true"></i><span>Realza tu<br>belleza</span></div>
-      <div class="gc-icon"><i class="ti ti-sparkles" aria-hidden="true"></i><span>Vive tu<br>mejor versión</span></div>
-    </div>
-  </div>
-
-  <a class="btn-book" id="btnBook" href="index.html"><i class="ti ti-calendar" aria-hidden="true"></i> Agendar mi cita <i class="ti ti-chevron-right" aria-hidden="true"></i></a>
-
-  <div class="card-foot">
-    <p>Vicelly Sánchez Studio · Hair &amp; Beauty</p>
-    <span>Gracias por ser parte de esta historia ♥</span>
   </div>
 </div>
 
-<div class="scr" id="scrErr" style="display:none;background:#EDEEF0;">
-  <div class="err-box">
-    <i class="ti ti-alert-circle" aria-hidden="true"></i>
-    <h2 id="errTitle">Código no válido</h2>
-    <p id="errMsg">No pudimos encontrar este certificado. Verifica el enlace o contáctanos por WhatsApp.</p>
+<div class="scr" id="scrErr" style="display:none;">
+  <div class="wrap">
+    <div class="err-box">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      <h2 id="errTitle">Código no válido</h2>
+      <p id="errMsg">No pudimos encontrar este certificado. Verifica el enlace o contáctanos por WhatsApp.</p>
+    </div>
   </div>
 </div>
 
@@ -187,8 +168,12 @@ const MOTIVOS={
 
 async function cargarCertificado(){
   if(!codigo){ CERT_DATA={valido:false,motivo:'codigo_vacio'}; return; }
-  try{ CERT_DATA=await Sheets.validarCertificado(codigo); }
-  catch(e){ CERT_DATA={valido:false,motivo:'error_red'}; }
+  try{
+    CERT_DATA=await Sheets.validarCertificado(codigo);
+    if(CERT_DATA && CERT_DATA.valido && CERT_DATA.compradoPorNombre){
+      document.getElementById('coverSub').textContent = CERT_DATA.compradoPorNombre + ' quiere regalarte una experiencia especial';
+    }
+  } catch(e){ CERT_DATA={valido:false,motivo:'error_red'}; }
 }
 
 function mostrarError(motivo){
@@ -207,27 +192,34 @@ async function abrirRegalo(){
     mostrarError(CERT_DATA?CERT_DATA.motivo:'codigo_no_encontrado');
     return;
   }
-  document.getElementById('boxWrap').classList.add('opening');
-  document.getElementById('gcAmt').textContent='B/.'+(parseFloat(CERT_DATA.montoDisponible)||0).toFixed(0);
+
+  document.getElementById('gcAmt').textContent='B/.'+(parseFloat(CERT_DATA.montoDisponible)||0).toFixed(2);
   document.getElementById('gcDe').textContent=CERT_DATA.compradoPorNombre||'—';
   document.getElementById('gcPara').textContent=CERT_DATA.destinatarioNombre||'—';
   if(CERT_DATA.mensaje){
     document.getElementById('gcMsg').textContent='"'+CERT_DATA.mensaje+'"';
-    document.getElementById('gcMsgRow').style.display='flex';
+    document.getElementById('gcMsgRow').style.display='block';
   }
   document.getElementById('gcCodigo').textContent=codigo;
   document.getElementById('btnBook').href='index.html?certificado='+encodeURIComponent(codigo);
 
-  setTimeout(()=>{
-    document.getElementById('scrCover').style.display='none';
-    document.getElementById('scrCard').classList.add('show');
-    try{
-      new QRCode(document.getElementById('gcQr'), {
-        text: window.location.origin + window.location.pathname + '?codigo=' + codigo,
-        width:64, height:64, colorDark:'#1a1816', colorLight:'#ffffff'
-      });
-    }catch(ex){}
-  }, 520);
+  document.getElementById('scrCover').style.display='none';
+  document.getElementById('scrCard').classList.add('show');
+  try{
+    new QRCode(document.getElementById('gcQr'), {
+      text: window.location.origin + window.location.pathname + '?codigo=' + codigo,
+      width:56, height:56, colorDark:'#2B1E1A', colorLight:'#ffffff'
+    });
+  }catch(ex){}
+}
+
+function copiarCodigo(){
+  navigator.clipboard.writeText(codigo).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.classList.add('copied');
+    btn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i>';
+    setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='<i class="ti ti-copy" aria-hidden="true"></i>'; },1800);
+  });
 }
 
 cargarCertificado();
