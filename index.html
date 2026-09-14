@@ -206,6 +206,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 .btn-yappy{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;border:none;margin-bottom:8px;background:linear-gradient(135deg,#1AACE3,#0f8fc7);color:white;transition:opacity .15s;}
 .btn-yappy:hover{opacity:.9;}
 .btn-yappy.hidden{display:none;}
+.hidden{display:none !important;}
 .btn-transfer{display:none;width:100%;padding:13px;background:#1a4b8c;color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:8px;}
 .btn-transfer.visible{display:block;}
 
@@ -701,6 +702,7 @@ body{font-family:'Inter',sans-serif;background-color:#E8E9EC;background-image:ur
 <script src="sheets.js?v=4"></script>
 <script src="ruleta-frontend.js?v=1"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script type="module" src="https://bt-cdn.yappy.cloud/v1/cdn/web-component-btn-yappy.js"></script>
 <script>
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
@@ -1039,6 +1041,7 @@ function goForm(){
   closeOv('ov-cal');
   cuponAplicado=null; cuponDescuentoPct=0; cuponPremioTexto='';
   certAplicado=null; certMontoDisponible=0;
+  yappyListoInicializado=false;
   const dayStr=`${selectedDay} de ${MESES[calM]} ${calY}`;
   timerSecs=300;
   const precio=curSvc.precioTexto||(curSvc.price>0?'$'+curSvc.price.toFixed(2):'A consultar');
@@ -1058,23 +1061,24 @@ function goForm(){
       </div>
       <div class="pay-opt sel" id="opt-yappy" onclick="selPago('yappy')">
         <div><span class="pay-badge badge-yappy">Yappy</span><span class="pay-opt-title">Pagar con Yappy</span></div>
-        <div class="pay-opt-sub">Pago rápido y seguro desde tu app Yappy.</div>
-        <div class="pay-detail">Haz clic en el botón azul, ingresa tu número Yappy y confirma el pago de <strong>$${montoAbono.toFixed(2)}</strong>. Copia el número de comprobante aquí.</div>
+        <div class="pay-opt-sub">Pago rápido y seguro desde tu app Yappy. Tu cita se confirma automáticamente al completar el pago.</div>
       </div>
       <div class="pay-opt" id="opt-bank" onclick="selPago('bank')">
         <div><span class="pay-badge badge-bank">Transferencia</span><span class="pay-opt-title">Banco General</span></div>
         <div class="pay-opt-sub">Transferencia bancaria a cuenta de ahorros.</div>
         <div class="pay-detail"><strong>Banco:</strong> Banco General<br><strong>Tipo:</strong> Ahorros<br><strong>Cuenta:</strong> 04-19-99-989328-0<br><strong>Titular:</strong> Vicelly Sanchez Studio<br><strong>Monto:</strong> $${montoAbono.toFixed(2)}<br><span style="color:#e74c3c;font-size:11px;">Incluye tu nombre en la referencia</span></div>
       </div>
-      <div class="fg" style="margin-top:.875rem;"><label class="flbl">N° de comprobante / referencia</label><input class="fi" id="fref" placeholder="Ej: YAPPY-001 o número de transacción"/></div>
-      <a id="btnYappy" href="${YAPPY.link}" target="_blank" class="btn-yappy" onclick="mostrarMensajeRegreso()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5" fill="rgba(255,255,255,0.5)"/></svg>
-        Pagar $${montoAbono.toFixed(2)} con Yappy
-      </a>
-      <div id="msgRegreso" style="display:none;background:#e8f7fd;border:0.5px solid #1AACE3;border-radius:var(--radius);padding:.875rem;margin-bottom:8px;font-size:12px;color:#0f6e8a;line-height:1.6;">
-        ¿Ya pagaste? Yappy no regresa automáticamente. Vuelve aquí, copia el número de comprobante e ingrésalo arriba.
+
+      <div id="yappyPagoWrap" style="margin-top:.875rem;">
+        <div class="fg"><label class="flbl">Tu número Yappy (sin +507)</label><input class="fi" id="fAliasYappy" placeholder="6XXXXXXX"></div>
+        <p id="yappyMsg" style="font-size:12px;margin:6px 0 10px;min-height:14px;"></p>
+        <btn-yappy id="btnYappyReal" theme="darkBlue" rounded="true"></btn-yappy>
       </div>
-      <button class="btn-transfer" id="btnTransfer" onclick="copiarCuenta()">Copiar número de cuenta</button>`;
+
+      <div id="bankPagoWrap" class="hidden">
+        <div class="fg" style="margin-top:.875rem;"><label class="flbl">N° de comprobante / referencia</label><input class="fi" id="fref" placeholder="Ej: número de transacción"/></div>
+        <button class="btn-transfer" id="btnTransfer" onclick="copiarCuenta()">Copiar número de cuenta</button>
+      </div>`;
   } else {
     pagoSection=`
       <div class="note-box" style="margin-top:.875rem;">
@@ -1111,13 +1115,14 @@ function goForm(){
       <p id="cuponMsg" style="font-size:11px;margin-top:6px;min-height:14px;"></p>
     </div>
     ${pagoSection}
-    <button class="btn-main" id="btnConfirmar" onclick="confirmar('${dayStr}')">Confirmar mi cita</button>`;
+    <button class="btn-main" id="btnConfirmar" onclick="confirmar('${dayStr}')" style="${tieneAbono?'display:none;':''}">Confirmar mi cita</button>`;
+
+  if(tieneAbono) selPago('yappy');
 
   if(tieneAbono) startTimer();
   openOv('ov-form');
 }
 
-function mostrarMensajeRegreso(){setTimeout(()=>{const m=document.getElementById('msgRegreso');if(m)m.style.display='block';},1500);}
 
 async function aplicarCupon(){
   const input=document.getElementById('fcupon');
@@ -1209,10 +1214,72 @@ function selPago(tipo){
   pagoTipo=tipo;
   document.getElementById('opt-yappy').classList.toggle('sel',tipo==='yappy');
   document.getElementById('opt-bank').classList.toggle('sel',tipo==='bank');
-  const btnY=document.getElementById('btnYappy');
-  const btnB=document.getElementById('btnTransfer');
-  if(tipo==='bank'){btnY.classList.add('hidden');btnB.classList.add('visible');}
-  else{btnY.classList.remove('hidden');btnB.classList.remove('visible');}
+  const yappyWrap=document.getElementById('yappyPagoWrap');
+  const bankWrap=document.getElementById('bankPagoWrap');
+  const btnC=document.getElementById('btnConfirmar');
+  if(tipo==='bank'){
+    yappyWrap.classList.add('hidden');
+    bankWrap.classList.remove('hidden');
+    if(btnC) btnC.style.display='';
+  } else {
+    yappyWrap.classList.remove('hidden');
+    bankWrap.classList.add('hidden');
+    if(btnC) btnC.style.display='none';
+    setupYappyButton();
+  }
+}
+
+function limpiarNumYappy(tel){
+  let n=(tel||'').replace(/[^0-9]/g,'');
+  if(n.length>8 && n.startsWith('507')) n=n.substring(3);
+  return n;
+}
+
+let yappyListoInicializado=false;
+function setupYappyButton(){
+  const btn=document.getElementById('btnYappyReal');
+  if(!btn || yappyListoInicializado) return;
+  yappyListoInicializado=true;
+
+  const telInput=document.getElementById('fp');
+  const aliasInput=document.getElementById('fAliasYappy');
+  if(telInput && aliasInput && !aliasInput.value){ aliasInput.value=limpiarNumYappy(telInput.value); }
+
+  btn.addEventListener('eventClick', async () => {
+    const msgEl=document.getElementById('yappyMsg');
+    const nombre=document.getElementById('fn').value.trim();
+    const tel=document.getElementById('fp').value.trim();
+    const correo=document.getElementById('fe').value.trim();
+    if(!nombre||!tel||!correo){ msgEl.style.color='#c0392b'; msgEl.textContent='Completa tu nombre, WhatsApp y correo antes de pagar.'; return; }
+    const alias=limpiarNumYappy(document.getElementById('fAliasYappy').value);
+    if(!alias || alias.length<7){ msgEl.style.color='#c0392b'; msgEl.textContent='Ingresa tu número Yappy (8 dígitos, sin +507).'; return; }
+
+    msgEl.style.color='#999'; msgEl.textContent='Creando tu orden de pago...';
+    const montoAbono = curSvc.esEval ? 10 : (curSvc.abonoMonto || 10);
+    const orderId='C'+Date.now().toString().slice(-10);
+    window._yappyOrderId=orderId;
+
+    try{
+      const res=await Sheets.crearOrdenYappy(orderId, montoAbono, alias, 'cita', orderId);
+      if(res && res.ok){
+        msgEl.textContent='';
+        btn.eventPayment({ transactionId: res.transactionId, documentName: res.documentName, token: res.token });
+      } else {
+        msgEl.style.color='#c0392b';
+        msgEl.textContent = res && res.error === 'Este número no está registrado en Yappy.' ? res.error : 'No se pudo crear la orden de pago. Verifica tu número e intenta de nuevo.';
+      }
+    }catch(ex){ msgEl.style.color='#c0392b'; msgEl.textContent='Error de conexión. Intenta de nuevo.'; }
+  });
+
+  btn.addEventListener('eventSuccess', (event) => {
+    const orderId=window._yappyOrderId;
+    confirmarCitaConfirmada(orderId);
+  });
+
+  btn.addEventListener('eventError', (event) => {
+    const msgEl=document.getElementById('yappyMsg');
+    if(msgEl){ msgEl.style.color='#c0392b'; msgEl.textContent='El pago no se completó. Puedes intentar de nuevo.'; }
+  });
 }
 
 function copiarCuenta(){
@@ -1236,6 +1303,8 @@ function startTimer(){
       if(el)el.textContent='0:00';
       if(box)box.classList.add('exp');
       if(btnC){btnC.disabled=true;btnC.textContent='Tiempo expirado — vuelve a empezar';}
+      const yappyWrap=document.getElementById('yappyPagoWrap');
+      if(yappyWrap){ yappyWrap.innerHTML='<p style="font-size:13px;color:#c0392b;text-align:center;padding:.5rem 0;">Tiempo expirado — cierra y vuelve a agendar.</p>'; }
       return;
     }
     const mm=Math.floor(timerSecs/60),ss=timerSecs%60;
@@ -1244,22 +1313,40 @@ function startTimer(){
   },1000);
 }
 
+let currentDayStr='';
 async function confirmar(dayStr){
+  currentDayStr=dayStr;
   const nombre=document.getElementById('fn').value.trim();
   const tel=document.getElementById('fp').value.trim();
   const correo=document.getElementById('fe')?document.getElementById('fe').value.trim():'';
-  const nota=document.getElementById('fnote')?document.getElementById('fnote').value.trim():'';
   const refEl=document.getElementById('fref');
   const ref=refEl?refEl.value.trim():'Sin abono';
   const tieneAbono = curSvc.esEval || curSvc.requiereAbono;
-  const montoAbono = curSvc.esEval ? 10 : (curSvc.abonoMonto || 10);
-  const tipoAbono = curSvc.esEval ? 'descontable' : (curSvc.abonoTipo || 'noreembolsable');
-  const textoTipo = tipoAbono === 'descontable' ? 'descontable del servicio' : 'sujeto a política de cancelación';
   if(!nombre||!tel||!correo){alert('Por favor completa tu nombre, WhatsApp y correo.');return;}
   if(tieneAbono&&!ref){alert('Por favor ingresa el número de comprobante del pago.');return;}
   if(timerInt)clearInterval(timerInt);
   const btnC=document.getElementById('btnConfirmar');
   if(btnC){btnC.disabled=true;btnC.textContent='Confirmando...';}
+  await finalizarCita(dayStr, ref);
+}
+
+async function confirmarCitaConfirmada(orderId){
+  const msgEl=document.getElementById('yappyMsg');
+  if(msgEl){ msgEl.style.color='#3a7a3a'; msgEl.textContent='¡Pago confirmado! Reservando tu cita...'; }
+  const btn=document.getElementById('btnYappyReal');
+  if(btn) btn.isButtonLoading=true;
+  await finalizarCita(currentDayStr, orderId);
+}
+
+async function finalizarCita(dayStr, ref){
+  const nombre=document.getElementById('fn').value.trim();
+  const tel=document.getElementById('fp').value.trim();
+  const correo=document.getElementById('fe')?document.getElementById('fe').value.trim():'';
+  const nota=document.getElementById('fnote')?document.getElementById('fnote').value.trim():'';
+  const tieneAbono = curSvc.esEval || curSvc.requiereAbono;
+  const montoAbono = curSvc.esEval ? 10 : (curSvc.abonoMonto || 10);
+  const tipoAbono = curSvc.esEval ? 'descontable' : (curSvc.abonoTipo || 'noreembolsable');
+  const textoTipo = tipoAbono === 'descontable' ? 'descontable del servicio' : 'sujeto a política de cancelación';
   const precio=curSvc.price>0?curSvc.price:0;
   const esConsultar = curSvc.price<=0;
   const notaFinal = curSvc._promo ? (nota ? nota+' [PROMO aplicada]' : 'PROMO aplicada') : nota;
@@ -1341,6 +1428,7 @@ let giftMonto=25, giftMontoEsOtro=false, pagoTipoGift='yappy';
 
 function openGift(){
   giftMonto=25; giftMontoEsOtro=false; pagoTipoGift='yappy';
+  giftYappyListoInicializado=false;
   renderGiftForm();
   openOv('ov-gift');
 }
@@ -1385,16 +1473,19 @@ function renderGiftForm(){
       <div class="pay-opt-sub">Transferencia bancaria a cuenta de ahorros.</div>
       <div class="pay-detail"><strong>Banco:</strong> Banco General<br><strong>Tipo:</strong> Ahorros<br><strong>Cuenta:</strong> 04-19-99-989328-0<br><strong>Titular:</strong> Vicelly Sanchez Studio<br><strong>Monto:</strong> <span id="gMontoBank">$${giftMonto.toFixed(2)}</span><br><span style="color:#e74c3c;font-size:11px;">Incluye tu nombre en la referencia</span></div>
     </div>
-    <div class="fg" style="margin-top:.875rem;"><label class="flbl">N° de comprobante / referencia</label><input class="fi" id="gRef" placeholder="Ej: YAPPY-001 o número de transacción"></div>
-    <a id="gBtnYappy" href="${YAPPY.link}" target="_blank" class="btn-yappy" onclick="mostrarMensajeRegresoGift()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5" fill="rgba(255,255,255,0.5)"/></svg>
-      Pagar <span id="gBtnYappyMonto">$${giftMonto.toFixed(2)}</span> con Yappy
-    </a>
-    <div id="gMsgRegreso" style="display:none;background:#e8f7fd;border:0.5px solid #1AACE3;border-radius:var(--radius);padding:.875rem;margin-bottom:8px;font-size:12px;color:#0f6e8a;line-height:1.6;">
-      ¿Ya pagaste? Yappy no regresa automáticamente. Vuelve aquí, copia el número de comprobante e ingrésalo arriba.
+
+    <div id="gYappyPagoWrap" style="margin-top:.875rem;">
+      <div class="fg"><label class="flbl">Tu número Yappy (sin +507)</label><input class="fi" id="gAliasYappy" placeholder="6XXXXXXX"></div>
+      <p id="gYappyMsg" style="font-size:12px;margin:6px 0 10px;min-height:14px;"></p>
+      <btn-yappy id="gBtnYappyReal" theme="darkBlue" rounded="true"></btn-yappy>
     </div>
-    <button class="btn-transfer" id="gBtnTransfer" onclick="copiarCuentaGift()">Copiar número de cuenta</button>
-    <button class="btn-main" id="btnComprarGift" style="margin-top:.5rem;" onclick="confirmarCertificado()">Comprar certificado</button>`;
+
+    <div id="gBankPagoWrap" class="hidden">
+      <div class="fg" style="margin-top:.875rem;"><label class="flbl">N° de comprobante / referencia</label><input class="fi" id="gRef" placeholder="Ej: número de transacción"></div>
+      <button class="btn-transfer" id="gBtnTransfer" onclick="copiarCuentaGift()">Copiar número de cuenta</button>
+      <button class="btn-main" id="btnComprarGift" style="margin-top:.5rem;" onclick="confirmarCertificado()">Comprar certificado</button>
+    </div>`;
+  selPagoGift('yappy');
 }
 
 function selMonto(a){
@@ -1435,10 +1526,65 @@ function selPagoGift(tipo){
   pagoTipoGift=tipo;
   document.getElementById('gopt-yappy').classList.toggle('sel',tipo==='yappy');
   document.getElementById('gopt-bank').classList.toggle('sel',tipo==='bank');
-  const btnY=document.getElementById('gBtnYappy');
-  const btnB=document.getElementById('gBtnTransfer');
-  if(tipo==='bank'){btnY.classList.add('hidden');btnB.classList.add('visible');}
-  else{btnY.classList.remove('hidden');btnB.classList.remove('visible');}
+  const yappyWrap=document.getElementById('gYappyPagoWrap');
+  const bankWrap=document.getElementById('gBankPagoWrap');
+  if(tipo==='bank'){
+    yappyWrap.classList.add('hidden');
+    bankWrap.classList.remove('hidden');
+  } else {
+    yappyWrap.classList.remove('hidden');
+    bankWrap.classList.add('hidden');
+    setupYappyButtonGift();
+  }
+}
+
+let giftYappyListoInicializado=false;
+function setupYappyButtonGift(){
+  const btn=document.getElementById('gBtnYappyReal');
+  if(!btn || giftYappyListoInicializado) return;
+  giftYappyListoInicializado=true;
+
+  const telInput=document.getElementById('gTel');
+  const aliasInput=document.getElementById('gAliasYappy');
+  if(telInput && aliasInput && !aliasInput.value){ aliasInput.value=limpiarNumYappy(telInput.value); }
+
+  btn.addEventListener('eventClick', async () => {
+    const msgEl=document.getElementById('gYappyMsg');
+    const nombre=document.getElementById('gNombre').value.trim();
+    const tel=document.getElementById('gTel').value.trim();
+    const correo=document.getElementById('gCorreo').value.trim();
+    const destNombre=document.getElementById('gDestNombre').value.trim();
+    const destCorreo=document.getElementById('gDestCorreo').value.trim();
+    if(!giftMonto || giftMonto<10){ msgEl.style.color='#c0392b'; msgEl.textContent='El monto mínimo del certificado es $10.'; return; }
+    if(!nombre||!tel||!correo){ msgEl.style.color='#c0392b'; msgEl.textContent='Completa tu nombre, WhatsApp y correo.'; return; }
+    if(!destNombre||!destCorreo){ msgEl.style.color='#c0392b'; msgEl.textContent='Completa el nombre y correo de quien recibe el regalo.'; return; }
+    const alias=limpiarNumYappy(document.getElementById('gAliasYappy').value);
+    if(!alias || alias.length<7){ msgEl.style.color='#c0392b'; msgEl.textContent='Ingresa tu número Yappy (8 dígitos, sin +507).'; return; }
+
+    msgEl.style.color='#999'; msgEl.textContent='Creando tu orden de pago...';
+    const orderId='G'+Date.now().toString().slice(-10);
+    window._yappyOrderIdGift=orderId;
+
+    try{
+      const res=await Sheets.crearOrdenYappy(orderId, giftMonto, alias, 'certificado', orderId);
+      if(res && res.ok){
+        msgEl.textContent='';
+        btn.eventPayment({ transactionId: res.transactionId, documentName: res.documentName, token: res.token });
+      } else {
+        msgEl.style.color='#c0392b';
+        msgEl.textContent = res && res.error === 'Este número no está registrado en Yappy.' ? res.error : 'No se pudo crear la orden de pago. Verifica tu número e intenta de nuevo.';
+      }
+    }catch(ex){ msgEl.style.color='#c0392b'; msgEl.textContent='Error de conexión. Intenta de nuevo.'; }
+  });
+
+  btn.addEventListener('eventSuccess', () => {
+    confirmarCertificado(window._yappyOrderIdGift);
+  });
+
+  btn.addEventListener('eventError', () => {
+    const msgEl=document.getElementById('gYappyMsg');
+    if(msgEl){ msgEl.style.color='#c0392b'; msgEl.textContent='El pago no se completó. Puedes intentar de nuevo.'; }
+  });
 }
 
 function copiarCuentaGift(){
@@ -1449,8 +1595,6 @@ function copiarCuentaGift(){
   });
 }
 
-function mostrarMensajeRegresoGift(){setTimeout(()=>{const m=document.getElementById('gMsgRegreso');if(m)m.style.display='block';},1500);}
-
 function generarCodigoCertificado(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s='';
@@ -1458,14 +1602,15 @@ function generarCodigoCertificado(){
   return 'VS-'+s;
 }
 
-async function confirmarCertificado(){
+async function confirmarCertificado(yappyOrderId){
   const nombre=document.getElementById('gNombre').value.trim();
   const tel=document.getElementById('gTel').value.trim();
   const correo=document.getElementById('gCorreo').value.trim();
   const destNombre=document.getElementById('gDestNombre').value.trim();
   const destCorreo=document.getElementById('gDestCorreo').value.trim();
   const mensaje=document.getElementById('gMensaje').value.trim();
-  const ref=document.getElementById('gRef').value.trim();
+  const refEl=document.getElementById('gRef');
+  const ref = yappyOrderId || (refEl?refEl.value.trim():'');
   const monto=giftMonto;
 
   if(!monto || monto<10){alert('El monto mínimo del certificado es $10.');return;}
