@@ -282,5 +282,24 @@ const Sheets = {
       console.error('Error marcando certificado usado:', e);
       return { ok: false };
     }
+  },
+
+  async crearOrdenYappy(orderId, total, aliasYappy, tipo, refId) {
+    try {
+      const params = new URLSearchParams({
+        action: 'crearOrdenYappy',
+        orderId: orderId || '',
+        total: total || 0,
+        aliasYappy: aliasYappy || '',
+        tipo: tipo || '',
+        refId: refId || ''
+      });
+      const url = CONFIG.sheets.scriptUrl + '?' + params.toString() + '&_=' + Date.now();
+      const res = await fetch(url);
+      return await res.json();
+    } catch (e) {
+      console.error('Error creando orden Yappy:', e);
+      return { ok: false, error: 'error_red' };
+    }
   }
 };
