@@ -333,13 +333,15 @@ function saveServices(){
 
 function renderAdmin(){
   let html='';
-  CATS.forEach(cat=>{
-    const svcs=SERVICES.filter(s=>s.cat===cat);
+  // Servicios con una categoría que no está en la lista (o sin categoría): se muestran igual para poder editarlos
+  const extras=[...new Set(SERVICES.filter(s=>!CATS.includes(s.cat)).map(s=>s.cat||''))];
+  [...CATS, ...extras].forEach(cat=>{
+    const svcs=SERVICES.filter(s=>(s.cat||'')===cat);
     if(!svcs.length) return;
     html+=`<div class="adm-sec">
       <div class="adm-sec-hdr">
-        <span class="adm-sec-title">${cat}</span>
-        <button class="btn-add" onclick="openModal(null,'${cat}')"><i class="ti ti-plus"></i> Agregar</button>
+        <span class="adm-sec-title">${cat||'Sin categoría'}</span>
+        <button class="btn-add" onclick="openModal(null,'${CATS.includes(cat)?cat:'Básicos'}')"><i class="ti ti-plus"></i> Agregar</button>
       </div>`;
     svcs.forEach(s=>{
       const precio=s.precioTexto||(s.price>0?'$'+s.price.toFixed(2):'A consultar');
