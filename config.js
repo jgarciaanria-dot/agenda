@@ -8,14 +8,14 @@ const CONFIG = {
     whatsapp: '50765224575',
     email: 'vicellysanchezstudio@gmail.com',
     instagram: 'vivellysanchezstudio',
-    horario: 'Lun – Vie · 8AM – 4PM  |  Sáb · 8AM – 4PM',
+    horario: 'Lun – Vie · 9AM – 5PM  |  Sáb · 9AM – 5PM',
     ubicacion: 'Obarrio · Salón Plaza · Suite 113'
   },
   citas: {
     duracionTimer: 300,
     cancelacionHoras: 24,
-    primerHora: '8:00',
-    ultimaHora: '16:00',
+    primerHora: '9:00',
+    ultimaHora: '17:00',
     intervaloMin: 30
   }
 };
