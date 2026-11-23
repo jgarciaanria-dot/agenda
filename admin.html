@@ -294,9 +294,24 @@ let SERVICES=[];
 let editId=null;
 
 function loadServices(){
+  // Copia local para pintar rápido (y como respaldo si no hay red). NO se sube a la hoja:
+  // así un navegador nuevo no pisa con el catálogo por defecto lo que ya está guardado.
   const saved=localStorage.getItem('vss_hair_services');
-  if(saved){ SERVICES=JSON.parse(saved); }
-  else { SERVICES=getDefaultServices(); saveServices(); }
+  if(saved){ try{ SERVICES=JSON.parse(saved); }catch(e){ SERVICES=getDefaultServices(); } }
+  else { SERVICES=getDefaultServices(); }
+}
+
+// La hoja de Google es la fuente de verdad (es lo que lee la agenda pública):
+// al abrir el panel se trae de ahí el catálogo real, con los servicios creados desde otro equipo.
+async function sincronizarServiciosDesdeHoja(){
+  try{
+    const remotos=await Sheets.getServicios();
+    if(remotos && remotos.length>0){
+      SERVICES=remotos;
+      localStorage.setItem('vss_hair_services', JSON.stringify(SERVICES));
+      renderAdmin();
+    }
+  }catch(e){ console.error('No se pudo leer los servicios de la hoja:', e); }
 }
 
 function getDefaultServices(){
@@ -1032,6 +1047,7 @@ function mostrarToast(mensaje, tipo){
 
 loadServices();
 renderAdmin();
+sincronizarServiciosDesdeHoja();
 loadBloqueos();
 </script>
 </body>
