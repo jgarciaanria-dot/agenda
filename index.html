@@ -1660,8 +1660,15 @@ async function confirmarCertificado(yappyOrderId){
     </div>`;
 }
 
+const PROMO_LINK=new URLSearchParams(location.search).get('promo');
 loadServices().then(() => {
   renderServices();
+  // Enlace directo (historias): agenda.vicellystudio.com/?promo=blackfriday
+  const t=PROMO_LINK&&TEMAS_PROMO[PROMO_LINK];
+  if(t&&t.servicio){
+    PROMO_DATA={tema:PROMO_LINK,servicio:t.servicio,precioNormal:t.precioNormal,precioPromo:t.precioPromo};
+    agendarPromo();
+  }
 });
 loadBloqueos();
 loadPromo();
@@ -1683,6 +1690,7 @@ async function loadPromo(){
   try { promo = await Sheets.getPromo(); }
   catch(e){ return; }
   if(!promo || !promo.activa) return;
+  if(PROMO_LINK && TEMAS_PROMO[PROMO_LINK]) return; // llegó por enlace directo: sin banner
   PROMO_DATA=promo;
 
   const tema=TEMAS_PROMO[promo.tema]||TEMAS_PROMO.mundial;
