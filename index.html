@@ -821,6 +821,7 @@ let cuponAplicado=null,cuponDescuentoPct=0,cuponPremioTexto='';
 let certAplicado=null,certMontoDisponible=0,qrScanner=null;
 
 function renderServices(){
+  // La categoría 'Promos' no se lista a propósito: sus servicios solo se alcanzan desde la promo
   const cats=['Básicos','Tratamientos','Alisados','Color','Extensiones'];
   let html='';
   cats.forEach(cat=>{
