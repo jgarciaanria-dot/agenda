@@ -343,7 +343,18 @@ function saveServices(){
     mode: 'no-cors',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({action: 'guardarServicios', servicios: JSON.stringify(SERVICES)})
-  }).catch(e => console.error('Error guardando en Sheets:', e));
+  }).then(verificarServiciosEnHoja).catch(e => { console.error('Error guardando en Sheets:', e); mostrarToast('No se pudo guardar en la hoja. Revisa tu conexión.', 'error'); });
+}
+
+// Como el envío es "a ciegas" (no-cors), se vuelve a leer la hoja para confirmar que el cambio quedó guardado
+async function verificarServiciosEnHoja(){
+  await new Promise(r=>setTimeout(r,3500));
+  try{
+    const remotos=await Sheets.getServicios();
+    const ids=new Set((remotos||[]).map(x=>x.id));
+    const faltan=SERVICES.filter(x=>!ids.has(x.id));
+    if(faltan.length) mostrarToast('No se confirmó en la hoja: '+faltan.map(x=>x.name).join(', ')+'. Intenta guardar de nuevo.', 'error');
+  }catch(e){ console.error('No se pudo verificar el guardado:', e); }
 }
 
 function renderAdmin(){
