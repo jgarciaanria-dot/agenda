@@ -194,6 +194,15 @@ body{
   const botonCerrar = document.getElementById("botonCerrar");
 
   let historialConversacion = [];
+  // Firma del historial: la entrega el servidor y se devuelve tal cual, para que nadie pueda inventar mensajes anteriores
+  let firmaHistorial = "";
+  // Identificador de esta visita (solo para limitar abusos); no contiene datos personales
+  let SID = "";
+  try { SID = sessionStorage.getItem("vice_sid") || ""; } catch (e) {}
+  if (!SID) {
+    SID = "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    try { sessionStorage.setItem("vice_sid", SID); } catch (e) {}
+  }
   let mensajesUsuario = [];
   let telefonoDetectado = null;
   let ultimaActividad = Date.now();
@@ -275,11 +284,20 @@ body{
     const filaEscribiendo = mostrarEscribiendo();
 
     try {
-      const respuesta = await fetch(URL_AGENTE, {
-        method: "POST",
-        body: JSON.stringify({ pregunta: pregunta, historial: historialConversacion, origen: "publico" })
-      });
-      const datos = await respuesta.json();
+      const pedir = async () => {
+        const respuesta = await fetch(URL_AGENTE, {
+          method: "POST",
+          body: JSON.stringify({ pregunta: pregunta, historial: historialConversacion, firma: firmaHistorial, sid: SID, origen: "publico" })
+        });
+        return await respuesta.json();
+      };
+      let datos = await pedir();
+      // Si el servidor no reconoce la firma (historial viejo), se reinicia el contexto y se reintenta una vez
+      if (datos && datos.codigo === "sesion_invalida") {
+        historialConversacion = [];
+        firmaHistorial = "";
+        datos = await pedir();
+      }
       filaEscribiendo.remove();
 
       if (datos.error) {
@@ -287,6 +305,7 @@ body{
       } else {
         const filaMensaje = agregarMensaje(datos.respuesta, "agente");
         historialConversacion = datos.historial || historialConversacion;
+        firmaHistorial = datos.firma || "";
 
         if (datos.horasDisponibles && datos.horasDisponibles.horas && datos.horasDisponibles.horas.length > 0) {
           renderBotonesHora(datos.horasDisponibles);
@@ -407,6 +426,7 @@ body{
     if (mensajesUsuario.length === 0) return;
     const payload = JSON.stringify({
       accion: "registrar_conversacion",
+      sid: SID,
       telefono: telefonoDetectado,
       mensajes: mensajesUsuario
     });
@@ -425,6 +445,7 @@ body{
     enviarLogConversacion();
     marcarActividad();
     historialConversacion = [];
+    firmaHistorial = "";
     contenedorMensajes.innerHTML = "";
 
     const filaEscribiendo = mostrarEscribiendo();

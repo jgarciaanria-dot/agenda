@@ -1672,6 +1672,12 @@ loadServices().then(() => {
     PROMO_DATA={tema:PROMO_LINK,servicio:t.servicio,precioNormal:t.precioNormal,precioPromo:t.precioPromo};
     agendarPromo();
   }
+  // Enlace directo a un servicio (lo usa Vice): agenda.vicellystudio.com/?servicio=eval
+  const svcLink=new URLSearchParams(location.search).get('servicio');
+  if(!PROMO_LINK && svcLink){
+    const sv=SERVICES.find(x=>String(x.id)===svcLink && x.active);
+    if(sv) openDetail(sv.id);
+  }
 });
 loadBloqueos();
 loadPromo();
