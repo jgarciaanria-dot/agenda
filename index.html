@@ -1687,10 +1687,11 @@ async function loadPromo(){
 
   const tema=TEMAS_PROMO[promo.tema]||TEMAS_PROMO.mundial;
   if(tema.imagen){
+    // Con tema de imagen mandan los datos del tema (no los de una promo anterior guardada)
     PROMO_DATA={...promo,
-      servicio:promo.servicio||tema.servicio,
-      precioNormal:promo.precioNormal||tema.precioNormal,
-      precioPromo:promo.precioPromo||tema.precioPromo};
+      servicio:tema.servicio,
+      precioNormal:tema.precioNormal,
+      precioPromo:tema.precioPromo};
     const img=document.getElementById('promo-img');
     img.src=tema.imagen;
     img.onload=()=>setTimeout(()=>{document.getElementById('promo-img-ov').style.display='flex';},400);
